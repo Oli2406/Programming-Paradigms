@@ -13,9 +13,14 @@ public class MinimalHouse extends House {
     private static final int DEMOLISH_COST = 20000;
     private static final int WASTE_COST = 10000;
     private static final float SATISFACTION_RATE = 0.75f;
-    private static final float RENOVATION_CARBON = 0.75f;
+    private static final float RENOVATION_CARBON = 0.75f * CARBON;
+    private static final int RENOVATION_WASTE = 25;
+    private static final int DEMOLITION_WASTE = 50;
 
     public MinimalHouse() {
-        super(BUILD_COST, CARBON, AREA, LIFETIME, SERVICE_COST, RENOVATION_COST, DEMOLISH_COST, WASTE_COST, SATISFACTION_RATE, RENOVATION_INTERVAL);
+        super(BUILD_COST, CARBON, AREA, LIFETIME,
+            SERVICE_COST, RENOVATION_COST, DEMOLISH_COST, WASTE_COST,
+            SATISFACTION_RATE, RENOVATION_INTERVAL, RENOVATION_CARBON,
+            RENOVATION_WASTE, DEMOLITION_WASTE);
     }
 }

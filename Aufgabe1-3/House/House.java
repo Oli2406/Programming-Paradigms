@@ -17,8 +17,16 @@ public class House {
     private float satisfactionRate;
     private int renovationInterval;
     private int renovationLifetime;
+    private final float renovationCarbon;
+    private final float maxSatisfaction;
+    private final float wastePerYearPerResident = 0.27f;
+    private final int renovationWaste;
+    private final int demolitionWaste;
 
-    public House(int cost, int carbon, int area, int lifetime, int serviceCost, int renovationCost, int demolishCost, int wasteCost, float satisfactionRate, int renovationInterval) {
+    public House(int cost, int carbon, int area, int lifetime,
+                 int serviceCost, int renovationCost, int demolishCost,
+                 int wasteCost, float satisfactionRate, int renovationInterval,
+                 float renovationCarbon, int renovationWaste, int demolitionWaste) {
         this.residents = r.nextInt(1,5);
         this.cost = cost;
         this.carbon = carbon;
@@ -30,6 +38,10 @@ public class House {
         this.wasteCost = wasteCost;
         this.satisfactionRate = satisfactionRate;
         this.renovationInterval = renovationInterval;
+        this.renovationCarbon = renovationCarbon;
+        this.maxSatisfaction = satisfactionRate;
+        this.renovationWaste = renovationWaste;
+        this.demolitionWaste = demolitionWaste;
         this.renovate();
     }
 
@@ -125,6 +137,7 @@ public class House {
     public void age() {
         lifetime = Math.max(0, lifetime - 1);
         renovationLifetime = Math.max(0, renovationLifetime - 1);
+        satisfactionRate -= 0.012f;
     }
 
     public int getRenovationLifetime() {
@@ -137,5 +150,26 @@ public class House {
 
     public void renovate() {
         renovationLifetime = (int) r.nextGaussian(renovationInterval, 5);
+        float satisfactionIncrease = (float) r.nextGaussian(0.13, 0.02);
+        if(satisfactionRate + satisfactionIncrease > maxSatisfaction) {
+            satisfactionRate = maxSatisfaction;
+        } else {
+            satisfactionRate += satisfactionIncrease;
+        }
+    }
+    public float getRenovationCarbon() {
+        return renovationCarbon;
+    }
+    
+    public float getWastePerYearPerResident() {
+        return wastePerYearPerResident;
+    }
+    
+    public int getRenovationWaste() {
+        return renovationWaste;
+    }
+    
+    public int getDemolitionWaste() {
+        return demolitionWaste;
     }
 }
