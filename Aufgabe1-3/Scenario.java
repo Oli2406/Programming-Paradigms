@@ -1,16 +1,18 @@
 import House.House;
 import House.MinimalHouse;
+import House.BioHouse;
+import House.PremiumHouse;
 
 import java.util.ArrayList;
 
 public class Scenario {
     // Global Risks
-    private static float RISK_EARTHQUAKE = 0.01f;
-    private static float RISK_NUCLEAR = 0.00002f;
+    private static final float RISK_EARTHQUAKE = 0.01f;
+    private static final float RISK_NUCLEAR = 0.5f; //0.00002f;
 
     // Local Risks
-    private static float RISK_INFESTATION = 0.005f;
-    private static float RISK_FIRE = 0.01f;
+    private static final float RISK_INFESTATION = 0.005f;
+    private static final float RISK_FIRE = 0.01f;
 
     // Scenario Type
     private ScenarioType type;
@@ -18,7 +20,7 @@ public class Scenario {
     // Runtime
     private static int RUNTIME = 100;
 
-    private static int HOUSES = 10;
+    private static final int HOUSES = 10;
 
     private int initialCost = 0;
 
@@ -36,12 +38,16 @@ public class Scenario {
                 break;
             case BIO:
                 for (int i = 0; i < HOUSES; i++) {
-                    //houses.add(new House.BioHouse());
+                    House h = new BioHouse();
+                    initialCost += h.getCost();
+                    houses.add(h);
                 }
                 break;
             case PREMIUM:
                 for (int i = 0; i < HOUSES; i++) {
-                    //houses.add(new House.PremiumHouse());
+                    House h = new PremiumHouse();
+                    initialCost += h.getCost();
+                    houses.add(h);
                 }
                 break;
         }
@@ -74,21 +80,21 @@ public class Scenario {
     }
 
     public int run() {
-        int totalResidents = 0;
-        int totalCostDecade = 0;
+        int totalResidents;
+        int totalCostPerDecade = 0;
         int totalCost;
         int totalCarbon;
         int waste;
         float averageCarbon;
         float averageCost;
-        float averageCostDecade;
+        float averageCostPerDecade;
         float satisfaction = 0;
         int totalResidentsPerDecade = 0;
         float wastePerResidentPerYear = 0.0f;
         float totalAverageCarbonPerYear = 0.0f;
         float totalSatisfactionPerYear = 0.0f;
         float totalCostPerResidentPerYear = 0.0f;
-        float totalCostPerResidetnPerDecade = 0.0f;
+        float totalCostPerResidentPerDecade = 0.0f;
         
         ArrayList<House> toRemove = new ArrayList<House>();
 
@@ -103,10 +109,10 @@ public class Scenario {
             
             if(year%10 == 0) {
                 totalSatisfactionPerYear += satisfaction;
-                totalCostPerResidetnPerDecade += totalCostDecade;
+                totalCostPerResidentPerDecade += totalCostPerDecade;
                 totalResidentsPerDecade = 0;
-                totalCostDecade = 0;
-                averageCostDecade = 0;
+                totalCostPerDecade = 0;
+                averageCostPerDecade = 0;
                 satisfaction = 0;
             }
 
@@ -123,18 +129,16 @@ public class Scenario {
             }
             if(Math.random() < RISK_NUCLEAR) {
                 System.out.println("Nuclear Meltdown");
-                for (House house : houses) {
-                    toRemove.add(house);
-                }
                 houses.removeAll(houses);
             }
             float residentDemolitionWaste = 0;
             float residentRenovationWaste = 0;
+            //TODO: Why is this here?
             toRemove.clear();
             for (House house : houses) {
                 house.age();
-                satisfaction += house.getSatisfactionRate();
-                totalResidentsPerDecade += house.getResidents();
+
+                //Local risk factors
                 if (Math.random() < RISK_INFESTATION) {
                     System.out.println("Infestation");
                     if (Math.random() < 0.01) {
@@ -151,10 +155,14 @@ public class Scenario {
                         house.setRenovationLifetime(0);
                     }
                 }
+
+                satisfaction += house.getSatisfactionRate();
+                totalResidentsPerDecade += house.getResidents();
                 totalResidents += house.getResidents();
                 totalCost += house.getServiceCost();
                 totalCarbon += house.getCarbon();
                 waste += house.getWasteCost();
+
                 // Check for demolition
                 if (house.getLifetime() == 0) {
                     totalCost += house.getDemolishCost();
@@ -175,25 +183,30 @@ public class Scenario {
             residentRenovationWaste /= HOUSES;
             wastePerResidentPerYear += residentDemolitionWaste + residentRenovationWaste;
             houses.removeAll(toRemove);
-            totalCostDecade += totalCost;
+            totalCostPerDecade += totalCost;
+
+            //TODO: This never happens (I think?)
+            /*
             if(totalResidents == 0) {
                 System.out.println("All residents have left");
                 break;
             }
+             */
+
             if(houses.isEmpty()) {
                 totalCostPerResidentPerYear /= year;
-                totalCostPerResidetnPerDecade /= ((float) year);
-                wastePerResidentPerYear /= year + 0.27; //TODO: Add variable for waste per year per resident.
+                totalCostPerResidentPerDecade /= ((float) year);
+                wastePerResidentPerYear /= year + 0.27f; //TODO: Add variable for waste per year per resident.
                 totalAverageCarbonPerYear /= year;
                 totalSatisfactionPerYear /= ((float) year / 10);
                 
                 System.out.println("All houses have been demolished");
                 System.out.println("average cost per resident per year: " + totalCostPerResidentPerYear);
-                System.out.println("average cost per resident per decade: " + totalCostPerResidetnPerDecade);
+                System.out.println("average cost per resident per decade: " + totalCostPerResidentPerDecade);
                 System.out.println("average waste per resident per year: " + wastePerResidentPerYear + " tons");
                 System.out.println("average carbon per resident per year: " + totalAverageCarbonPerYear + " tons");
                 System.out.println("average satisfaction per decade: " + totalSatisfactionPerYear);
-                double susScore = calculateScore(totalCostPerResidentPerYear, totalCostPerResidetnPerDecade,
+                double susScore = calculateScore(totalCostPerResidentPerYear, totalCostPerResidentPerDecade,
                                                  wastePerResidentPerYear, totalAverageCarbonPerYear,
                                                  totalSatisfactionPerYear);
                 System.out.println("Sustainability score for this scenario: " + susScore);
@@ -202,15 +215,16 @@ public class Scenario {
             averageCarbon = (float) (totalCarbon / totalResidents)/year;
             totalAverageCarbonPerYear += averageCarbon;
             averageCost = (float) (totalCost + initialCost) / totalResidents / year;
-            averageCostDecade = (float) (totalCostDecade + initialCost) / totalResidents / year;
+            averageCostPerDecade = (float) (totalCostPerDecade + initialCost) / totalResidents / year;
             totalCostPerResidentPerYear += averageCost;
             System.out.println("Year: " + year + " Residents: " + totalResidents + " Cost: " + totalCost + " Carbon: " + totalCarbon + " Waste: " + waste + " Average Carbon: " + averageCarbon + " Number of Houses: " + houses.size());
             if(year%10 == 9) {
                 satisfaction /= (houses.size() * 10);
                 System.out.println("Average satisfaction: " + satisfaction);
-                System.out.println("Total cost for the decade: " + totalCostDecade);
+                System.out.println("Total cost for the decade: " + totalCostPerDecade);
             }
         }
+        //TODO: why does this return 1?
         return 1;
     }
 }

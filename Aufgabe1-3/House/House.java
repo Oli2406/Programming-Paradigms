@@ -150,6 +150,7 @@ public class House {
 
     public void renovate() {
         renovationLifetime = (int) r.nextGaussian(renovationInterval, 5);
+        //TODO: discuss proper value for Increase
         float satisfactionIncrease = (float) r.nextGaussian(0.13, 0.02);
         if(satisfactionRate + satisfactionIncrease > maxSatisfaction) {
             satisfactionRate = maxSatisfaction;
