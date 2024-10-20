@@ -1,3 +1,5 @@
+import Enums.EventType;
+import Enums.ScenarioType;
 import House.House;
 import House.MinimalHouse;
 import House.BioHouse;
@@ -124,6 +126,7 @@ public class Scenario {
                         house.setLifetime(0);
                     } else {
                         house.setRenovationLifetime(0);
+                        house.reduceSatisfaction(EventType.EARTHQUAKE);
                     }
                 }
             }
@@ -145,6 +148,7 @@ public class Scenario {
                         house.setLifetime(0);
                     } else {
                         house.setRenovationLifetime(0);
+                        house.reduceSatisfaction(EventType.INFESTATION);
                     }
                 }
                 if (Math.random() < RISK_FIRE) {
@@ -153,6 +157,7 @@ public class Scenario {
                         house.setLifetime(0);
                     } else {
                         house.setRenovationLifetime(0);
+                        house.reduceSatisfaction(EventType.FIRE);
                     }
                 }
 

@@ -1,4 +1,4 @@
-import java.util.Random;
+import Enums.ScenarioType;
 
 public class Test {
 

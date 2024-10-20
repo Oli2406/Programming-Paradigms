@@ -1,6 +1,7 @@
 package House;
 
 import java.util.Random;
+import Enums.EventType;
 
 public class House {
     Random r = new Random();
@@ -95,7 +96,7 @@ public class House {
     }
 
     public int getRenovationCost() {
-        return renovationCost;
+        return r.nextInt(10000,renovationCost-10000);
     }
 
     public void setRenovationCost(int renovationCost) {
@@ -137,7 +138,11 @@ public class House {
     public void age() {
         lifetime = Math.max(0, lifetime - 1);
         renovationLifetime = Math.max(0, renovationLifetime - 1);
-        satisfactionRate -= 0.012f;
+        if(satisfactionRate-0.012f < 0) {
+            satisfactionRate = 0;
+        } else {
+            satisfactionRate -= 0.012f;
+        }
     }
 
     public int getRenovationLifetime() {
@@ -153,7 +158,7 @@ public class House {
         //TODO: discuss proper value for Increase
         float satisfactionIncrease = (float) r.nextGaussian(0.13, 0.02);
         if(satisfactionRate + satisfactionIncrease > maxSatisfaction) {
-            satisfactionRate = maxSatisfaction;
+            satisfactionRate = maxSatisfaction-0.01f;
         } else {
             satisfactionRate += satisfactionIncrease;
         }
@@ -172,5 +177,35 @@ public class House {
     
     public int getDemolitionWaste() {
         return demolitionWaste;
+    }
+
+    public void reduceSatisfaction(EventType event) {
+        float maxSatisfactionReduction;
+        float minSatisfactionReduction;
+        switch (event) {
+            case NUCLEAR_MELTDOWN:
+                maxSatisfactionReduction = 1.0f;
+                minSatisfactionReduction = 1.0f;
+                break;
+            case EARTHQUAKE:
+                maxSatisfactionReduction = 0.1f;
+                minSatisfactionReduction = 0.02f;
+                break;
+            case FIRE:
+                maxSatisfactionReduction = 0.15f;
+                minSatisfactionReduction = 0.01f;
+                break;
+            case INFESTATION:
+                maxSatisfactionReduction = 0.07f;
+                minSatisfactionReduction = 0.01f;
+                break;
+            default:
+                maxSatisfactionReduction = 0.1f;
+                minSatisfactionReduction = 0.01f;
+                break;
+        }
+
+        float satisfactionReduction = r.nextFloat(minSatisfactionReduction, maxSatisfactionReduction);
+        satisfactionRate = satisfactionRate * (1.0f - satisfactionReduction);
     }
 }
