@@ -82,11 +82,10 @@ public class Scenario {
         int totalCostPerDecade = 0;
         int totalCost;
         float totalCarbon;
-        int waste;
         float averageCarbon;
         float averageCost;
         float satisfaction = 0;
-        double susScore = 0;
+        double susScore;
         float wastePerResidentPerYear = 0.0f;
         float totalAverageCarbonPerYear = 0.0f;
         float totalSatisfactionPerYear = 0.0f;
@@ -98,9 +97,7 @@ public class Scenario {
         for (int year = 1; year < RUNTIME; year++) {
             totalCost = 0;
             totalCarbon = 0;
-            waste = 0;
             totalResidents = 0;
-            
             
             if(year%10 == 0) {
                 totalSatisfactionPerYear += satisfaction;
@@ -120,11 +117,13 @@ public class Scenario {
                     }
                 }
             }
+
             float residentDemolitionWaste = 0;
             float residentRenovationWaste = 0;
             toRemove.clear();
             for (House house : houses) {
                 house.age();
+
                 //Local risk factors
                 if (Math.random() < RISK_INFESTATION) {
                     if (Math.random() < 0.01) {
@@ -146,7 +145,6 @@ public class Scenario {
                 totalResidents += house.getResidents();
                 totalCost += house.getServiceCost();
                 totalCarbon += house.getCarbon();
-                waste += house.getWasteCost();
 
                 // Check for demolition
                 if (house.getLifetime() == 0) {
@@ -170,9 +168,11 @@ public class Scenario {
             houses.removeAll(toRemove);
             totalCostPerDecade += totalCost;
 
+            // If no houses are left, break
             if(houses.isEmpty()) {
                 break;
             }
+
             averageCarbon = (totalCarbon / totalResidents)/year;
             totalAverageCarbonPerYear += averageCarbon;
             averageCost = (float) (totalCost + initialCost) / totalResidents / year;
@@ -181,6 +181,7 @@ public class Scenario {
                 satisfaction /= (houses.size() * 10);
             }
         }
+        // Calculate the statistics
         totalCostPerResidentPerYear /= RUNTIME;
         totalCostPerResidentPerDecade /= ((float) RUNTIME);
         wastePerResidentPerYear /= RUNTIME + 0.27f; //TODO: Add variable for waste per year per resident.
