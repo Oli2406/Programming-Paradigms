@@ -181,29 +181,28 @@ public class House {
 
     public void reduceSatisfaction(EventType event) {
         float maxSatisfactionReduction;
-        float minSatisfactionReduction;
-        switch (event) {
-            case NUCLEAR_MELTDOWN:
+        float minSatisfactionReduction = switch (event) {
+            case NUCLEAR_MELTDOWN -> {
                 maxSatisfactionReduction = 1.0f;
-                minSatisfactionReduction = 1.0f;
-                break;
-            case EARTHQUAKE:
+                yield 1.0f;
+            }
+            case EARTHQUAKE -> {
                 maxSatisfactionReduction = 0.1f;
-                minSatisfactionReduction = 0.02f;
-                break;
-            case FIRE:
+                yield 0.02f;
+            }
+            case FIRE -> {
                 maxSatisfactionReduction = 0.15f;
-                minSatisfactionReduction = 0.01f;
-                break;
-            case INFESTATION:
+                yield 0.01f;
+            }
+            case INFESTATION -> {
                 maxSatisfactionReduction = 0.07f;
-                minSatisfactionReduction = 0.01f;
-                break;
-            default:
+                yield 0.01f;
+            }
+            default -> {
                 maxSatisfactionReduction = 0.1f;
-                minSatisfactionReduction = 0.01f;
-                break;
-        }
+                yield 0.01f;
+            }
+        };
 
         float satisfactionReduction = r.nextFloat(minSatisfactionReduction, maxSatisfactionReduction);
         satisfactionRate = satisfactionRate * (1.0f - satisfactionReduction);

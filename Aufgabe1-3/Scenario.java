@@ -17,10 +17,10 @@ public class Scenario {
     private static final float RISK_FIRE = 0.01f;
 
     // Scenario Type
-    private ScenarioType type;
+    private final ScenarioType type;
 
     // Runtime
-    private static int RUNTIME = 100;
+    private static final int RUNTIME = 100;
 
     private static final int HOUSES = 10;
 
@@ -72,26 +72,22 @@ public class Scenario {
         double normSatisfaction = avgSatisfactionPerDecade / maxSatisfaction;
         
         // Calculate sustainability score: higher satisfaction, lower costs, waste, and CO2 increase the score
-        double sustainabilityScore =
-            (1.0 / (normCostPerYear + normCostPerDecade)) +  // Lower costs lead to a higher score
-                (1.0 / normWastePerYear) +                      // Lower waste leads to a higher score
-                (1.0 / normCarbonPerYear) +                     // Lower CO2 emissions lead to a higher score
-                normSatisfaction;                               // Higher satisfaction leads to a higher score
-        
-        return sustainabilityScore;
+        return (1.0 / (normCostPerYear + normCostPerDecade)) +  // Lower costs lead to a higher score
+            (1.0 / normWastePerYear) +                      // Lower waste leads to a higher score
+            (1.0 / normCarbonPerYear) +                     // Lower CO2 emissions lead to a higher score
+            normSatisfaction;                               // Higher satisfaction leads to a higher score
     }
 
-    public int run() {
+    public double run() {
         int totalResidents;
         int totalCostPerDecade = 0;
         int totalCost;
-        int totalCarbon;
+        float totalCarbon;
         int waste;
         float averageCarbon;
         float averageCost;
-        float averageCostPerDecade;
         float satisfaction = 0;
-        int totalResidentsPerDecade = 0;
+        double susScore = 0;
         float wastePerResidentPerYear = 0.0f;
         float totalAverageCarbonPerYear = 0.0f;
         float totalSatisfactionPerYear = 0.0f;
@@ -105,16 +101,12 @@ public class Scenario {
             totalCarbon = 0;
             waste = 0;
             totalResidents = 0;
-            averageCarbon = 0;
-            averageCost = 0;
             
             
             if(year%10 == 0) {
                 totalSatisfactionPerYear += satisfaction;
                 totalCostPerResidentPerDecade += totalCostPerDecade;
-                totalResidentsPerDecade = 0;
                 totalCostPerDecade = 0;
-                averageCostPerDecade = 0;
                 satisfaction = 0;
             }
 
@@ -132,7 +124,9 @@ public class Scenario {
             }
             if(Math.random() < RISK_NUCLEAR) {
                 System.out.println("Nuclear Meltdown");
-                houses.removeAll(houses);
+                for(House house: houses) {
+                    houses.remove(house);
+                }
             }
             float residentDemolitionWaste = 0;
             float residentRenovationWaste = 0;
@@ -162,7 +156,6 @@ public class Scenario {
                 }
 
                 satisfaction += house.getSatisfactionRate();
-                totalResidentsPerDecade += house.getResidents();
                 totalResidents += house.getResidents();
                 totalCost += house.getServiceCost();
                 totalCarbon += house.getCarbon();
@@ -197,7 +190,6 @@ public class Scenario {
                 break;
             }
              */
-
             if(houses.isEmpty()) {
                 totalCostPerResidentPerYear /= year;
                 totalCostPerResidentPerDecade /= ((float) year);
@@ -211,16 +203,15 @@ public class Scenario {
                 System.out.println("average waste per resident per year: " + wastePerResidentPerYear + " tons");
                 System.out.println("average carbon per resident per year: " + totalAverageCarbonPerYear + " tons");
                 System.out.println("average satisfaction per decade: " + totalSatisfactionPerYear);
-                double susScore = calculateScore(totalCostPerResidentPerYear, totalCostPerResidentPerDecade,
+                susScore = calculateScore(totalCostPerResidentPerYear, totalCostPerResidentPerDecade,
                                                  wastePerResidentPerYear, totalAverageCarbonPerYear,
                                                  totalSatisfactionPerYear);
                 System.out.println("Sustainability score for this scenario: " + susScore);
                 break;
             }
-            averageCarbon = (float) (totalCarbon / totalResidents)/year;
+            averageCarbon = (totalCarbon / totalResidents)/year;
             totalAverageCarbonPerYear += averageCarbon;
             averageCost = (float) (totalCost + initialCost) / totalResidents / year;
-            averageCostPerDecade = (float) (totalCostPerDecade + initialCost) / totalResidents / year;
             totalCostPerResidentPerYear += averageCost;
             System.out.println("Year: " + year + " Residents: " + totalResidents + " Cost: " + totalCost + " Carbon: " + totalCarbon + " Waste: " + waste + " Average Carbon: " + averageCarbon + " Number of Houses: " + houses.size());
             if(year%10 == 9) {
@@ -229,7 +220,6 @@ public class Scenario {
                 System.out.println("Total cost for the decade: " + totalCostPerDecade);
             }
         }
-        //TODO: why does this return 1?
-        return 1;
+        return susScore;
     }
 }
