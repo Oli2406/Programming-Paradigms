@@ -1,7 +1,5 @@
 package House;
 
-import java.util.Random;
-
 public class MinimalHouse extends House {
     private static final int BUILD_COST = 100000;
     private static final int CARBON = 40;
@@ -14,7 +12,7 @@ public class MinimalHouse extends House {
     private static final int WASTE_COST = 10000;
     private static final float SATISFACTION_RATE = 0.75f;
     private static final float RENOVATION_CARBON = 0.75f * CARBON;
-    private static final int RENOVATION_WASTE = 25;
+    private static final int RENOVATION_WASTE = 30;
     private static final int DEMOLITION_WASTE = 50;
 
     public MinimalHouse() {

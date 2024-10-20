@@ -96,7 +96,7 @@ public class House {
     }
 
     public int getRenovationCost() {
-        return r.nextInt(10000,renovationCost-10000);
+        return r.nextInt(10000,renovationCost);
     }
 
     public void setRenovationCost(int renovationCost) {
@@ -154,7 +154,7 @@ public class House {
     }
 
     public void renovate() {
-        renovationLifetime = (int) r.nextGaussian(renovationInterval, 5);
+        renovationLifetime = (int) r.nextGaussian(renovationInterval, (double) renovationInterval /4);
         //TODO: discuss proper value for Increase
         float satisfactionIncrease = (float) r.nextGaussian(0.13, 0.02);
         if(satisfactionRate + satisfactionIncrease > maxSatisfaction) {
@@ -182,10 +182,6 @@ public class House {
     public void reduceSatisfaction(EventType event) {
         float maxSatisfactionReduction;
         float minSatisfactionReduction = switch (event) {
-            case NUCLEAR_MELTDOWN -> {
-                maxSatisfactionReduction = 1.0f;
-                yield 1.0f;
-            }
             case EARTHQUAKE -> {
                 maxSatisfactionReduction = 0.1f;
                 yield 0.02f;
