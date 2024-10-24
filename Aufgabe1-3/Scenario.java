@@ -15,8 +15,6 @@ public class Scenario {
     private static final float RISK_INFESTATION = 0.005f;
     private static final float RISK_FIRE = 0.01f;
 
-    // Scenario Type
-    private final ScenarioType type;
 
     // Runtime
     private static final int RUNTIME = 101;
@@ -28,7 +26,6 @@ public class Scenario {
     ArrayList<House> houses = new ArrayList<House>();
 
     public Scenario(ScenarioType type) {
-        this.type = type;
         switch (type) {
             case MINIMAL:
                 for (int i = 0; i < HOUSES; i++) {
