@@ -12,21 +12,27 @@ public class Test {
 
     public Test() {
         ArrayList<Double> minimalScores = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 1000; i++) {
             Scenario minimal = new Scenario(ScenarioType.MINIMAL);
-            minimalScores.add(minimal.run());
+            double minimalScore = minimal.run();
+            //System.out.println(minimalScore);
+            minimalScores.add(minimalScore);
         }
 
         ArrayList<Double> bioScores = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 1000; i++) {
             Scenario bio = new Scenario(ScenarioType.BIO);
-            bioScores.add(bio.run());
+            double bioScore = bio.run();
+            //System.out.println(bioScore);
+            bioScores.add(bioScore);
         }
 
         ArrayList<Double> premiumScores = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 1000; i++) {
             Scenario premium = new Scenario(ScenarioType.PREMIUM);
-            premiumScores.add(premium.run());
+            double premiumScore = premium.run();
+            //System.out.println(premiumScore);
+            premiumScores.add(premiumScore);
         }
 
         double totalMinimalScore = 0;

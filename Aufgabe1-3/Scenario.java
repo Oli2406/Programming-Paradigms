@@ -34,6 +34,7 @@ public class Scenario {
                 for (int i = 0; i < HOUSES; i++) {
                     House h = new MinimalHouse();
                     initialCost += h.getCost();
+                    initialCost += h.getRenovationCost();
                     houses.add(h);
                 }
                 break;
@@ -41,6 +42,7 @@ public class Scenario {
                 for (int i = 0; i < HOUSES; i++) {
                     House h = new BioHouse();
                     initialCost += h.getCost();
+                    initialCost += h.getRenovationCost();
                     houses.add(h);
                 }
                 break;
@@ -48,33 +50,34 @@ public class Scenario {
                 for (int i = 0; i < HOUSES; i++) {
                     House h = new PremiumHouse();
                     initialCost += h.getCost();
+                    initialCost += h.getRenovationCost();
                     houses.add(h);
                 }
                 break;
         }
     }
-    
+
     public double calculateScore(double avgCostPerYear, double avgCostPerDecade, double avgWastePerYear, double avgCarbonPerYear, double avgSatisfactionPerDecade) {
-        
+
         // Normalization factors (basically example values to scale the inputs)
         double maxCostPerYear = 10000;
         double maxCostPerDecade = 100000;
         double maxWastePerYear = 10;
         double maxCarbonPerYear = 10;
-        double maxSatisfaction = 1;
+        double maxSatisfactionPoints = 10;
 
         // Normalize each input parameter
         double normCostPerYear = avgCostPerYear / maxCostPerYear;
         double normCostPerDecade = avgCostPerDecade / maxCostPerDecade;
         double normWastePerYear = avgWastePerYear / maxWastePerYear;
         double normCarbonPerYear = avgCarbonPerYear / maxCarbonPerYear;
-        double normSatisfaction = avgSatisfactionPerDecade / maxSatisfaction;
-        
+        double satisfaction = maxSatisfactionPoints * avgSatisfactionPerDecade;
+
         // Calculate sustainability score: higher satisfaction, lower costs, waste, and CO2 increase the score
         return (1.0 / (normCostPerYear + normCostPerDecade)) +  // Lower costs lead to a higher score
-               (1.0 / normWastePerYear) +                       // Lower waste leads to a higher score
-               (1.0 / normCarbonPerYear) +                      // Lower CO2 emissions lead to a higher score
-               normSatisfaction;                                // Higher satisfaction leads to a higher score
+            (1.0 / normWastePerYear) +                       // Lower waste leads to a higher score
+            (1.5 / normCarbonPerYear) +                      // Lower CO2 emissions lead to a higher score (increased weight)
+            (satisfaction);                                // Higher satisfaction leads to a higher score
     }
 
     public double run() {
@@ -180,6 +183,7 @@ public class Scenario {
             if(year%10 == 9) {
                 satisfaction /= (houses.size() * 10);
             }
+            //System.out.println(satisfaction);
         }
         // Calculate the statistics
         totalCostPerResidentPerYear /= RUNTIME;
@@ -199,6 +203,7 @@ public class Scenario {
         System.out.println("average satisfaction per decade: " + totalSatisfactionPerYear);
         System.out.println("Sustainability score for this scenario: " + susScore);
         */
+
         return susScore;
     }
 }

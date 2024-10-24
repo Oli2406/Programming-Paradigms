@@ -18,31 +18,14 @@ public class House {
     private float satisfactionRate;
     private int renovationInterval;
     private int renovationLifetime;
-    private final float renovationCarbon;
-    private final float maxSatisfaction;
+    private float renovationCarbon;
+    private float maxSatisfaction;
     private final float wastePerYearPerResident = 0.27f;
-    private final int renovationWaste;
-    private final int demolitionWaste;
+    private int renovationWaste;
+    private int demolitionWaste;
 
-    public House(int cost, int carbon, int area, int lifetime,
-                 int serviceCost, int renovationCost, int demolishCost,
-                 int wasteCost, float satisfactionRate, int renovationInterval,
-                 float renovationCarbon, int renovationWaste, int demolitionWaste) {
+    public House() {
         this.residents = r.nextInt(1,5);
-        this.cost = cost;
-        this.carbon = carbon;
-        this.area = area;
-        this.lifetime = lifetime;
-        this.serviceCost = serviceCost;
-        this.renovationCost = renovationCost;
-        this.demolishCost = demolishCost;
-        this.wasteCost = wasteCost;
-        this.satisfactionRate = satisfactionRate;
-        this.renovationInterval = renovationInterval;
-        this.renovationCarbon = renovationCarbon;
-        this.maxSatisfaction = satisfactionRate;
-        this.renovationWaste = renovationWaste;
-        this.demolitionWaste = demolitionWaste;
         this.renovate();
     }
 
@@ -96,7 +79,7 @@ public class House {
     }
 
     public int getRenovationCost() {
-        return r.nextInt(10000,renovationCost);
+        return r.nextInt(Math.min(5000, renovationCost-1),renovationCost);
     }
 
     public void setRenovationCost(int renovationCost) {
@@ -141,7 +124,7 @@ public class House {
         if(satisfactionRate-0.012f < 0) {
             satisfactionRate = 0;
         } else {
-            satisfactionRate -= 0.012f;
+            satisfactionRate -= 0.0000012f;
         }
     }
 
@@ -166,6 +149,10 @@ public class House {
     public float getRenovationCarbon() {
         return renovationCarbon;
     }
+
+    public void setRenovationCarbon(float renovationCarbon) {
+        this.renovationCarbon = renovationCarbon;
+    }
     
     public float getWastePerYearPerResident() {
         return wastePerYearPerResident;
@@ -177,6 +164,14 @@ public class House {
     
     public int getDemolitionWaste() {
         return demolitionWaste;
+    }
+
+    public void setRenovationWaste(int renovationWaste) {
+        this.renovationWaste = renovationWaste;
+    }
+
+    public void setDemolitionWaste(int demolitionWaste) {
+        this.demolitionWaste = demolitionWaste;
     }
 
     public void reduceSatisfaction(EventType event) {
@@ -202,5 +197,9 @@ public class House {
 
         float satisfactionReduction = r.nextFloat(minSatisfactionReduction, maxSatisfactionReduction);
         satisfactionRate = satisfactionRate * (1.0f - satisfactionReduction);
+    }
+
+    public void setMaxSatisfaction(float maxSatisfaction) {
+        this.maxSatisfaction = maxSatisfaction;
     }
 }
