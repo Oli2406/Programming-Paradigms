@@ -24,7 +24,7 @@ public class Scenario {
 
     private int initialCost = 0;
 
-    ArrayList<House> houses = new ArrayList<House>();
+    ArrayList<House> houses = new ArrayList<>();
 
     public Scenario(ScenarioType type) {
         switch (type) {
@@ -102,7 +102,7 @@ public class Scenario {
         float totalCostPerResidentPerYear = 0.0f;
         float totalCostPerResidentPerDecade = 0.0f;
         
-        ArrayList<House> toRemove = new ArrayList<House>();
+        ArrayList<House> toRemove = new ArrayList<>();
 
         for (int year = 1; year < RUNTIME; year++) {
             totalCost = 0;
