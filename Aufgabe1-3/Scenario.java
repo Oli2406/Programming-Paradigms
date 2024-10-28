@@ -11,10 +11,18 @@ import java.util.ArrayList;
 public class Scenario {
     // Global Risks
     private static final float RISK_EARTHQUAKE = 0.01f;
+    private static final float RISK_FLOOD = 0.01f;
+    private static final float RISK_TORNADO = 0.005f;
+    private static final float RISK_WILDFIRE = 0.001f;
+
 
     // Local Risks
     private static final float RISK_INFESTATION = 0.005f;
     private static final float RISK_FIRE = 0.01f;
+    private static final float RISK_BUILDING_COLLAPSE = 0.0005f;
+    private static final float RISK_POWER_OUTAGE = 0.025f;
+    private static final float RISK_MAINTENANCE = 0.02f;
+    private static final float RISK_PLUMBING = 0.015f;
 
 
     // Runtime
@@ -127,6 +135,32 @@ public class Scenario {
                     }
                 }
             }
+            if(Math.random() < RISK_WILDFIRE) {
+                for (House house : houses) {
+                    if(Math.random() < 0.05) {
+                        house.setLifetime(0);
+                    } else {
+                        house.setRenovationLifetime(0);
+                        house.reduceSatisfaction(EventType.WILDFIRE);
+                    }
+                }
+            }
+            if(Math.random() < RISK_FLOOD) {
+                for (House house : houses) {
+                    house.setRenovationLifetime(0);
+                    house.reduceSatisfaction(EventType.FLOOD);
+                }
+            }
+            if(Math.random() < RISK_TORNADO) {
+                for (House house : houses) {
+                    if(Math.random() < 0.15) {
+                        house.setLifetime(0);
+                    } else {
+                        house.setRenovationLifetime(0);
+                        house.reduceSatisfaction(EventType.TORNADO);
+                    }
+                }
+            }
 
             float residentDemolitionWaste = 0;
             float residentRenovationWaste = 0;
@@ -136,12 +170,8 @@ public class Scenario {
 
                 //Local risk factors
                 if (Math.random() < RISK_INFESTATION) {
-                    if (Math.random() < 0.01) {
-                        house.setLifetime(0);
-                    } else {
-                        house.setRenovationLifetime(0);
-                        house.reduceSatisfaction(EventType.INFESTATION);
-                    }
+                    house.setRenovationLifetime(0);
+                    house.reduceSatisfaction(EventType.INFESTATION);
                 }
                 if (Math.random() < RISK_FIRE) {
                     if (Math.random() < 0.15) {
@@ -151,6 +181,24 @@ public class Scenario {
                         house.reduceSatisfaction(EventType.FIRE);
                     }
                 }
+                if(Math.random() < RISK_BUILDING_COLLAPSE) {
+                    if(Math.random() < 0.5) {
+                        house.setLifetime(0);
+                    } else {
+                        house.setRenovationLifetime(0);
+                        house.reduceSatisfaction(EventType.BUILDING_COLLAPSE);
+                    }
+                }
+                if(Math.random() < RISK_POWER_OUTAGE) {
+                    house.reduceSatisfaction(EventType.POWER_OUTAGE);
+                }
+                if(Math.random() < RISK_MAINTENANCE) {
+                    house.reduceSatisfaction(EventType.MAINTENANCE);
+                }
+                if(Math.random() < RISK_PLUMBING) {
+                    house.reduceSatisfaction(EventType.PLUMBING);
+                }
+
                 satisfaction += house.getSatisfactionRate();
                 totalResidents += house.getResidents();
                 totalCost += house.getServiceCost();

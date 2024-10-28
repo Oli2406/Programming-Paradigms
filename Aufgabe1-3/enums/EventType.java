@@ -1,7 +1,18 @@
 package enums;
 
 public enum EventType {
-    EARTHQUAKE,
+    // Small Events
     INFESTATION,
-    FIRE
+    POWER_OUTAGE,
+    MAINTENANCE,
+    PLUMBING,
+    FIRE,
+
+
+    // Large Events
+    EARTHQUAKE,
+    WILDFIRE,
+    FLOOD,
+    TORNADO,
+    BUILDING_COLLAPSE,
 }

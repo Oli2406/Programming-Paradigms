@@ -188,6 +188,34 @@ public class House {
                 maxSatisfactionReduction = 0.07f;
                 yield 0.01f;
             }
+            case FLOOD -> {
+                maxSatisfactionReduction = 0.15f;
+                yield 0.1f;
+            }
+            case TORNADO -> {
+                maxSatisfactionReduction = 0.2f;
+                yield 0.1f;
+            }
+            case PLUMBING -> {
+                maxSatisfactionReduction = 0.05f;
+                yield 0.01f;
+            }
+            case POWER_OUTAGE -> {
+                maxSatisfactionReduction = 0.02f;
+                yield 0.01f;
+            }
+            case WILDFIRE -> {
+                maxSatisfactionReduction = 0.15f;
+                yield 0.05f;
+            }
+            case BUILDING_COLLAPSE -> {
+                maxSatisfactionReduction = 0.3f;
+                yield 0.2f;
+            }
+            case MAINTENANCE -> {
+                maxSatisfactionReduction = 0.03f;
+                yield 0.01f;
+            }
             default -> {
                 maxSatisfactionReduction = 0.1f;
                 yield 0.01f;
