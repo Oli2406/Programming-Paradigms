@@ -1,4 +1,4 @@
-package House;
+package house;
 
 import java.util.Random;
 

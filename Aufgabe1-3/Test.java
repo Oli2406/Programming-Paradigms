@@ -1,4 +1,5 @@
-import Enums.ScenarioType;
+import config.Config;
+import enums.ScenarioType;
 
 import java.util.ArrayList;
 
@@ -11,6 +12,16 @@ import java.util.ArrayList;
 public class Test {
 
     public Test() {
+
+        Config c = new Config(250000, 35, 100, 100, 25, 3000, 25000, 20000, 5000, 0.9f, 0.5f, 15, 50, false);
+        ArrayList<Double> configScores = new ArrayList<>();
+        for (int i = 0; i < 1000; i++) {
+            Scenario config = new Scenario(c);
+            double configScore = config.run();
+            //System.out.println(minimalScore);
+            configScores.add(configScore);
+        }
+
         ArrayList<Double> minimalScores = new ArrayList<>();
         for (int i = 0; i < 1000; i++) {
             Scenario minimal = new Scenario(ScenarioType.MINIMAL);
@@ -35,6 +46,12 @@ public class Test {
             premiumScores.add(premiumScore);
         }
 
+        double totalConfigScore = 0;
+        for(double con: configScores) {
+            totalConfigScore += con;
+        }
+        double avgConfigScore = totalConfigScore / configScores.size();
+
         double totalMinimalScore = 0;
         for(double min: minimalScores) {
             totalMinimalScore += min;
@@ -53,6 +70,8 @@ public class Test {
         }
         double avgPremiumScore = totalPremiumScore / premiumScores.size();
 
+        System.out.println("Config: " + avgConfigScore);
+        System.out.println("--------------------");
         System.out.println("Minimal: " + avgMinimalScore);
         System.out.println("--------------------");
         System.out.println("Bio: " + avgBioScore);

@@ -1,7 +1,7 @@
-package House;
+package house;
 
 import java.util.Random;
-import Enums.EventType;
+import enums.EventType;
 
 public class House {
     Random r = new Random();
@@ -28,7 +28,6 @@ public class House {
         this.residents = r.nextInt(1,5);
         this.renovate();
     }
-
 
     public int getResidents() {
         return residents;

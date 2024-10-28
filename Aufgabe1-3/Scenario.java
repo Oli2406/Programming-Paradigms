@@ -1,9 +1,10 @@
-import Enums.EventType;
-import Enums.ScenarioType;
-import House.House;
-import House.MinimalHouse;
-import House.BioHouse;
-import House.PremiumHouse;
+import enums.EventType;
+import enums.ScenarioType;
+import config.Config;
+import house.House;
+import house.MinimalHouse;
+import house.BioHouse;
+import house.PremiumHouse;
 
 import java.util.ArrayList;
 
@@ -51,6 +52,15 @@ public class Scenario {
                     houses.add(h);
                 }
                 break;
+        }
+    }
+
+    public Scenario(Config c) {
+        for (int i = 0; i < HOUSES; i++) {
+            House h = c.createHouse();
+            initialCost += h.getCost();
+            initialCost += h.getRenovationCost();
+            houses.add(h);
         }
     }
 
