@@ -1,16 +1,16 @@
+import config.Config;
 import enums.EventType;
 import enums.ScenarioType;
-import config.Config;
+import house.BioHouse;
 import house.House;
 import house.MinimalHouse;
-import house.BioHouse;
 import house.PremiumHouse;
 
 import java.util.ArrayList;
 
 public class Scenario {
     // Global Risks
-    private static final float RISK_EARTHQUAKE = 0.01f;
+    private static final float RISK_EARTHQUAKE = 0.008f;
     private static final float RISK_FLOOD = 0.01f;
     private static final float RISK_TORNADO = 0.005f;
     private static final float RISK_WILDFIRE = 0.001f;
@@ -79,7 +79,7 @@ public class Scenario {
         double maxCostPerDecade = 100000;
         double maxWastePerYear = 10;
         double maxCarbonPerYear = 10;
-        double maxSatisfactionPoints = 10;
+        double maxSatisfactionPoints = 20;
 
         // Normalize each input parameter
         double normCostPerYear = avgCostPerYear / maxCostPerYear;
@@ -109,15 +109,15 @@ public class Scenario {
         float totalSatisfactionPerYear = 0.0f;
         float totalCostPerResidentPerYear = 0.0f;
         float totalCostPerResidentPerDecade = 0.0f;
-        
+
         ArrayList<House> toRemove = new ArrayList<>();
 
         for (int year = 1; year < RUNTIME; year++) {
             totalCost = 0;
             totalCarbon = 0;
             totalResidents = 0;
-            
-            if(year%10 == 0) {
+
+            if (year % 10 == 0) {
                 totalSatisfactionPerYear += satisfaction;
                 totalCostPerResidentPerDecade += totalCostPerDecade;
                 totalCostPerDecade = 0;
@@ -125,39 +125,47 @@ public class Scenario {
             }
 
             // Global risk factors
-            if(Math.random() < RISK_EARTHQUAKE) {
+            if (Math.random() < RISK_EARTHQUAKE) {
                 for (House house : houses) {
-                    if(Math.random() < 0.1) {
+                    if (Math.random() < 0.1 && !house.getResistances().isEarthquakeResistance()) {
+                        //TODO: Fix calculations if house is destroyed
                         house.setLifetime(0);
                     } else {
-                        house.setRenovationLifetime(0);
-                        house.reduceSatisfaction(EventType.EARTHQUAKE);
+                        house.setRenovationLifetime(house.getResistances().isEarthquakeResistance() ? house.getRenovationLifetime()-1 : 0);
+                        house.reduceSatisfaction(EventType.EARTHQUAKE, house.getResistances().isEarthquakeResistance());
                     }
                 }
             }
-            if(Math.random() < RISK_WILDFIRE) {
+            if (Math.random() < RISK_WILDFIRE) {
                 for (House house : houses) {
-                    if(Math.random() < 0.05) {
+                    if (Math.random() < 0.05 && !house.getResistances().isWildfireResistance()) {
+                        //TODO: Fix calculations if house is destroyed
                         house.setLifetime(0);
                     } else {
-                        house.setRenovationLifetime(0);
-                        house.reduceSatisfaction(EventType.WILDFIRE);
+                        house.setRenovationLifetime(house.getResistances().isWildfireResistance()? house.getRenovationLifetime()-1 : 0);
+                        house.reduceSatisfaction(EventType.WILDFIRE, house.getResistances().isWildfireResistance());
                     }
                 }
             }
-            if(Math.random() < RISK_FLOOD) {
+            if (Math.random() < RISK_FLOOD) {
                 for (House house : houses) {
-                    house.setRenovationLifetime(0);
-                    house.reduceSatisfaction(EventType.FLOOD);
-                }
-            }
-            if(Math.random() < RISK_TORNADO) {
-                for (House house : houses) {
-                    if(Math.random() < 0.15) {
+                    if(Math.random() < 0.05 && !house.getResistances().isFloodResistance()) {
+                        //TODO: Fix calculations if house is destroyed
                         house.setLifetime(0);
                     } else {
-                        house.setRenovationLifetime(0);
-                        house.reduceSatisfaction(EventType.TORNADO);
+                        house.setRenovationLifetime(house.getResistances().isFloodResistance() ? house.getRenovationLifetime()-1 : 0);
+                        house.reduceSatisfaction(EventType.FLOOD, house.getResistances().isFloodResistance());
+                    }
+                }
+            }
+            if (Math.random() < RISK_TORNADO) {
+                for (House house : houses) {
+                    if (Math.random() < 0.15 && !house.getResistances().isTornadoResistance()) {
+                        //TODO: Fix calculations if house is destroyed
+                        house.setLifetime(0);
+                    } else {
+                        house.setRenovationLifetime(house.getResistances().isTornadoResistance()? house.getRenovationLifetime()-1 : 0);
+                        house.reduceSatisfaction(EventType.TORNADO, house.getResistances().isTornadoResistance());
                     }
                 }
             }
@@ -171,32 +179,34 @@ public class Scenario {
                 //Local risk factors
                 if (Math.random() < RISK_INFESTATION) {
                     house.setRenovationLifetime(0);
-                    house.reduceSatisfaction(EventType.INFESTATION);
+                    house.reduceSatisfaction(EventType.INFESTATION, false);
                 }
                 if (Math.random() < RISK_FIRE) {
-                    if (Math.random() < 0.15) {
+                    if (Math.random() < 0.15 && !house.getResistances().isFireResistance()) {
+                        //TODO: Fix calculations if house is destroyed
+                        house.setLifetime(0);
+                    } else {
+                        house.setRenovationLifetime(house.getResistances().isFireResistance() ? house.getRenovationLifetime()-1 : 0);
+                        house.reduceSatisfaction(EventType.FIRE,house.getResistances().isFireResistance());
+                    }
+                }
+                if (Math.random() < RISK_BUILDING_COLLAPSE) {
+                    if (Math.random() < 0.5) {
+                        //TODO: Fix calculations if house is destroyed
                         house.setLifetime(0);
                     } else {
                         house.setRenovationLifetime(0);
-                        house.reduceSatisfaction(EventType.FIRE);
+                        house.reduceSatisfaction(EventType.BUILDING_COLLAPSE,false);
                     }
                 }
-                if(Math.random() < RISK_BUILDING_COLLAPSE) {
-                    if(Math.random() < 0.5) {
-                        house.setLifetime(0);
-                    } else {
-                        house.setRenovationLifetime(0);
-                        house.reduceSatisfaction(EventType.BUILDING_COLLAPSE);
-                    }
+                if (Math.random() < RISK_POWER_OUTAGE) {
+                    house.reduceSatisfaction(EventType.POWER_OUTAGE,house.getResistances().isEnergyResistance());
                 }
-                if(Math.random() < RISK_POWER_OUTAGE) {
-                    house.reduceSatisfaction(EventType.POWER_OUTAGE);
+                if (Math.random() < RISK_MAINTENANCE) {
+                    house.reduceSatisfaction(EventType.MAINTENANCE,false);
                 }
-                if(Math.random() < RISK_MAINTENANCE) {
-                    house.reduceSatisfaction(EventType.MAINTENANCE);
-                }
-                if(Math.random() < RISK_PLUMBING) {
-                    house.reduceSatisfaction(EventType.PLUMBING);
+                if (Math.random() < RISK_PLUMBING) {
+                    house.reduceSatisfaction(EventType.PLUMBING,false);
                 }
 
                 satisfaction += house.getSatisfactionRate();
@@ -227,15 +237,15 @@ public class Scenario {
             totalCostPerDecade += totalCost;
 
             // If no houses are left, break
-            if(houses.isEmpty()) {
+            if (houses.isEmpty()) {
                 break;
             }
 
-            averageCarbon = (totalCarbon / totalResidents)/year;
+            averageCarbon = (totalCarbon / totalResidents) / year;
             totalAverageCarbonPerYear += averageCarbon;
             averageCost = (float) (totalCost + initialCost) / totalResidents / year;
             totalCostPerResidentPerYear += averageCost;
-            if(year%10 == 9) {
+            if (year % 10 == 9) {
                 satisfaction /= (houses.size() * 10);
             }
             //System.out.println(satisfaction);

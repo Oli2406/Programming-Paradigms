@@ -23,6 +23,8 @@ public class House {
     private final float wastePerYearPerResident = 0.27f;
     private int renovationWaste;
     private int demolitionWaste;
+    private Resistance resistances;
+
 
     public House() {
         this.residents = r.nextInt(1,5);
@@ -38,7 +40,8 @@ public class House {
     }
 
     public int getCost() {
-        return cost;
+        // Since the resistances of course cost money to build, it is calculated into the build cost and also the renovation cost
+        return (int)(cost*Math.pow(1.1, resistances.numberOfResistances()));
     }
 
     public void setCost(int cost) {
@@ -78,7 +81,9 @@ public class House {
     }
 
     public int getRenovationCost() {
-        return r.nextInt(Math.min(5000, renovationCost-1),renovationCost);
+        // Since the resistances of course cost money to build, it is calculated into the build cost and also the renovation cost
+        int renovationCostIncludeResistances = (int)(renovationCost*Math.pow(1.05, resistances.numberOfResistances()));
+        return r.nextInt(Math.min(5000, renovationCostIncludeResistances-1),renovationCostIncludeResistances);
     }
 
     public void setRenovationCost(int renovationCost) {
@@ -132,6 +137,9 @@ public class House {
     }
 
     public void setRenovationLifetime(int renovationLifetime) {
+        if(renovationLifetime < 0) {
+            renovationLifetime = 0;
+        }
         this.renovationLifetime = renovationLifetime;
     }
 
@@ -173,12 +181,12 @@ public class House {
         this.demolitionWaste = demolitionWaste;
     }
 
-    public void reduceSatisfaction(EventType event) {
+    public void reduceSatisfaction(EventType event, boolean isResistant) {
         float maxSatisfactionReduction;
         float minSatisfactionReduction = switch (event) {
             case EARTHQUAKE -> {
-                maxSatisfactionReduction = 0.1f;
-                yield 0.02f;
+                maxSatisfactionReduction = 0.3f;
+                yield 0.05f;
             }
             case FIRE -> {
                 maxSatisfactionReduction = 0.15f;
@@ -221,12 +229,23 @@ public class House {
                 yield 0.01f;
             }
         };
-
+        if(isResistant) {
+            maxSatisfactionReduction = maxSatisfactionReduction / 2;
+            minSatisfactionReduction = minSatisfactionReduction / 2;
+        }
         float satisfactionReduction = r.nextFloat(minSatisfactionReduction, maxSatisfactionReduction);
         satisfactionRate = satisfactionRate * (1.0f - satisfactionReduction);
     }
 
     public void setMaxSatisfaction(float maxSatisfaction) {
         this.maxSatisfaction = maxSatisfaction;
+    }
+
+    public void setResistances(Resistance resistances) {
+        this.resistances = resistances;
+    }
+
+    public Resistance getResistances() {
+        return resistances;
     }
 }

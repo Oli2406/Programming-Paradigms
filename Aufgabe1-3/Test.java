@@ -1,5 +1,6 @@
 import config.Config;
 import enums.ScenarioType;
+import house.Resistance;
 
 import java.util.ArrayList;
 
@@ -12,13 +13,14 @@ import java.util.ArrayList;
 public class Test {
 
     public Test() {
-
-        Config c = new Config(250000, 35, 100, 100, 25, 3000, 25000, 20000, 5000, 0.9f, 0.5f, 15, 50, false);
+        //These values represent the Premium House, it should be very close to the preset
+        Resistance resistances = new Resistance(true, true, true, true, true, true);
+        Config c = new Config(250000, 40, 200, 100, 25, 3000, 40000, 20000, 5000, 0.9f, 0.5f, 15, 50, resistances,true);
         ArrayList<Double> configScores = new ArrayList<>();
         for (int i = 0; i < 1000; i++) {
             Scenario config = new Scenario(c);
             double configScore = config.run();
-            //System.out.println(minimalScore);
+            //System.out.println(configScore);
             configScores.add(configScore);
         }
 

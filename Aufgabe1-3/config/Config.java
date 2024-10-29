@@ -1,6 +1,7 @@
 package config;
 
 import house.House;
+import house.Resistance;
 
 import java.util.Random;
 
@@ -20,10 +21,11 @@ public class Config {
     private float renovationCarbon;
     private int renovationWaste;
     private int demolitionWaste;
+    private Resistance resistances;
 
     private boolean random = false;
 
-    public Config(int buildCost, int carbon, int area, int lifetime, int renovationInterval, int serviceCost, int renovationCost, int demolishCost, int wasteCost, float satisfactionRate, float renovationCarbonFactor, int renovationWaste, int demolitionWaste, boolean randomized) {
+    public Config(int buildCost, int carbon, int area, int lifetime, int renovationInterval, int serviceCost, int renovationCost, int demolishCost, int wasteCost, float satisfactionRate, float renovationCarbonFactor, int renovationWaste, int demolitionWaste, Resistance resistances, boolean randomized) {
         this.random = randomized;
         this.buildCost = buildCost;
         this.carbon = carbon;
@@ -38,6 +40,7 @@ public class Config {
         this.renovationCarbon = renovationCarbonFactor * carbon;
         this.renovationWaste = renovationWaste;
         this.demolitionWaste = demolitionWaste;
+        this.resistances = resistances;
     }
 
     public Config() {
@@ -46,7 +49,7 @@ public class Config {
     }
 
     public Config(Config c) {
-        this(c.getBuildCost(), c.getCarbon(), c.getArea(), c.getLifetime(), c.getRenovationInterval(), c.getServiceCost(), c.getRenovationCost(), c.getDemolishCost(), c.getWasteCost(), c.getSatisfactionRate(), c.getRenovationCarbon(), c.getRenovationWaste(), c.getDemolitionWaste(), c.getRandom());
+        this(c.getBuildCost(), c.getCarbon(), c.getArea(), c.getLifetime(), c.getRenovationInterval(), c.getServiceCost(), c.getRenovationCost(), c.getDemolishCost(), c.getWasteCost(), c.getSatisfactionRate(), c.getRenovationCarbon(), c.getRenovationWaste(), c.getDemolitionWaste(), c.getResistances(), c.getRandom());
     }
 
     public boolean checkConfig() {
@@ -147,7 +150,7 @@ public class Config {
     }
 
     public void setRenovationCarbon(float renovationCarbon) {
-        this.renovationCarbon = renovationCarbon;
+        this.renovationCarbon = renovationCarbon * carbon;
     }
 
     public int getRenovationWaste() {
@@ -182,6 +185,15 @@ public class Config {
         h.setRenovationCarbon(renovationCarbon);
         h.setRenovationWaste(random ? (int) r.nextGaussian(renovationWaste, (double) renovationWaste / 5) : renovationWaste);
         h.setDemolitionWaste(random ? (int) r.nextGaussian(demolitionWaste, (double) demolitionWaste / 5) : demolitionWaste);
+        h.setResistances(resistances);
         return h;
+    }
+
+    public Resistance getResistances() {
+        return resistances;
+    }
+
+    public void setResistances(Resistance resistances) {
+        this.resistances = resistances;
     }
 }
