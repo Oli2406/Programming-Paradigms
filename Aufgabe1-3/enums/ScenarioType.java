@@ -1,7 +1,7 @@
 package enums;
 
 public enum ScenarioType {
-    MINIMAL,
-    BIO,
-    PREMIUM
+  MINIMAL,
+  BIO,
+  PREMIUM
 }
