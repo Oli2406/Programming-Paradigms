@@ -1,7 +1,9 @@
 package house;
 
+import Resident.Resident;
 import enums.EventType;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class House {
@@ -12,7 +14,6 @@ public class House {
   private static final int BASE_IMPACT_ON_SURROUNDINGS = 40;
   private final float wastePerYearPerResident = 0.27f;
   Random r = new Random();
-  private int residents;
   private int cost;
   private int carbon;
   private int area;
@@ -38,18 +39,34 @@ public class House {
   private int culturalSignificance;
   private int environmentalIntegration;
   private int impactOnSurroundings;
-  
-  
-  public House() {
-    this.residents = r.nextInt(1, 5);
+
+  private final ArrayList<Resident> residents;
+
+
+  public House(ArrayList<Resident> residents) {
+    this.residents = residents;
     this.renovate();
   }
-  
+
+  public House(int numberOfResident) {
+    this.residents = new ArrayList<>();
+    for (int i = 0; i < numberOfResident; i++) {
+      this.residents.add(new Resident(
+          r.nextInt(20, 41),
+          satisfactionRate,
+          false,
+          false,
+          true
+      ));
+    }
+    this.renovate();
+  }
+
   public void setHighSignificanceAttributes(boolean highSignificance) {
     this.isHighSignificance = highSignificance;
     initializeAttributes();
   }
-  
+
   protected void initializeAttributes() {
     if (this.isHighSignificance) {
       this.aestheticValue = (int) r.nextGaussian(BASE_AESTHETIC_VALUE * 1.5, 8);
@@ -57,7 +74,7 @@ public class House {
       this.culturalSignificance = (int) r.nextGaussian(BASE_CULTURAL_SIGNIFICANCE * 1.5, 7);
       this.environmentalIntegration = (int) r.nextGaussian(BASE_ENVIRONMENTAL_INTEGRATION * 1.5, 8);
       this.impactOnSurroundings = (int) r.nextGaussian(BASE_IMPACT_ON_SURROUNDINGS * 1.5, 10);
-      
+
     } else {
       this.aestheticValue = BASE_AESTHETIC_VALUE;
       this.historicalImportance = BASE_HISTORICAL_IMPORTANCE;
@@ -66,7 +83,7 @@ public class House {
       this.impactOnSurroundings = BASE_IMPACT_ON_SURROUNDINGS;
     }
   }
-  
+
   public double calculateSignificanceFactor() {
     double minSignificance = BASE_CULTURAL_SIGNIFICANCE + BASE_AESTHETIC_VALUE +
         BASE_HISTORICAL_IMPORTANCE + BASE_ENVIRONMENTAL_INTEGRATION +
@@ -75,167 +92,178 @@ public class House {
         environmentalIntegration + impactOnSurroundings;
     return actualSignificance / minSignificance;
   }
-  
-  public int getResidents() {
+
+  public ArrayList<Resident> getResidents() {
     return residents;
   }
-  
-  public void setResidents(int residents) {
-    this.residents = residents;
+
+  public void addResident(Resident residents) {
+    this.residents.add(residents);
   }
-  
+
+  public void addResidents(ArrayList<Resident> residents) {
+    this.residents.addAll(residents);
+  }
+
+  public void removeResident(Resident resident) {
+    residents.remove(resident);
+  }
+
+  public void removeResidents(ArrayList<Resident> residents) {
+    this.residents.removeAll(residents);
+  }
+
   public int getCost() {
     // Since the resistances of course cost money to build, it is calculated into the build cost and also the renovation cost
     return (int) (cost * Math.pow(1.1, resistances.numberOfResistances()));
   }
-  
+
   public void setCost(int cost) {
     this.cost = cost;
   }
-  
+
   public int getCarbon() {
     return carbon;
   }
-  
+
   public void setCarbon(int carbon) {
     this.carbon = carbon;
   }
-  
+
   public int getArea() {
     return area;
   }
-  
+
   public void setArea(int area) {
     this.area = area;
   }
-  
+
   public int getLifetime() {
     return lifetime;
   }
-  
+
   public void setLifetime(int lifetime) {
     this.lifetime = lifetime;
   }
-  
+
   public int getServiceCost() {
     return serviceCost;
   }
-  
+
   public void setServiceCost(int serviceCost) {
     this.serviceCost = serviceCost;
   }
-  
+
   public int getRenovationCost() {
     // Since the resistances of course cost money to build, it is calculated into the build cost and also the renovation cost
     int renovationCostIncludeResistances = (int) (renovationCost * Math.pow(1.05, resistances.numberOfResistances()));
     return r.nextInt(Math.min(5000, renovationCostIncludeResistances - 1), renovationCostIncludeResistances);
   }
-  
+
   public void setRenovationCost(int renovationCost) {
     this.renovationCost = renovationCost;
   }
-  
+
   public int getDemolishCost() {
     return demolishCost;
   }
-  
+
   public void setDemolishCost(int demolishCost) {
     this.demolishCost = demolishCost;
   }
-  
+
   public int getWasteCost() {
     return wasteCost;
   }
-  
+
   public void setWasteCost(int wasteCost) {
     this.wasteCost = wasteCost;
   }
-  
+
   public float getSatisfactionRate() {
     return satisfactionRate;
   }
-  
+
   public void setSatisfactionRate(float satisfactionRate) {
     this.satisfactionRate = satisfactionRate;
   }
-  
+
   public int getRenovationInterval() {
     return renovationInterval;
   }
-  
+
   public void setRenovationInterval(int renovationInterval) {
     this.renovationInterval = renovationInterval;
   }
-  
+
   public void age() {
     lifetime = Math.max(0, lifetime - 1);
     renovationLifetime = Math.max(0, renovationLifetime - 1);
-    if (satisfactionRate - 0.012f < 0) {
-      satisfactionRate = 0;
-    } else {
-      satisfactionRate -= 0.0000012f;
-    }
   }
-  
+
   public int getRenovationLifetime() {
     return renovationLifetime;
   }
-  
+
   public void setRenovationLifetime(int renovationLifetime) {
     if (renovationLifetime < 0) {
       renovationLifetime = 0;
     }
     this.renovationLifetime = renovationLifetime;
   }
-  
+
   public void renovate() {
     renovationLifetime = (int) r.nextGaussian(renovationInterval, (double) renovationInterval / 4);
     //TODO: discuss proper value for Increase
     float satisfactionIncrease = (float) r.nextGaussian(0.13, 0.02);
     float HighSignificanceIncrease = (float) r.nextGaussian(0.2, 0.04);
     if (!isHighSignificance) {
-      if (satisfactionRate + satisfactionIncrease > maxSatisfaction) {
-        satisfactionRate = maxSatisfaction - 0.01f;
-      } else {
-        satisfactionRate += satisfactionIncrease;
+      for (Resident resident : residents) {
+        if (resident.getSatisfaction() + satisfactionIncrease > maxSatisfaction) {
+          resident.setSatisfaction(maxSatisfaction - 0.01f);
+        } else {
+          resident.setSatisfaction(resident.getSatisfaction() + satisfactionIncrease);
+        }
       }
     } else {
-      if (satisfactionRate + HighSignificanceIncrease > maxSatisfaction) {
-        satisfactionRate = maxSatisfaction - 0.01f;
-      } else {
-        satisfactionRate += HighSignificanceIncrease;
+      for (Resident resident : residents) {
+        if (resident.getSatisfaction() + HighSignificanceIncrease > maxSatisfaction) {
+          resident.setSatisfaction(maxSatisfaction - 0.01f);
+        } else {
+          resident.setSatisfaction(resident.getSatisfaction() + HighSignificanceIncrease);
+        }
       }
     }
   }
-  
+
   public float getRenovationCarbon() {
     return renovationCarbon;
   }
-  
+
   public void setRenovationCarbon(float renovationCarbon) {
     this.renovationCarbon = renovationCarbon;
   }
-  
+
   public float getWastePerYearPerResident() {
     return wastePerYearPerResident;
   }
-  
+
   public int getRenovationWaste() {
     return renovationWaste;
   }
-  
+
   public void setRenovationWaste(int renovationWaste) {
     this.renovationWaste = renovationWaste;
   }
-  
+
   public int getDemolitionWaste() {
     return demolitionWaste;
   }
-  
+
   public void setDemolitionWaste(int demolitionWaste) {
     this.demolitionWaste = demolitionWaste;
   }
-  
+
   public void reduceSatisfaction(EventType event, boolean isResistant) {
     float maxSatisfactionReduction;
     float minSatisfactionReduction = switch (event) {
@@ -289,50 +317,54 @@ public class House {
       minSatisfactionReduction = minSatisfactionReduction / 2;
     }
     float satisfactionReduction = r.nextFloat(minSatisfactionReduction, maxSatisfactionReduction);
-    satisfactionRate = satisfactionRate * (1.0f - satisfactionReduction);
+    for (Resident resident : residents) {
+      resident.setSatisfaction(resident.getSatisfaction() * (1.0f - satisfactionReduction));
+    }
   }
-  
+
   public void setMaxSatisfaction(float maxSatisfaction) {
     this.maxSatisfaction = maxSatisfaction;
   }
-  
+
   public Resistance getResistances() {
     return resistances;
   }
-  
+
   public void setResistances(Resistance resistances) {
     this.resistances = resistances;
   }
-  
+
   public boolean getHighSignificance() {
     return isHighSignificance;
   }
-  
+
   public void setHighSignificance(boolean highSignificance) {
     isHighSignificance = highSignificance;
   }
-  
+
   public int getRevitalizationCost() {
     return revitalizationCost;
   }
-  
+
   public void setRevitalizationCost(int revitalizationCost) {
     this.revitalizationCost = revitalizationCost;
   }
-  
+
   public void revitalize() {
-    satisfactionRate = maxSatisfaction;
+    for (Resident resident : residents) {
+      resident.setSatisfaction(maxSatisfaction);
+    }
     lifetime = maxLifetime;
   }
-  
+
   public void setMaxLifetime(int lifetime) {
     this.maxLifetime = lifetime;
   }
-  
+
   public float getRevitalizationCarbon() {
     return revitalizationCarbon;
   }
-  
+
   public void setRevitalizationCarbon(float revitalizationCarbon) {
     this.revitalizationCarbon = revitalizationCarbon;
   }

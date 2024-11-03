@@ -1,10 +1,8 @@
+import Resident.Resident;
 import config.Config;
 import enums.EventType;
 import enums.ScenarioType;
-import house.BioHouse;
 import house.House;
-import house.MinimalHouse;
-import house.PremiumHouse;
 
 import java.util.ArrayList;
 
@@ -14,8 +12,8 @@ public class Scenario {
   private static final float RISK_FLOOD = 0.01f;
   private static final float RISK_TORNADO = 0.005f;
   private static final float RISK_WILDFIRE = 0.001f;
-  
-  
+
+
   // Local Risks
   private static final float RISK_INFESTATION = 0.005f;
   private static final float RISK_FIRE = 0.01f;
@@ -23,79 +21,66 @@ public class Scenario {
   private static final float RISK_POWER_OUTAGE = 0.025f;
   private static final float RISK_MAINTENANCE = 0.02f;
   private static final float RISK_PLUMBING = 0.015f;
-  
-  
+
+
   // Runtime
   private static final int RUNTIME = 101;
-  
+
   private static final int HOUSES = 10;
   ArrayList<House> houses = new ArrayList<>();
   private int initialCost = 0;
-  
+
+  private Config c;
+
   public Scenario(ScenarioType type) {
-    switch (type) {
-      case MINIMAL:
-        for (int i = 0; i < HOUSES; i++) {
-          House h = new MinimalHouse();
-          initialCost += h.getCost();
-          initialCost += h.getRenovationCost();
-          houses.add(h);
-        }
-        break;
-      case BIO:
-        for (int i = 0; i < HOUSES; i++) {
-          House h = new BioHouse();
-          initialCost += h.getCost();
-          initialCost += h.getRenovationCost();
-          houses.add(h);
-        }
-        break;
-      case PREMIUM:
-        for (int i = 0; i < HOUSES; i++) {
-          House h = new PremiumHouse();
-          initialCost += h.getCost();
-          initialCost += h.getRenovationCost();
-          houses.add(h);
-        }
-        break;
-    }
+    this.c = new Config(type);
+    this.generateHouses();
   }
-  
+
   public Scenario(Config c) {
+    this.c = c;
+    this.generateHouses();
+  }
+
+  private void generateHouses() {
     for (int i = 0; i < HOUSES; i++) {
-      House h = c.createHouse();
+      House h = c.createHouse(2);
       initialCost += h.getCost();
       initialCost += h.getRenovationCost();
       houses.add(h);
     }
   }
-  
+
   public double calculateScore(double avgCostPerYear, double avgCostPerDecade,
                                double avgWastePerYear, double avgCarbonPerYear,
                                double avgSatisfactionPerDecade, double significanceFactor) {
-    
+
     // Normalization factors (basically example values to scale the inputs)
     double maxCostPerYear = 10000;
     double maxCostPerDecade = 100000;
     double maxWastePerYear = 10;
     double maxCarbonPerYear = 10;
     double maxSatisfactionPoints = 20;
-    
+
     // Normalize each input parameter
     double normCostPerYear = avgCostPerYear / maxCostPerYear;
     double normCostPerDecade = avgCostPerDecade / maxCostPerDecade;
     double normWastePerYear = avgWastePerYear / maxWastePerYear;
     double normCarbonPerYear = avgCarbonPerYear / maxCarbonPerYear;
     double satisfaction = maxSatisfactionPoints * avgSatisfactionPerDecade;
-    
+
     // Calculate sustainability score: higher satisfaction, lower costs, waste, and CO2 increase the score
     return ((1.0 / (normCostPerYear + normCostPerDecade)) +  // Lower costs lead to a higher score
         (1.0 / normWastePerYear) +                       // Lower waste leads to a higher score
         (1.5 / normCarbonPerYear) +                      // Lower CO2 emissions lead to a higher score (increased weight)
         (satisfaction) * significanceFactor);            // Higher satisfaction leads to a higher score
   }
-  
+
   public double run() {
+    int totalDemolishedHouses = 0;
+    int totalNewHouses = 0;
+    int totalNewResidents = 0;
+    int totalDiedResidents = 0;
     int totalResidents;
     int totalCostPerDecade = 0;
     int totalCost;
@@ -111,21 +96,27 @@ public class Scenario {
     float totalCostPerResidentPerDecade = 0.0f;
     double significanceFactor = 0.0f;
     int toDivide = 0;
-    
-    ArrayList<House> toRemove = new ArrayList<>();
-    
+
+
+    ArrayList<House> housesToRemove = new ArrayList<>();
+    ArrayList<Resident> residentsToRemove = new ArrayList<>();
+    ArrayList<Resident> toMoveOut = new ArrayList<>();
+    ArrayList<House> housesToMoveIn = new ArrayList<>();
+    ArrayList<House> removeFromHousesToMoveIn = new ArrayList<>();
+
+
     for (int year = 1; year < RUNTIME; year++) {
       totalCost = 0;
       totalCarbon = 0;
       totalResidents = 0;
-      
+
       if (year % 10 == 0) {
         totalSatisfactionPerYear += satisfaction;
         totalCostPerResidentPerDecade += totalCostPerDecade;
         totalCostPerDecade = 0;
         satisfaction = 0;
       }
-      
+
       // Global risk factors
       if (Math.random() < RISK_EARTHQUAKE) {
         for (House house : houses) {
@@ -171,10 +162,10 @@ public class Scenario {
           }
         }
       }
-      
+
       float residentDemolitionWaste = 0;
       float residentRenovationWaste = 0;
-      toRemove.clear();
+      housesToRemove.clear();
       significanceFactor = 0;
       toDivide = 0;
       for (House house : houses) {
@@ -215,12 +206,54 @@ public class Scenario {
         if (Math.random() < RISK_PLUMBING) {
           house.reduceSatisfaction(EventType.PLUMBING, false);
         }
-        
-        satisfaction += house.getSatisfactionRate();
-        totalResidents += house.getResidents();
+
+
+        for (Resident resident : house.getResidents()) {
+          resident.age();
+          if (resident.isDead()) {
+            residentsToRemove.add(resident);
+            totalDiedResidents++;
+            break;
+          }
+          if (resident.isMovingOut()) {
+            toMoveOut.add(resident);
+            resident.setLivesWithParents(false);
+            residentsToRemove.add(resident);
+          }
+        }
+
+        house.getResidents().removeAll(residentsToRemove);
+        residentsToRemove.clear();
+
+        if (house.getResidents().size() >= 2) {
+          if (house.getResidents().get(0).isCanHaveChildren() && house.getResidents().get(1).isCanHaveChildren()) {
+            for (Resident resident : house.getResidents()) {
+              resident.setSatisfaction(Math.min(resident.getSatisfaction() + 0.012f, c.getSatisfactionRate()));
+            }
+            if (Math.random() < 0.12) {
+              house.addResident(new Resident(
+                  0,
+                  //TODO: discuss this with the team
+                  c.getSatisfactionRate(),
+                  true,
+                  false,
+                  false
+              ));
+              totalNewResidents++;
+            }
+          }
+        }
+
+        if (house.getResidents().size() <= 1) {
+          housesToMoveIn.add(house);
+        }
+
+
+
+        totalResidents += house.getResidents().size();
         totalCost += house.getServiceCost();
         totalCarbon += house.getCarbon();
-        
+
         // Check for demolition
         if (house.getLifetime() == 0) {
           if (Math.random() < 0.5) {
@@ -230,8 +263,15 @@ public class Scenario {
           } else {
             totalCost += house.getDemolishCost();
             totalCost += house.getWasteCost();
-            residentDemolitionWaste += (float) house.getDemolitionWaste() / house.getResidents();
-            toRemove.add(house);
+            if (house.getResidents().size() > 0) {
+              residentDemolitionWaste += (float) house.getDemolitionWaste() / house.getResidents().size();
+            }
+            housesToRemove.add(house);
+            //if only one resident lived in  house -> moves out to other house
+            if (house.getResidents().size() == 1) toMoveOut.add(house.getResidents().getFirst());
+            for (Resident resident : house.getResidents()) {
+              resident.setSatisfaction(Math.max(resident.getSatisfaction() - 0.012f, 0));
+            }
           }
         } else {
           // Check for renovation
@@ -239,28 +279,92 @@ public class Scenario {
             totalCost += house.getRenovationCost();
             house.renovate();
             totalCarbon += house.getRenovationCarbon();
-            residentRenovationWaste += (float) house.getRenovationWaste() / house.getResidents();
+            if (house.getResidents().size() > 0) {
+              residentRenovationWaste += (float) house.getRenovationWaste() / house.getResidents().size();
+            }
           }
         }
       }
+
+      for (Resident resident : toMoveOut) {
+        for (House house : housesToMoveIn) {
+          if (house.getResidents().size() == 0) {
+            house.addResident(resident);
+            resident.setMovingOut(false);
+            break;
+          }
+          if (Math.abs(house.getResidents().getFirst().getAge() - resident.getAge()) <= 5) {
+            house.addResident(resident);
+            resident.setMovingOut(false);
+            house.getResidents().get(0).setCanHaveChildren(true);
+            house.getResidents().get(1).setCanHaveChildren(true);
+            house.getResidents().get(0).setSatisfaction(Math.min(house.getResidents().get(0).getSatisfaction() + 0.012f, c.getSatisfactionRate()));
+            house.getResidents().get(1).setSatisfaction(Math.min(house.getResidents().get(1).getSatisfaction() + 0.012f, c.getSatisfactionRate()));
+            removeFromHousesToMoveIn.add(house);
+            break;
+          }
+        }
+        if (resident.isMovingOut()) {
+          houses.add(c.createHouse(new ArrayList<>() {{
+            add(resident);
+          }}));
+          housesToMoveIn.add(houses.getLast());
+          resident.setMovingOut(false);
+          totalNewHouses++;
+        }
+        housesToMoveIn.removeAll(removeFromHousesToMoveIn);
+      }
+      toMoveOut.clear();
+
+      //TODO: residents need to move into new house
+      for (House house : housesToRemove) {
+        if (house.getResidents().size() > 1) {
+          for (House houseToMoveIn : housesToMoveIn) {
+            if (houseToMoveIn.getResidents().size() == 0) {
+              houseToMoveIn.addResidents(house.getResidents());
+              removeFromHousesToMoveIn.add(houseToMoveIn);
+              house.removeResidents(house.getResidents());
+              break;
+            }
+          }
+          if (house.getResidents().size() != 0) {
+            houses.add(c.createHouse(house.getResidents()));
+            totalNewHouses++;
+          }
+        }
+      }
+      housesToMoveIn.removeAll(removeFromHousesToMoveIn);
+
+      for (House house : houses) {
+        for (Resident resident : house.getResidents()) {
+          satisfaction += resident.getSatisfaction();
+        }
+      }
+
+
       residentDemolitionWaste /= HOUSES;
       residentRenovationWaste /= HOUSES;
       wastePerResidentPerYear += residentDemolitionWaste + residentRenovationWaste;
-      houses.removeAll(toRemove);
+      houses.removeAll(housesToRemove);
+      totalDemolishedHouses += housesToRemove.size();
       totalCostPerDecade += totalCost;
-      
-      
+
+
       // If no houses are left, break
       if (houses.isEmpty()) {
         break;
       }
-      
+      //If no residents are left, break
+      if (totalResidents == 0) {
+        break;
+      }
+
       averageCarbon = (totalCarbon / totalResidents) / year;
       totalAverageCarbonPerYear += averageCarbon;
       averageCost = (float) (totalCost + initialCost) / totalResidents / year;
       totalCostPerResidentPerYear += averageCost;
       if (year % 10 == 9) {
-        satisfaction /= (houses.size() * 10);
+        satisfaction /= (totalResidents * 10);
       }
       //System.out.println(satisfaction);
     }
@@ -271,19 +375,27 @@ public class Scenario {
     wastePerResidentPerYear /= RUNTIME + 0.27f; //TODO: Add variable for waste per year per resident.
     totalAverageCarbonPerYear /= RUNTIME;
     totalSatisfactionPerYear /= ((float) RUNTIME / 10);
-    susScore = calculateScore(totalCostPerResidentPerYear, totalCostPerResidentPerDecade,
-        wastePerResidentPerYear, totalAverageCarbonPerYear,
-        totalSatisfactionPerYear, significanceFactor);
-        /*
-        // Print statistics
-        System.out.println("average cost per resident per year: " + totalCostPerResidentPerYear);
-        System.out.println("average cost per resident per decade: " + totalCostPerResidentPerDecade);
-        System.out.println("average waste per resident per year: " + wastePerResidentPerYear + " tons");
-        System.out.println("average carbon per resident per year: " + totalAverageCarbonPerYear + " tons");
-        System.out.println("average satisfaction per decade: " + totalSatisfactionPerYear);
-        System.out.println("Sustainability score for this scenario: " + susScore);
-        */
-    
+    susScore =
+
+        calculateScore(totalCostPerResidentPerYear, totalCostPerResidentPerDecade,
+            wastePerResidentPerYear, totalAverageCarbonPerYear,
+            totalSatisfactionPerYear, significanceFactor);
+
+    // Print statistics
+    /*
+    System.out.println("number of new houses: " + totalNewHouses);
+    System.out.println("number of demolished houses: " + totalDemolishedHouses);
+    System.out.println("number of new residents: " + totalNewResidents);
+    System.out.println("number of died residents: " + totalDiedResidents);
+    System.out.println("average cost per resident per year: " + totalCostPerResidentPerYear);
+    System.out.println("average cost per resident per decade: " + totalCostPerResidentPerDecade);
+    System.out.println("average waste per resident per year: " + wastePerResidentPerYear + " tons");
+    System.out.println("average carbon per resident per year: " + totalAverageCarbonPerYear + " tons");
+    System.out.println("average satisfaction per decade: " + totalSatisfactionPerYear);
+    System.out.println("Sustainability score for this scenario: " + susScore);
+     */
+
+
     return susScore;
   }
 }

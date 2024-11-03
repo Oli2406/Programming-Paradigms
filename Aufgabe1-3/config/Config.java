@@ -1,8 +1,11 @@
 package config;
 
+import Resident.Resident;
+import enums.ScenarioType;
 import house.House;
 import house.Resistance;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class Config {
@@ -57,6 +60,65 @@ public class Config {
   
   public Config(Config c) {
     this(c.getBuildCost(), c.getCarbon(), c.getArea(), c.getLifetime(), c.getRenovationInterval(), c.getServiceCost(), c.getRenovationCost(), c.getDemolishCost(), c.getWasteCost(), c.getSatisfactionRate(), c.getRenovationCarbon(), c.getRenovationWaste(), c.getDemolitionWaste(), c.getResistances(), c.getRandom(), c.getSignificanceChance());
+  }
+
+  public Config(ScenarioType type) {
+    switch (type) {
+      case MINIMAL -> {
+        this.buildCost = 100000;
+        this.carbon = 40;
+        this.area = 100;
+        this.lifetime = 50;
+        this.renovationInterval = 20;
+        this.serviceCost = 3000;
+        this.renovationCost = 25000;
+        this.demolishCost = 20000;
+        this.wasteCost = 10000;
+        this.satisfactionRate = 0.75f;
+        this.renovationCarbon = 0.75f * carbon;
+        this.renovationWaste = 30;
+        this.demolitionWaste = 50;
+        this.resistances = new Resistance(false, false, false, false, false, false);
+        this.significanceChance = 0.1f;
+        this.random = true;
+      }
+      case BIO -> {
+        this.buildCost = 150000;
+        this.carbon = 20;
+        this.area = 100;
+        this.lifetime = 50;
+        this.renovationInterval = 20;
+        this.serviceCost = 3000;
+        this.renovationCost = 25000;
+        this.demolishCost = 20000;
+        this.wasteCost = 7500;
+        this.satisfactionRate = 0.8f;
+        this.renovationCarbon = 0.5f * carbon;
+        this.renovationWaste = 30;
+        this.demolitionWaste = 50;
+        this.resistances = new Resistance(true, false, true, false, false, true);
+        this.significanceChance = 0.2f;
+        this.random = true;
+      }
+      case PREMIUM -> {
+        this.buildCost = 250000;
+        this.carbon = 40;
+        this.area = 200;
+        this.lifetime = 100;
+        this.renovationInterval = 25;
+        this.serviceCost = 3000;
+        this.renovationCost = 40000;
+        this.demolishCost = 20000;
+        this.wasteCost = 5000;
+        this.satisfactionRate = 0.9f;
+        this.renovationCarbon = 0.5f * carbon;
+        this.renovationWaste = 15;
+        this.demolitionWaste = 50;
+        this.resistances = new Resistance(true, true, true, true, true, true);
+        this.significanceChance = 0.6f;
+        this.random = true;
+      }
+    }
   }
   
   public boolean checkConfig() {
@@ -176,8 +238,17 @@ public class Config {
     this.demolitionWaste = demolitionWaste;
   }
   
-  public House createHouse() {
-    House h = new House();
+  public House createHouse(ArrayList<Resident> residents) {
+    House h = new House(residents);
+    return setHouseSettings(h);
+  }
+
+  public House createHouse(int numberOfResidents) {
+    House h = new House(numberOfResidents);
+    return setHouseSettings(h);
+  }
+
+  private House setHouseSettings(House h) {
     if (r.nextFloat() < significanceChance) {
       h.setHighSignificance(true);
       h.setLifetime(lifetime * 2);
