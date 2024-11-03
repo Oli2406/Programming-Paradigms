@@ -32,7 +32,7 @@ public class Scenario {
   ArrayList<House> houses = new ArrayList<>();
   private int initialCost = 0;
 
-  private Config c;
+  private final Config c;
 
   public Scenario(ScenarioType type) {
     this.c = new Config(type);
