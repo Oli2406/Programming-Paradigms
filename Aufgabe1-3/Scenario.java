@@ -6,7 +6,9 @@ import house.House;
 
 import java.util.ArrayList;
 
+// STYLE: Objektorientiertes Paradigma
 public class Scenario {
+  // Nominale Abstraktion (Wahrscheinlichkeiten von Risiken)
   // Global Risks
   private static final float RISK_EARTHQUAKE = 0.008f;
   private static final float RISK_FLOOD = 0.01f;
@@ -51,6 +53,7 @@ public class Scenario {
     }
   }
 
+  // STYLE: Prozedurales Paradigma
   public double calculateScore(double avgCostPerYear, double avgCostPerDecade,
                                double avgWastePerYear, double avgCarbonPerYear,
                                double avgSatisfactionPerDecade, double significanceFactor) {
@@ -76,6 +79,7 @@ public class Scenario {
         (satisfaction) * significanceFactor);            // Higher satisfaction leads to a higher score
   }
 
+  // STYLE: Prozedurales Paradigma
   public double run() {
     int totalDemolishedHouses = 0;
     int totalNewHouses = 0;
@@ -121,7 +125,6 @@ public class Scenario {
       if (Math.random() < RISK_EARTHQUAKE) {
         for (House house : houses) {
           if (Math.random() < 0.1 && !house.getResistances().isEarthquakeResistance()) {
-            //TODO: Fix calculations if house is destroyed
             house.setLifetime(0);
           } else {
             house.setRenovationLifetime(house.getResistances().isEarthquakeResistance() ? house.getRenovationLifetime() - 1 : 0);
@@ -132,7 +135,6 @@ public class Scenario {
       if (Math.random() < RISK_WILDFIRE) {
         for (House house : houses) {
           if (Math.random() < 0.05 && !house.getResistances().isWildfireResistance()) {
-            //TODO: Fix calculations if house is destroyed
             house.setLifetime(0);
           } else {
             house.setRenovationLifetime(house.getResistances().isWildfireResistance() ? house.getRenovationLifetime() - 1 : 0);
@@ -143,7 +145,6 @@ public class Scenario {
       if (Math.random() < RISK_FLOOD) {
         for (House house : houses) {
           if (Math.random() < 0.05 && !house.getResistances().isFloodResistance()) {
-            //TODO: Fix calculations if house is destroyed
             house.setLifetime(0);
           } else {
             house.setRenovationLifetime(house.getResistances().isFloodResistance() ? house.getRenovationLifetime() - 1 : 0);
@@ -154,7 +155,6 @@ public class Scenario {
       if (Math.random() < RISK_TORNADO) {
         for (House house : houses) {
           if (Math.random() < 0.15 && !house.getResistances().isTornadoResistance()) {
-            //TODO: Fix calculations if house is destroyed
             house.setLifetime(0);
           } else {
             house.setRenovationLifetime(house.getResistances().isTornadoResistance() ? house.getRenovationLifetime() - 1 : 0);
@@ -181,7 +181,6 @@ public class Scenario {
         }
         if (Math.random() < RISK_FIRE) {
           if (Math.random() < 0.15 && !house.getResistances().isFireResistance()) {
-            //TODO: Fix calculations if house is destroyed
             house.setLifetime(0);
           } else {
             house.setRenovationLifetime(house.getResistances().isFireResistance() ? house.getRenovationLifetime() - 1 : 0);
@@ -190,7 +189,6 @@ public class Scenario {
         }
         if (Math.random() < RISK_BUILDING_COLLAPSE) {
           if (Math.random() < 0.5) {
-            //TODO: Fix calculations if house is destroyed
             house.setLifetime(0);
           } else {
             house.setRenovationLifetime(0);
@@ -233,7 +231,6 @@ public class Scenario {
             if (Math.random() < 0.12) {
               house.addResident(new Resident(
                   0,
-                  //TODO: discuss this with the team
                   c.getSatisfactionRate(),
                   true,
                   false,
@@ -316,7 +313,6 @@ public class Scenario {
       }
       toMoveOut.clear();
 
-      //TODO: residents need to move into new house
       for (House house : housesToRemove) {
         if (house.getResidents().size() > 1) {
           for (House houseToMoveIn : housesToMoveIn) {
@@ -372,7 +368,7 @@ public class Scenario {
     significanceFactor /= toDivide;
     totalCostPerResidentPerYear /= RUNTIME;
     totalCostPerResidentPerDecade /= ((float) RUNTIME);
-    wastePerResidentPerYear /= RUNTIME + 0.27f; //TODO: Add variable for waste per year per resident.
+    wastePerResidentPerYear /= RUNTIME + 0.27f;
     totalAverageCarbonPerYear /= RUNTIME;
     totalSatisfactionPerYear /= ((float) RUNTIME / 10);
     susScore =

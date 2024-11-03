@@ -1,5 +1,7 @@
 package house;
 
+// STYLE: Objektorientiertes Paradigma
+// Nominale Abstraktion (Klasse Resistance)
 public class Resistance {
   private boolean earthquakeResistance;
   private boolean wildfireResistance;

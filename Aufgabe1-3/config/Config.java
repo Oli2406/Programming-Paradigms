@@ -8,9 +8,12 @@ import house.Resistance;
 import java.util.ArrayList;
 import java.util.Random;
 
+// STYLE: Objektorientiertes Paradigma
+// Nominale Abstraktion (Klasse Config)
 public class Config {
   private static final Random r = new Random();
-  
+
+  // Nominale Abstraktion (Variablen Namen helfen der lesbarkeit)
   private int buildCost;
   private int carbon;
   private int area;
@@ -239,11 +242,13 @@ public class Config {
   }
   
   public House createHouse(ArrayList<Resident> residents) {
+    // Nominale Abstraktion (Verwendung von House Objekt)
     House h = new House(residents);
     return setHouseSettings(h);
   }
 
   public House createHouse(int numberOfResidents) {
+    // Nominale Abstraktion (Verwendung von House Objekt)
     House h = new House(numberOfResidents);
     return setHouseSettings(h);
   }

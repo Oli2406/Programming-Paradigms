@@ -1,5 +1,6 @@
 package Resident;
-
+// STYLE: Objektorientiertes Paradigma
+// Nominale Abstraktion (Klasse Resident)
 public class Resident {
   private int age;
   private float satisfaction;

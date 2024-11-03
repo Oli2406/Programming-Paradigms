@@ -6,9 +6,9 @@ import java.util.ArrayList;
 
 /**
  * Wer hat an was gearbeitet:
- * Ryan Foster (12222173): Basic setup, Enums, basic run method for Scenario, Events, Basic House
- * Oliver Kastner (51908223): Calculation method for sustainability score, average score calculation, satisfaction and carbon statistics
- * Noah Oguamalam (12225111): Premium House, Bio House, Research for house values, (Peer Programming)
+ * Ryan Foster (12222173): Basic setup, Enums, basic run method for Scenario, Events, Basic House, Config, Resistance, Events
+ * Oliver Kastner (51908223): Calculation method for sustainability score, average score calculation, satisfaction and carbon statistics, revitalisation instead of demolition, High significance buildings, shaping of houses
+ * Noah Oguamalam (12225111): Premium House, Bio House, Research for house values, Residents, new Houses during simulation
  */
 public class Test {
   
@@ -21,7 +21,7 @@ public class Test {
         0.5f, 15, 50,
         resistances, true, 0.6f);
     ArrayList<Double> configScores = new ArrayList<>();
-    for (int i = 0; i < 1000; i++) {
+    for (int i = 0; i < 100; i++) {
       Scenario config = new Scenario(c);
       double configScore = config.run();
       //System.out.println(configScore);
@@ -29,7 +29,7 @@ public class Test {
     }
     
     ArrayList<Double> minimalScores = new ArrayList<>();
-    for (int i = 0; i < 1000; i++) {
+    for (int i = 0; i < 100; i++) {
       Scenario minimal = new Scenario(ScenarioType.MINIMAL);
       double minimalScore = minimal.run();
       //System.out.println(minimalScore);
@@ -37,7 +37,7 @@ public class Test {
     }
     
     ArrayList<Double> bioScores = new ArrayList<>();
-    for (int i = 0; i < 1000; i++) {
+    for (int i = 0; i < 100; i++) {
       Scenario bio = new Scenario(ScenarioType.BIO);
       double bioScore = bio.run();
       //System.out.println(bioScore);
@@ -45,7 +45,7 @@ public class Test {
     }
     
     ArrayList<Double> premiumScores = new ArrayList<>();
-    for (int i = 0; i < 1000; i++) {
+    for (int i = 0; i < 100; i++) {
       Scenario premium = new Scenario(ScenarioType.PREMIUM);
       double premiumScore = premium.run();
       //System.out.println(premiumScore);

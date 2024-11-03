@@ -6,6 +6,8 @@ import enums.EventType;
 import java.util.ArrayList;
 import java.util.Random;
 
+// STYLE: Objektorientiertes Paradigma
+// Nominale Abstraktion (Klasse House)
 public class House {
   private static final int BASE_AESTHETIC_VALUE = 30;
   private static final int BASE_HISTORICAL_IMPORTANCE = 20;
@@ -214,7 +216,6 @@ public class House {
 
   public void renovate() {
     renovationLifetime = (int) r.nextGaussian(renovationInterval, (double) renovationInterval / 4);
-    //TODO: discuss proper value for Increase
     float satisfactionIncrease = (float) r.nextGaussian(0.13, 0.02);
     float HighSignificanceIncrease = (float) r.nextGaussian(0.2, 0.04);
     if (!isHighSignificance) {
