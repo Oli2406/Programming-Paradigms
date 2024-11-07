@@ -111,7 +111,7 @@ public class Scenario {
     int totalNewHouses = 0;
     int totalNewResidents = 0;
     int totalDiedResidents = 0;
-    int totalResidents = 0;
+    int totalResidents;
     int totalResidentsPerDecade = 0;
     int totalCostPerDecade = 0;
     int totalCost;
