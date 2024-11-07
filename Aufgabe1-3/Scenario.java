@@ -111,7 +111,8 @@ public class Scenario {
     int totalNewHouses = 0;
     int totalNewResidents = 0;
     int totalDiedResidents = 0;
-    int totalResidents;
+    int totalResidents = 0;
+    int totalResidentsPerDecade = 0;
     int totalCostPerDecade = 0;
     int totalCost;
     float totalCarbon;
@@ -138,17 +139,18 @@ public class Scenario {
     for (int year = 1; year < RUNTIME; year++) {
       totalCost = 0;
       totalCarbon = 0;
-      totalResidents = 0;
       float residentDemolitionWaste = 0;
       float residentRenovationWaste = 0;
+      totalResidents = 0;
       housesToRemove.clear();
       significanceFactor = 0;
       toDivide = 0;
       if (year % 10 == 0) {
-        totalSatisfactionPerYear += satisfaction;
+        totalSatisfactionPerYear = satisfaction;
         totalCostPerResidentPerDecade += totalCostPerDecade;
         totalCostPerDecade = 0;
         satisfaction = 0;
+        totalResidentsPerDecade = 0;
       }
 
       calculateGlobalRisks();
@@ -169,6 +171,7 @@ public class Scenario {
         }
 
         totalResidents += house.getResidents().size();
+        totalResidentsPerDecade += house.getResidents().size();
         totalCost += house.getServiceCost();
         totalCarbon += house.getCarbon();
 
@@ -230,7 +233,7 @@ public class Scenario {
       averageCost = (float) (totalCost + initialCost) / totalResidents / year;
       totalCostPerResidentPerYear += averageCost;
       if (year % 10 == 9) {
-        satisfaction /= (totalResidents * 10);
+        satisfaction /= (totalResidentsPerDecade);
       }
     }
     susScore = calculateStatistics(significanceFactor, toDivide, totalCostPerResidentPerYear, totalCostPerResidentPerDecade, wastePerResidentPerYear, totalAverageCarbonPerYear, totalSatisfactionPerYear);
