@@ -19,60 +19,52 @@ public class Test {
         100, 25, 3000, 40000,
         20000, 5000, 0.9f,
         0.5f, 15, 50,
-        resistances, true, 0.6f);
-    ArrayList<Double> configScores = new ArrayList<>();
+        resistances, 0.6f, true);
+    ArrayList<Result> configScores = new ArrayList<>();
     for (int i = 0; i < 100; i++) {
       Scenario config = new Scenario(c);
-      double configScore = config.run();
-      //System.out.println(configScore);
-      configScores.add(configScore);
+      configScores.add(config.run());
     }
     
-    ArrayList<Double> minimalScores = new ArrayList<>();
+    ArrayList<Result> minimalScores = new ArrayList<>();
     for (int i = 0; i < 100; i++) {
       Scenario minimal = new Scenario(ScenarioType.MINIMAL);
-      double minimalScore = minimal.run();
-      //System.out.println(minimalScore);
-      minimalScores.add(minimalScore);
+      minimalScores.add(minimal.run());
     }
     
-    ArrayList<Double> bioScores = new ArrayList<>();
+    ArrayList<Result> bioScores = new ArrayList<>();
     for (int i = 0; i < 100; i++) {
       Scenario bio = new Scenario(ScenarioType.BIO);
-      double bioScore = bio.run();
-      //System.out.println(bioScore);
-      bioScores.add(bioScore);
+      bioScores.add(bio.run());
     }
     
-    ArrayList<Double> premiumScores = new ArrayList<>();
+    ArrayList<Result> premiumScores = new ArrayList<>();
     for (int i = 0; i < 100; i++) {
       Scenario premium = new Scenario(ScenarioType.PREMIUM);
-      double premiumScore = premium.run();
-      //System.out.println(premiumScore);
-      premiumScores.add(premiumScore);
+      premiumScores.add(premium.run());
     }
     
     double totalConfigScore = 0;
-    for (double con : configScores) {
-      totalConfigScore += con;
+    for (Result con : configScores) {
+      totalConfigScore += con.getSusScore();
     }
     double avgConfigScore = totalConfigScore / configScores.size();
     
     double totalMinimalScore = 0;
-    for (double min : minimalScores) {
-      totalMinimalScore += min;
+    for (Result min : minimalScores) {
+      totalMinimalScore += min.getSusScore();
     }
     double avgMinimalScore = totalMinimalScore / minimalScores.size();
     
     double totalBioScore = 0;
-    for (double bioScore : bioScores) {
-      totalBioScore += bioScore;
+    for (Result bioScore : bioScores) {
+      totalBioScore += bioScore.getSusScore();
     }
     double avgBioScore = totalBioScore / bioScores.size();
     
     double totalPremiumScore = 0;
-    for (double premiumScore : premiumScores) {
-      totalPremiumScore += premiumScore;
+    for (Result premiumScore : premiumScores) {
+      totalPremiumScore += premiumScore.getSusScore();
     }
     double avgPremiumScore = totalPremiumScore / premiumScores.size();
     

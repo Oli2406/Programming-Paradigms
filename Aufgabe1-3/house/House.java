@@ -44,12 +44,19 @@ public class House {
 
   private final ArrayList<Resident> residents;
 
-
+  /**
+   * Constructor for House
+   * @param residents List of residents for the house
+   */
   public House(ArrayList<Resident> residents) {
     this.residents = residents;
     this.renovate();
   }
 
+  /**
+   * Constructor for House
+   * @param numberOfResident Number of residents for the house
+   */
   public House(int numberOfResident) {
     this.residents = new ArrayList<>();
     for (int i = 0; i < numberOfResident; i++) {
@@ -64,11 +71,18 @@ public class House {
     this.renovate();
   }
 
+  /**
+   * Set the high significance attributes for the house
+   * @param highSignificance Boolean value for high significance
+   */
   public void setHighSignificanceAttributes(boolean highSignificance) {
     this.isHighSignificance = highSignificance;
     initializeAttributes();
   }
 
+  /**
+   * Initialize the attributes for the house
+   */
   protected void initializeAttributes() {
     if (this.isHighSignificance) {
       this.aestheticValue = (int) r.nextGaussian(BASE_AESTHETIC_VALUE * 1.5, 8);
@@ -86,6 +100,10 @@ public class House {
     }
   }
 
+  /**
+   * Calculate the significance factor for the house
+   * @return Significance factor for the house
+   */
   public double calculateSignificanceFactor() {
     double minSignificance = BASE_CULTURAL_SIGNIFICANCE + BASE_AESTHETIC_VALUE +
         BASE_HISTORICAL_IMPORTANCE + BASE_ENVIRONMENTAL_INTEGRATION +
@@ -95,118 +113,229 @@ public class House {
     return actualSignificance / minSignificance;
   }
 
+  /**
+   * Get the residents for the house
+   * @return List of residents for the house
+   */
   public ArrayList<Resident> getResidents() {
     return residents;
   }
 
+  /**
+   * Add a resident to the house
+   * @param residents Resident to be added to the house
+   */
   public void addResident(Resident residents) {
     this.residents.add(residents);
   }
 
+  /**
+   * Add residents to the house
+   * @param residents List of residents to be added to the house
+   */
   public void addResidents(ArrayList<Resident> residents) {
     this.residents.addAll(residents);
   }
 
+  /**
+   * Remove a resident from the house
+   * @param resident Resident to be removed from the house
+   */
   public void removeResident(Resident resident) {
     residents.remove(resident);
   }
 
+  /**
+   * Remove residents from the house
+   * @param residents List of residents to be removed from the house
+   */
   public void removeResidents(ArrayList<Resident> residents) {
     this.residents.removeAll(residents);
   }
 
+  /**
+   * Get the cost of the house
+   * @return Cost of the house
+   */
   public int getCost() {
     // Since the resistances of course cost money to build, it is calculated into the build cost and also the renovation cost
     return (int) (cost * Math.pow(1.1, resistances.numberOfResistances()));
   }
 
+  /**
+   * Set the cost of the house
+   * @param cost Cost of the house
+   */
   public void setCost(int cost) {
     this.cost = cost;
   }
 
+  /**
+   * Get the carbon of the house
+   * @return Carbon of the house
+   */
   public int getCarbon() {
     return carbon;
   }
 
+  /**
+   * Set the carbon of the house
+   * @param carbon Carbon of the house
+   */
   public void setCarbon(int carbon) {
     this.carbon = carbon;
   }
 
+  /**
+   * Get the area of the house
+   * @return Area of the house
+   */
   public int getArea() {
     return area;
   }
 
+  /**
+   * Set the area of the house
+   * @param area Area of the house
+   */
   public void setArea(int area) {
     this.area = area;
   }
 
+  /**
+   * Get the lifetime of the house
+   * @return Lifetime of the house
+   */
   public int getLifetime() {
     return lifetime;
   }
 
+  /**
+   * Set the lifetime of the house
+   * @param lifetime Lifetime of the house
+   */
   public void setLifetime(int lifetime) {
     this.lifetime = lifetime;
   }
 
+  /**
+   * Get the service cost of the house
+   * @return Service cost of the house
+   */
   public int getServiceCost() {
     return serviceCost;
   }
 
+  /**
+   * Set the service cost of the house
+   * @param serviceCost Service cost of the house
+   */
   public void setServiceCost(int serviceCost) {
     this.serviceCost = serviceCost;
   }
 
+  /**
+   * Get the renovation cost of the house
+   * @return Renovation cost of the house
+   */
   public int getRenovationCost() {
     // Since the resistances of course cost money to build, it is calculated into the build cost and also the renovation cost
     int renovationCostIncludeResistances = (int) (renovationCost * Math.pow(1.05, resistances.numberOfResistances()));
     return r.nextInt(Math.min(5000, renovationCostIncludeResistances - 1), renovationCostIncludeResistances);
   }
 
+  /**
+   * Set the renovation cost of the house
+   * @param renovationCost Renovation cost of the house
+   */
   public void setRenovationCost(int renovationCost) {
     this.renovationCost = renovationCost;
   }
 
+  /**
+   * Get the demolish cost of the house
+   * @return Demolish cost of the house
+   */
   public int getDemolishCost() {
     return demolishCost;
   }
 
+  /**
+   * Set the demolish cost of the house
+   * @param demolishCost Demolish cost of the house
+   */
   public void setDemolishCost(int demolishCost) {
     this.demolishCost = demolishCost;
   }
 
+  /**
+   * Get the waste cost of the house
+   * @return Waste cost of the house
+   */
   public int getWasteCost() {
     return wasteCost;
   }
 
+  /**
+   * Set the waste cost of the house
+   * @param wasteCost Waste cost of the house
+   */
   public void setWasteCost(int wasteCost) {
     this.wasteCost = wasteCost;
   }
 
+  /**
+   * Get the satisfaction rate of the house
+   * @return Satisfaction rate of the house
+   */
   public float getSatisfactionRate() {
     return satisfactionRate;
   }
 
+  /**
+   * Set the satisfaction rate of the house
+   * @param satisfactionRate Satisfaction rate of the house
+   */
   public void setSatisfactionRate(float satisfactionRate) {
     this.satisfactionRate = satisfactionRate;
   }
 
+  /**
+   * Get the renovation interval of the house
+   * @return Renovation interval of the house
+   */
   public int getRenovationInterval() {
     return renovationInterval;
   }
 
+  /**
+   * Set the renovation interval of the house
+   * @param renovationInterval Renovation interval of the house
+   */
   public void setRenovationInterval(int renovationInterval) {
     this.renovationInterval = renovationInterval;
   }
 
+  /**
+   * Age the house
+   */
   public void age() {
     lifetime = Math.max(0, lifetime - 1);
     renovationLifetime = Math.max(0, renovationLifetime - 1);
   }
 
+  /**
+   * Get the renovation lifetime of the house
+   * @return Renovation lifetime of the house
+   */
   public int getRenovationLifetime() {
     return renovationLifetime;
   }
 
+  /**
+   * Set the renovation lifetime of the house
+   * @param renovationLifetime Renovation lifetime of the house
+   */
   public void setRenovationLifetime(int renovationLifetime) {
     if (renovationLifetime < 0) {
       renovationLifetime = 0;
@@ -214,6 +343,9 @@ public class House {
     this.renovationLifetime = renovationLifetime;
   }
 
+  /**
+   * Renovate the house
+   */
   public void renovate() {
     renovationLifetime = (int) r.nextGaussian(renovationInterval, (double) renovationInterval / 4);
     float satisfactionIncrease = (float) r.nextGaussian(0.13, 0.02);
@@ -237,34 +369,67 @@ public class House {
     }
   }
 
+  /**
+   * Get the renovation carbon of the house
+   * @return Renovation carbon of the house
+   */
   public float getRenovationCarbon() {
     return renovationCarbon;
   }
 
+  /**
+   * Set the renovation carbon of the house
+   * @param renovationCarbon Renovation carbon of the house
+   */
   public void setRenovationCarbon(float renovationCarbon) {
     this.renovationCarbon = renovationCarbon;
   }
 
+  /**
+   * Get the waste per year per resident of the house
+   * @return Waste per year per resident of the house
+   */
   public float getWastePerYearPerResident() {
     return wastePerYearPerResident;
   }
 
+  /**
+   * Get the renovation waste of the house
+   * @return Renovation waste of the house
+   */
   public int getRenovationWaste() {
     return renovationWaste;
   }
 
+  /**
+   * Set the renovation waste of the house
+   * @param renovationWaste Renovation waste of the house
+   */
   public void setRenovationWaste(int renovationWaste) {
     this.renovationWaste = renovationWaste;
   }
 
+  /**
+   * Get the demolition waste of the house
+   * @return The demolition waste of the house
+   */
   public int getDemolitionWaste() {
     return demolitionWaste;
   }
 
+  /**
+   * Set the demolition waste of the house
+   * @param demolitionWaste The demolition waste of the house
+   */
   public void setDemolitionWaste(int demolitionWaste) {
     this.demolitionWaste = demolitionWaste;
   }
 
+  /**
+   * Reduce the satisfaction of the residents
+   * @param event The event that caused the reduction
+   * @param isResistant Whether the house is resistant to the event
+   */
   public void reduceSatisfaction(EventType event, boolean isResistant) {
     float maxSatisfactionReduction;
     float minSatisfactionReduction = switch (event) {
@@ -323,34 +488,65 @@ public class House {
     }
   }
 
+  /**
+   * Get the max satisfaction of the house
+   * @param maxSatisfaction Max satisfaction of the house
+   */
   public void setMaxSatisfaction(float maxSatisfaction) {
     this.maxSatisfaction = maxSatisfaction;
   }
 
+  /**
+   * Get the resistances of the house
+   * @return Resistances of the house
+   */
   public Resistance getResistances() {
     return resistances;
   }
 
+  /**
+   * Set the resistances of the house
+   * @param resistances Resistances of the house
+   */
   public void setResistances(Resistance resistances) {
     this.resistances = resistances;
   }
 
+  /**
+   * Get the high significance of the house
+   * @return High significance of the house
+   */
   public boolean getHighSignificance() {
     return isHighSignificance;
   }
 
+  /**
+   * Set the high significance of the house
+   * @param highSignificance High significance of the house
+   */
   public void setHighSignificance(boolean highSignificance) {
     isHighSignificance = highSignificance;
   }
 
+  /**
+   * Get the revitalization cost of the house
+   * @return Revitalization cost of the house
+   */
   public int getRevitalizationCost() {
     return revitalizationCost;
   }
 
+  /**
+   * Set the revitalization cost of the house
+   * @param revitalizationCost Revitalization cost of the house
+   */
   public void setRevitalizationCost(int revitalizationCost) {
     this.revitalizationCost = revitalizationCost;
   }
 
+  /**
+   * Revitalize the house
+   */
   public void revitalize() {
     for (Resident resident : residents) {
       resident.setSatisfaction(maxSatisfaction);
@@ -358,14 +554,26 @@ public class House {
     lifetime = maxLifetime;
   }
 
+  /**
+   * Get the max lifetime of the house
+   * @param lifetime Max lifetime of the house
+   */
   public void setMaxLifetime(int lifetime) {
     this.maxLifetime = lifetime;
   }
 
+  /**
+   * Get the revitalization carbon of the house
+   * @return Revitalization carbon of the house
+   */
   public float getRevitalizationCarbon() {
     return revitalizationCarbon;
   }
 
+  /**
+   * Set the revitalization carbon of the house
+   * @param revitalizationCarbon Revitalization carbon of the house
+   */
   public void setRevitalizationCarbon(float revitalizationCarbon) {
     this.revitalizationCarbon = revitalizationCarbon;
   }
