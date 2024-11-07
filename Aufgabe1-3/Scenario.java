@@ -355,7 +355,7 @@ public class Scenario {
     int totalNewHouses = 0;
     for (Resident resident : toMoveOut) {
       for (House house : housesToMoveIn) {
-        if (house.getResidents().size() == 0) {
+        if (house.getResidents().isEmpty()) {
           house.addResident(resident);
           resident.setMovingOut(false);
           break;
@@ -398,14 +398,14 @@ public class Scenario {
     for (House house : housesToRemove) {
       if (house.getResidents().size() > 1) {
         for (House houseToMoveIn : housesToMoveIn) {
-          if (houseToMoveIn.getResidents().size() == 0) {
+          if (houseToMoveIn.getResidents().isEmpty()) {
             houseToMoveIn.addResidents(house.getResidents());
             removeFromHousesToMoveIn.add(houseToMoveIn);
             house.removeResidents(house.getResidents());
             break;
           }
         }
-        if (house.getResidents().size() != 0) {
+        if (!house.getResidents().isEmpty()) {
           houses.add(c.createHouse(house.getResidents()));
           totalNewHouses++;
         }
