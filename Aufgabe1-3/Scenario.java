@@ -9,6 +9,10 @@ import java.util.ArrayList;
 // STYLE: Objektorientiertes Paradigma
 public class Scenario {
   // Nominale Abstraktion (Wahrscheinlichkeiten von Risiken)
+  // BAD: Die Verwendung von statischen Methoden und Konstanten in der Klasse Scenario reduziert die Flexibilität und erschwert das Testen und die Wartung.
+  //      Dynamisches Binden würde flexibleren und wartbareren Code ermöglichen.
+
+  // BAD: Die Klasse Scenario hat zu viele Verantwortlichkeiten, einschließlich der Generierung von Häusern, der Berechnung von Risiken und dem Ausführen der Simulation.
   // Global Risks
   private static final float RISK_EARTHQUAKE = 0.008f;
   private static final float RISK_FLOOD = 0.01f;
@@ -34,6 +38,8 @@ public class Scenario {
 
   private final Config c;
 
+  // GOOD: Die Klasse Scenario hat einen hohen Klassenzusammenhalt.
+  //       Sie ist für die Simulation eines Szenarios zuständig. Die Klasse könnte auch in kleinere Klassen aufgeteilt werden.
   /**
    * Create a new scenario with the given type.
    * @param type The type of the scenario
@@ -65,7 +71,8 @@ public class Scenario {
   }
 
   // STYLE: Prozedurales Paradigma
-
+  // GOOD: Durch dynamisches Binden, kann die CalculateScore Methode in einer Subklasse überschrieben werden.
+  // BAD: Die Methode `calculateScore` verwendet viele magische Zahlen, was die Lesbarkeit und Wartbarkeit reduziert. Diese Werte sollten als Konstanten definiert werden.
   /**
    * Calculate the sustainability score based on the given input parameters.
    *
@@ -76,6 +83,8 @@ public class Scenario {
    * @param avgSatisfactionPerDecade The average satisfaction per decade
    * @param significanceFactor  The significance factor of the buildings
    * @return The calculated sustainability score
+   *
+   * Zusicherung: Alle Eingabeparameter müssen gültige Werte sein (z.B. keine negativen Zahlen).
    */
   public double calculateScore(double avgCostPerYear, double avgCostPerDecade,
                                double avgWastePerYear, double avgCarbonPerYear,
@@ -100,6 +109,8 @@ public class Scenario {
   }
 
   // STYLE: Prozedurales Paradigma
+  // BAD: Die Methode `run` ist zu lang und komplex, was den Kontrollfluss schwer nachvollziehbar macht.
+  // Sie sollte in kleinere Methoden aufgeteilt werden, um die Lesbarkeit und Wartbarkeit zu verbessern.
 
   /**
    * Run the simulation for the given scenario.
@@ -240,6 +251,8 @@ public class Scenario {
     return new Result(totalNewHouses, totalDemolishedHouses, totalNewResidents, totalDiedResidents, totalCostPerResidentPerYear, totalCostPerResidentPerDecade, wastePerResidentPerYear, totalAverageCarbonPerYear, totalSatisfactionPerYear, susScore);
   }
 
+  // GOOD: Die Methode `calculateGlobalRisks` hat einen klaren und nachvollziehbaren Kontrollfluss.
+  // Jede Risikoart wird separat behandelt, was die Lesbarkeit und Wartbarkeit verbessert.
   /**
    * Calculate the global risks for the houses.
    */
@@ -286,6 +299,8 @@ public class Scenario {
     }
   }
 
+  // BAD: Die Methode `calculateLocalRisks` verwendet globale Konstanten, was die Flexibilität und Testbarkeit reduziert.
+  // Besser wäre es, diese Werte als Parameter zu übergeben.
   /**
    * Calculate the local risks for the given house.
    * @param house The house to calculate the risks for
@@ -346,6 +361,7 @@ public class Scenario {
             totalSatisfactionPerYear, significanceFactor);
   }
 
+  // GOOD: Die Methode `moveResidents` vermeidet die Verwendung globaler Variablen und hat einen klaren Kontrollfluss. Die Verwendung von Parametern und lokalen Variablen macht die Methode leicht nachvollziehbar.
   /**
    * Move the residents from the given list to the given houses.
    *
@@ -446,6 +462,8 @@ public class Scenario {
     return totalNewResidents;
   }
 
+  // GOOD: Die Methode `checkResident` hat einen klaren und nachvollziehbaren Kontrollfluss.
+  // Die Verwendung von Parametern und lokalen Variablen macht die Methode leicht verständlich.
   /**
    * Check the residents
    *

@@ -5,7 +5,8 @@ import enums.EventType;
 
 import java.util.ArrayList;
 import java.util.Random;
-
+// GOOD: Die Verwendung von schwacher Kopplung in der Klasse House durch die Verwendung von Schnittstellen für die Resistances ermöglicht es,
+//       verschiedene Implementierungen der Resistances zu verwenden, ohne die Klasse House zu ändern. Dies verbessert die Flexibilität und Wartbarkeit.
 // STYLE: Objektorientiertes Paradigma
 // Nominale Abstraktion (Klasse House)
 public class House {

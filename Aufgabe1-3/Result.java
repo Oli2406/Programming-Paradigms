@@ -9,7 +9,8 @@ public class Result {
     private float totalAverageCarbonPerYear;
     private float totalSatisfactionPerYear;
     private double susScore;
-
+    // BAD: Die Klasse Result ist eng mit der Klasse Scenario gekoppelt, da sie direkt von Scenario abhängt,
+    // um ihre Daten bereitzustellen. Diese starke Kopplung macht den Code weniger flexibel und schwerer zu warten.
     /**
      * Constructor for Result
      *
@@ -23,6 +24,8 @@ public class Result {
      * @param totalAverageCarbonPerYear The total average carbon per year
      * @param totalSatisfactionPerYear The total satisfaction per year
      * @param susScore The sustainability score
+     *
+     * Zusicherung: Alle Parameter müssen gültige Werte sein (z.B. keine negativen Zahlen für Kosten, Abfall, CO2-Ausstoß, Zufriedenheit).
      */
     public Result(int totalNewHouses, int totalDemolishedHouses, int totalNewResidents, int totalDiedResidents, float totalCostPerResidentPerYear, float totalCostPerResidentPerDecade, float wastePerResidentPerYear, float totalAverageCarbonPerYear, float totalSatisfactionPerYear, double susScore) {
         setTotalNewHouses(totalNewHouses);

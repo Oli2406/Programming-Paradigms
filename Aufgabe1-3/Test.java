@@ -5,6 +5,7 @@ import house.Resistance;
 import java.util.ArrayList;
 
 /**
+ * NOTE:
  * Wer hat an was gearbeitet:
  * Ryan Foster (12222173): Basic setup, Enums, basic run method for Scenario, Events, Basic House, Config, Resistance, Events
  * Oliver Kastner (51908223): Calculation method for sustainability score, average score calculation, satisfaction and carbon statistics, revitalisation instead of demolition, High significance buildings, shaping of houses
