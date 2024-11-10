@@ -5,6 +5,9 @@ import enums.ScenarioType;
 import house.House;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.IntStream;
 
 // STYLE: Objektorientiertes Paradigma
 public class Scenario {
@@ -62,12 +65,12 @@ public class Scenario {
    * Generate the houses for the scenario.
    */
   private void generateHouses() {
-    for (int i = 0; i < HOUSES; i++) {
+    IntStream.range(0, HOUSES).forEach(i -> {
       House h = c.createHouse(2);
       initialCost += h.getCost();
       initialCost += h.getRenovationCost();
       houses.add(h);
-    }
+    });
   }
 
   // STYLE: Prozedurales Paradigma
@@ -138,15 +141,13 @@ public class Scenario {
     float totalCostPerResidentPerDecade = 0.0f;
     double significanceFactor = 0.0f;
     int toDivide = 0;
-
-
+    
     ArrayList<House> housesToRemove = new ArrayList<>();
     ArrayList<Resident> residentsToRemove = new ArrayList<>();
     ArrayList<Resident> toMoveOut = new ArrayList<>();
     ArrayList<House> housesToMoveIn = new ArrayList<>();
     ArrayList<House> removeFromHousesToMoveIn = new ArrayList<>();
-
-
+    
     for (int year = 1; year < RUNTIME; year++) {
       totalCost = 0;
       totalCarbon = 0;
@@ -156,6 +157,7 @@ public class Scenario {
       housesToRemove.clear();
       significanceFactor = 0;
       toDivide = 0;
+      
       if (year % 10 == 0) {
         totalSatisfactionPerYear = satisfaction;
         totalCostPerResidentPerDecade += totalCostPerDecade;
@@ -163,7 +165,7 @@ public class Scenario {
         satisfaction = 0;
         totalResidentsPerDecade = 0;
       }
-
+      
       calculateGlobalRisks();
       for (House house : houses) {
         house.age();
@@ -172,20 +174,19 @@ public class Scenario {
           toDivide++;
         }
         calculateLocalRisks(house);
-
+        
         totalDiedResidents += checkResident(house, residentsToRemove, toMoveOut);
-
         totalNewResidents += checkIfChildIsBorn(house);
-
+        
         if (house.getResidents().size() <= 1) {
           housesToMoveIn.add(house);
         }
-
+        
         totalResidents += house.getResidents().size();
         totalResidentsPerDecade += house.getResidents().size();
         totalCost += house.getServiceCost();
         totalCarbon += house.getCarbon();
-
+        
         if (house.getLifetime() == 0) {
           if (Math.random() < 0.5) {
             house.revitalize();
@@ -194,61 +195,54 @@ public class Scenario {
           } else {
             totalCost += house.getDemolishCost();
             totalCost += house.getWasteCost();
-            if (!house.getResidents().isEmpty()) {
-              residentDemolitionWaste += (float) house.getDemolitionWaste() / house.getResidents().size();
-            }
-            housesToRemove.add(house);
-            if (house.getResidents().size() == 1) toMoveOut.add(house.getResidents().getFirst());
-            for (Resident resident : house.getResidents()) {
-              resident.setSatisfaction(Math.max(resident.getSatisfaction() - 0.012f, 0));
-            }
+            
+            handleDemolition(house, housesToRemove, residentDemolitionWaste, toMoveOut);
           }
-        } else {
-          if (house.getRenovationLifetime() == 0) {
-            totalCost += house.getRenovationCost();
-            house.renovate();
-            totalCarbon += house.getRenovationCarbon();
-            if (!house.getResidents().isEmpty()) {
-              residentRenovationWaste += (float) house.getRenovationWaste() / house.getResidents().size();
-            }
+        } else if (house.getRenovationLifetime() == 0) {
+          totalCost += house.getRenovationCost();
+          house.renovate();
+          totalCarbon += house.getRenovationCarbon();
+          if (!house.getResidents().isEmpty()) {
+            residentRenovationWaste += (float) house.getRenovationWaste() / house.getResidents().size();
           }
         }
       }
-
+      
       totalNewHouses += moveResidents(toMoveOut, housesToMoveIn, removeFromHousesToMoveIn);
-
       totalNewHouses += moveResidentsOutOfDestroyedHouses(housesToRemove, housesToMoveIn, removeFromHousesToMoveIn);
-
-
+      
       for (House house : houses) {
         for (Resident resident : house.getResidents()) {
           satisfaction += resident.getSatisfaction();
         }
       }
-
+      
       residentDemolitionWaste /= HOUSES;
       residentRenovationWaste /= HOUSES;
       wastePerResidentPerYear += residentDemolitionWaste + residentRenovationWaste;
       houses.removeAll(housesToRemove);
       totalDemolishedHouses += housesToRemove.size();
       totalCostPerDecade += totalCost;
-
-      if (houses.isEmpty()) {
-        break;
-      }
-      if (totalResidents == 0) {
-        break;
-      }
+      
+      if (houses.isEmpty() || totalResidents == 0) break;
+      
       averageCarbon = (totalCarbon / totalResidents) / year;
       totalAverageCarbonPerYear += averageCarbon;
       averageCost = (float) (totalCost + initialCost) / totalResidents / year;
       totalCostPerResidentPerYear += averageCost;
+      
       if (year % 10 == 9) {
-        satisfaction /= (totalResidentsPerDecade);
+        satisfaction /= totalResidentsPerDecade;
       }
     }
-    susScore = calculateStatistics(significanceFactor, toDivide, totalCostPerResidentPerYear, totalCostPerResidentPerDecade, wastePerResidentPerYear, totalAverageCarbonPerYear, totalSatisfactionPerYear);
-    return new Result(totalNewHouses, totalDemolishedHouses, totalNewResidents, totalDiedResidents, totalCostPerResidentPerYear, totalCostPerResidentPerDecade, wastePerResidentPerYear, totalAverageCarbonPerYear, totalSatisfactionPerYear, susScore);
+    
+    susScore = calculateStatistics(significanceFactor, toDivide, totalCostPerResidentPerYear,
+        totalCostPerResidentPerDecade, wastePerResidentPerYear,
+        totalAverageCarbonPerYear, totalSatisfactionPerYear);
+    
+    return new Result(totalNewHouses, totalDemolishedHouses, totalNewResidents, totalDiedResidents,
+        totalCostPerResidentPerYear, totalCostPerResidentPerDecade, wastePerResidentPerYear,
+        totalAverageCarbonPerYear, totalSatisfactionPerYear, susScore);
   }
 
   // GOOD: Die Methode `calculateGlobalRisks` hat einen klaren und nachvollziehbaren Kontrollfluss.
@@ -257,48 +251,60 @@ public class Scenario {
    * Calculate the global risks for the houses.
    */
   private void calculateGlobalRisks() {
-    if (Math.random() < RISK_EARTHQUAKE) {
-      for (House house : houses) {
-        if (Math.random() < 0.1 && !house.getResistances().isEarthquakeResistance()) {
-          house.setLifetime(0);
-        } else {
-          house.setRenovationLifetime(house.getResistances().isEarthquakeResistance() ? house.getRenovationLifetime() - 1 : 0);
-          house.reduceSatisfaction(EventType.EARTHQUAKE, house.getResistances().isEarthquakeResistance());
+    List<Runnable> globalRiskActions = List.of(
+        () -> {
+          if (Math.random() < RISK_EARTHQUAKE) {
+            houses.forEach(house -> {
+              if (Math.random() < 0.1 && !house.getResistances().isEarthquakeResistance()) {
+                house.setLifetime(0);
+              } else {
+                house.setRenovationLifetime(house.getResistances().isEarthquakeResistance() ? house.getRenovationLifetime() - 1 : 0);
+                house.reduceSatisfaction(EventType.EARTHQUAKE, house.getResistances().isEarthquakeResistance());
+              }
+            });
+          }
+        },
+        () -> {
+          if (Math.random() < RISK_WILDFIRE) {
+            houses.forEach(house -> {
+              if (Math.random() < 0.05 && !house.getResistances().isWildfireResistance()) {
+                house.setLifetime(0);
+              } else {
+                house.setRenovationLifetime(house.getResistances().isWildfireResistance() ? house.getRenovationLifetime() - 1 : 0);
+                house.reduceSatisfaction(EventType.WILDFIRE, house.getResistances().isWildfireResistance());
+              }
+            });
+          }
+        },
+        () -> {
+          if (Math.random() < RISK_FLOOD) {
+            houses.forEach(house -> {
+              if (Math.random() < 0.05 && !house.getResistances().isFloodResistance()) {
+                house.setLifetime(0);
+              } else {
+                house.setRenovationLifetime(house.getResistances().isFloodResistance() ? house.getRenovationLifetime() - 1 : 0);
+                house.reduceSatisfaction(EventType.FLOOD, house.getResistances().isFloodResistance());
+              }
+            });
+          }
+        },
+        () -> {
+          if (Math.random() < RISK_TORNADO) {
+            houses.forEach(house -> {
+              if (Math.random() < 0.15 && !house.getResistances().isTornadoResistance()) {
+                house.setLifetime(0);
+              } else {
+                house.setRenovationLifetime(house.getResistances().isTornadoResistance() ? house.getRenovationLifetime() - 1 : 0);
+                house.reduceSatisfaction(EventType.TORNADO, house.getResistances().isTornadoResistance());
+              }
+            });
+          }
         }
-      }
-    }
-    if (Math.random() < RISK_WILDFIRE) {
-      for (House house : houses) {
-        if (Math.random() < 0.05 && !house.getResistances().isWildfireResistance()) {
-          house.setLifetime(0);
-        } else {
-          house.setRenovationLifetime(house.getResistances().isWildfireResistance() ? house.getRenovationLifetime() - 1 : 0);
-          house.reduceSatisfaction(EventType.WILDFIRE, house.getResistances().isWildfireResistance());
-        }
-      }
-    }
-    if (Math.random() < RISK_FLOOD) {
-      for (House house : houses) {
-        if (Math.random() < 0.05 && !house.getResistances().isFloodResistance()) {
-          house.setLifetime(0);
-        } else {
-          house.setRenovationLifetime(house.getResistances().isFloodResistance() ? house.getRenovationLifetime() - 1 : 0);
-          house.reduceSatisfaction(EventType.FLOOD, house.getResistances().isFloodResistance());
-        }
-      }
-    }
-    if (Math.random() < RISK_TORNADO) {
-      for (House house : houses) {
-        if (Math.random() < 0.15 && !house.getResistances().isTornadoResistance()) {
-          house.setLifetime(0);
-        } else {
-          house.setRenovationLifetime(house.getResistances().isTornadoResistance() ? house.getRenovationLifetime() - 1 : 0);
-          house.reduceSatisfaction(EventType.TORNADO, house.getResistances().isTornadoResistance());
-        }
-      }
-    }
+    );
+    globalRiskActions.forEach(Runnable::run);
   }
-
+  
+  
   // BAD: Die Methode `calculateLocalRisks` verwendet globale Konstanten, was die Flexibilität und Testbarkeit reduziert.
   // Besser wäre es, diese Werte als Parameter zu übergeben.
   /**
@@ -306,37 +312,52 @@ public class Scenario {
    * @param house The house to calculate the risks for
    */
   private void calculateLocalRisks(House house) {
-    if (Math.random() < RISK_INFESTATION) {
-      house.setRenovationLifetime(0);
-      house.reduceSatisfaction(EventType.INFESTATION, false);
-    }
-    if (Math.random() < RISK_FIRE) {
-      if (Math.random() < 0.15 && !house.getResistances().isFireResistance()) {
-        house.setLifetime(0);
-      } else {
-        house.setRenovationLifetime(house.getResistances().isFireResistance() ? house.getRenovationLifetime() - 1 : 0);
-        house.reduceSatisfaction(EventType.FIRE, house.getResistances().isFireResistance());
-      }
-    }
-    if (Math.random() < RISK_BUILDING_COLLAPSE) {
-      if (Math.random() < 0.5) {
-        house.setLifetime(0);
-      } else {
-        house.setRenovationLifetime(0);
-        house.reduceSatisfaction(EventType.BUILDING_COLLAPSE, false);
-      }
-    }
-    if (Math.random() < RISK_POWER_OUTAGE) {
-      house.reduceSatisfaction(EventType.POWER_OUTAGE, house.getResistances().isEnergyResistance());
-    }
-    if (Math.random() < RISK_MAINTENANCE) {
-      house.reduceSatisfaction(EventType.MAINTENANCE, false);
-    }
-    if (Math.random() < RISK_PLUMBING) {
-      house.reduceSatisfaction(EventType.PLUMBING, false);
-    }
+    List<Runnable> riskActions = List.of(
+        () -> {
+          if (Math.random() < RISK_INFESTATION) {
+            house.setRenovationLifetime(0);
+            house.reduceSatisfaction(EventType.INFESTATION, false);
+          }
+        },
+        () -> {
+          if (Math.random() < RISK_FIRE) {
+            if (Math.random() < 0.15 && !house.getResistances().isFireResistance()) {
+              house.setLifetime(0);
+            } else {
+              house.setRenovationLifetime(house.getResistances().isFireResistance() ? house.getRenovationLifetime() - 1 : 0);
+              house.reduceSatisfaction(EventType.FIRE, house.getResistances().isFireResistance());
+            }
+          }
+        },
+        () -> {
+          if (Math.random() < RISK_BUILDING_COLLAPSE) {
+            if (Math.random() < 0.5) {
+              house.setLifetime(0);
+            } else {
+              house.setRenovationLifetime(0);
+              house.reduceSatisfaction(EventType.BUILDING_COLLAPSE, false);
+            }
+          }
+        },
+        () -> {
+          if (Math.random() < RISK_POWER_OUTAGE) {
+            house.reduceSatisfaction(EventType.POWER_OUTAGE, house.getResistances().isEnergyResistance());
+          }
+        },
+        () -> {
+          if (Math.random() < RISK_MAINTENANCE) {
+            house.reduceSatisfaction(EventType.MAINTENANCE, false);
+          }
+        },
+        () -> {
+          if (Math.random() < RISK_PLUMBING) {
+            house.reduceSatisfaction(EventType.PLUMBING, false);
+          }
+        }
+    );
+    riskActions.forEach(Runnable::run);
   }
-
+  
   /**
    * Calculate the statistics for the given input parameters.
    *
@@ -371,39 +392,37 @@ public class Scenario {
    * @return The number of new houses created
    */
   private int moveResidents(ArrayList<Resident> toMoveOut, ArrayList<House> housesToMoveIn, ArrayList<House> removeFromHousesToMoveIn) {
-    int totalNewHouses = 0;
-    for (Resident resident : toMoveOut) {
-      for (House house : housesToMoveIn) {
-        if (house.getResidents().isEmpty()) {
-          house.addResident(resident);
-          resident.setMovingOut(false);
-          break;
-        }
-        if (Math.abs(house.getResidents().getFirst().getAge() - resident.getAge()) <= 5) {
-          house.addResident(resident);
-          resident.setMovingOut(false);
-          house.getResidents().get(0).setCanHaveChildren(true);
-          house.getResidents().get(1).setCanHaveChildren(true);
-          house.getResidents().get(0).setSatisfaction(Math.min(house.getResidents().get(0).getSatisfaction() + 0.012f, c.getSatisfactionRate()));
-          house.getResidents().get(1).setSatisfaction(Math.min(house.getResidents().get(1).getSatisfaction() + 0.012f, c.getSatisfactionRate()));
-          removeFromHousesToMoveIn.add(house);
-          break;
-        }
-      }
-      if (resident.isMovingOut()) {
-        houses.add(c.createHouse(new ArrayList<>() {{
-          add(resident);
-        }}));
-        housesToMoveIn.add(houses.getLast());
+    AtomicInteger totalNewHouses = new AtomicInteger(0);
+    toMoveOut.forEach(resident -> {
+      boolean placedInExistingHouse = housesToMoveIn.stream()
+          .filter(house -> house.getResidents().isEmpty() || Math.abs(house.getResidents().getFirst().getAge() - resident.getAge()) <= 5)
+          .findFirst()
+          .map(house -> {
+            house.addResident(resident);
+            resident.setMovingOut(false);
+            if (house.getResidents().size() >= 2) {
+              house.getResidents().get(0).setCanHaveChildren(true);
+              house.getResidents().get(1).setCanHaveChildren(true);
+              house.getResidents().stream().limit(2).forEach(r ->
+                  r.setSatisfaction(Math.min(r.getSatisfaction() + 0.012f, c.getSatisfactionRate()))
+              );
+            }
+            removeFromHousesToMoveIn.add(house);
+            return true;
+          }).orElse(false);
+      if (!placedInExistingHouse) {
+        House newHouse = c.createHouse(new ArrayList<>() {{ add(resident); }});
+        houses.add(newHouse);
+        housesToMoveIn.add(newHouse);
         resident.setMovingOut(false);
-        totalNewHouses++;
+        totalNewHouses.incrementAndGet();
       }
-      housesToMoveIn.removeAll(removeFromHousesToMoveIn);
-    }
+    });
+    housesToMoveIn.removeAll(removeFromHousesToMoveIn);
     toMoveOut.clear();
-    return totalNewHouses;
+    return totalNewHouses.get();
   }
-
+  
   /**
    * Move the residents out of the destroyed houses.
    *
@@ -413,27 +432,30 @@ public class Scenario {
    * @return The number of new houses created
    */
   private int moveResidentsOutOfDestroyedHouses(ArrayList<House> housesToRemove, ArrayList<House> housesToMoveIn, ArrayList<House> removeFromHousesToMoveIn) {
-    int totalNewHouses = 0;
-    for (House house : housesToRemove) {
-      if (house.getResidents().size() > 1) {
-        for (House houseToMoveIn : housesToMoveIn) {
-          if (houseToMoveIn.getResidents().isEmpty()) {
-            houseToMoveIn.addResidents(house.getResidents());
-            removeFromHousesToMoveIn.add(houseToMoveIn);
-            house.removeResidents(house.getResidents());
-            break;
-          }
-        }
-        if (!house.getResidents().isEmpty()) {
-          houses.add(c.createHouse(house.getResidents()));
-          totalNewHouses++;
-        }
-      }
-    }
+    AtomicInteger totalNewHouses = new AtomicInteger();
+    housesToRemove.stream()
+        .filter(house -> house.getResidents().size() > 1)
+        .forEach(house -> {
+          housesToMoveIn.stream()
+              .filter(houseToMoveIn -> houseToMoveIn.getResidents().isEmpty())
+              .findFirst()
+              .ifPresentOrElse(
+                  houseToMoveIn -> {
+                    houseToMoveIn.addResidents(house.getResidents());
+                    removeFromHousesToMoveIn.add(houseToMoveIn);
+                    house.removeResidents(house.getResidents());
+                  },
+                  () -> {
+                    houses.add(c.createHouse(house.getResidents()));
+                    totalNewHouses.getAndIncrement();
+                  }
+              );
+        });
     housesToMoveIn.removeAll(removeFromHousesToMoveIn);
-    return totalNewHouses;
+    return totalNewHouses.get();
   }
-
+  
+  
   /**
    * Check if a child is born in the given house.
    *
@@ -441,27 +463,26 @@ public class Scenario {
    * @return The number of new residents
    */
   private int checkIfChildIsBorn(House house) {
-    int totalNewResidents = 0;
-    if (house.getResidents().size() >= 2) {
-      if (house.getResidents().get(0).isCanHaveChildren() && house.getResidents().get(1).isCanHaveChildren()) {
-        for (Resident resident : house.getResidents()) {
-          resident.setSatisfaction(Math.min(resident.getSatisfaction() + 0.012f, c.getSatisfactionRate()));
-        }
-        if (Math.random() < 0.12) {
-          house.addResident(new Resident(
-              0,
-              c.getSatisfactionRate(),
-              true,
-              false,
-              false
-          ));
-          totalNewResidents++;
-        }
+    if (house.getResidents().size() < 2) {
+      return 0;
+    }
+    boolean canHaveChild = house.getResidents().stream()
+        .limit(2)
+        .allMatch(Resident::isCanHaveChildren);
+    
+    if (canHaveChild) {
+      house.getResidents().forEach(resident ->
+          resident.setSatisfaction(Math.min(resident.getSatisfaction() + 0.012f, c.getSatisfactionRate()))
+      );
+      if (Math.random() < 0.12) {
+        house.addResident(new Resident(0, c.getSatisfactionRate(), true, false, false));
+        return 1;
       }
     }
-    return totalNewResidents;
+    return 0;
   }
-
+  
+  
   // GOOD: Die Methode `checkResident` hat einen klaren und nachvollziehbaren Kontrollfluss.
   // Die Verwendung von Parametern und lokalen Variablen macht die Methode leicht verständlich.
   /**
@@ -473,22 +494,48 @@ public class Scenario {
    * @return The number of died residents
    */
   private int checkResident(House house, ArrayList<Resident> residentsToRemove, ArrayList<Resident> toMoveOut) {
-    int totalDiedResidents = 0;
-    for (Resident resident : house.getResidents()) {
+    AtomicInteger totalDiedResidents = new AtomicInteger();
+    house.getResidents().removeIf(resident -> {
       resident.age();
       if (resident.isDead()) {
         residentsToRemove.add(resident);
-        totalDiedResidents++;
-        break;
-      }
-      if (resident.isMovingOut()) {
+        totalDiedResidents.getAndIncrement();
+        return true;
+      } else if (resident.isMovingOut()) {
         toMoveOut.add(resident);
         resident.setLivesWithParents(false);
         residentsToRemove.add(resident);
+        return true;
       }
-    }
+      return false;
+    });
+    
     house.getResidents().removeAll(residentsToRemove);
     residentsToRemove.clear();
-    return totalDiedResidents;
+    return totalDiedResidents.get();
+  }
+  
+  /**
+   * Handles demolition by updating resident satisfaction, demolition waste, and
+   * adding the house to the demolition list.
+   *
+   * @param house The house to demolish
+   * @param housesToRemove List to add house if it's demolished
+   * @param residentDemolitionWaste Total demolition waste per resident
+   * @param toMoveOut List of residents who need to move out
+   */
+  private void handleDemolition(House house, ArrayList<House> housesToRemove, float residentDemolitionWaste, ArrayList<Resident> toMoveOut) {
+    if (!house.getResidents().isEmpty()) {
+      residentDemolitionWaste += (float) house.getDemolitionWaste() / house.getResidents().size();
+    }
+    housesToRemove.add(house);
+    
+    house.getResidents().forEach(resident ->
+        resident.setSatisfaction(Math.max(resident.getSatisfaction() - 0.012f, 0))
+    );
+    
+    if (house.getResidents().size() == 1) {
+      toMoveOut.add(house.getResidents().getFirst());
+    }
   }
 }
