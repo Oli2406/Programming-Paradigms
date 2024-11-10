@@ -4,20 +4,10 @@ import house.Resistance;
 
 import java.util.ArrayList;
 
-/**
- * NOTE:
- * Wer hat an was gearbeitet:
- * Ryan Foster (12222173): Basic setup, Enums, basic run method for Scenario, Events, Basic House, Config, Resistance, Events,
- *        added comments programming paradigms as well as good and bad code practice, implemented feedback
- * Oliver Kastner (51908223): Calculation method for sustainability score, average score calculation, satisfaction and carbon statistics,
- *        revitalisation instead of demolition, High significance buildings, shaping of houses, added lambdas and comments, implemented feedback
- * Noah Oguamalam (12225111): Premium House, Bio House, Research for house values, Residents, new Houses during simulation,
- *        added lambdas and comments, implemented feedback
- */
 public class Test {
-  
+
   public Test() {
-    //These values represent the Premium House, it should be very close to the preset
+    // These values represent the Premium House, it should be very close to the preset
     Resistance resistances = new Resistance(true, true, true, true, true, true);
     Config c = new Config(250000, 40, 200,
         100, 25, 3000, 40000,
@@ -29,22 +19,14 @@ public class Test {
     ArrayList<Result> bioScores = new ArrayList<>();
     ArrayList<Result> premiumScores = new ArrayList<>();
 
-    //STYLE: Lambda expressions are used to create threads for each scenario type
-    //STYLE: Threads for the parallel execution of the scenarios
+    // STYLE: Lambda expressions are used to create threads for each scenario type
+    // STYLE: Threads for the parallel execution of the scenarios
     Thread configThread = new Thread(() -> {
       for (int i = 0; i < 100; i++) {
         Scenario config = new Scenario(c);
         configScores.add(config.run());
       }
-      double totalConfigScore = 0;
-      double totalConfigSatisfaction = 0;
-      for (Result con : configScores) {
-        totalConfigScore += con.getSusScore();
-        totalConfigSatisfaction += con.getTotalSatisfactionPerYear();
-      }
-      double avgConfigScore = Math.round((totalConfigScore / configScores.size())*10000.0)/10000.0;
-      double avgConfigSatisfaction = Math.round((totalConfigSatisfaction / configScores.size())*10000.0)/10000.0;
-      printResult("Config", avgConfigScore, avgConfigSatisfaction);
+      printAggregatedResults("Config", configScores);
     });
 
     Thread minimalThread = new Thread(() -> {
@@ -52,15 +34,7 @@ public class Test {
         Scenario minimal = new Scenario(ScenarioType.MINIMAL);
         minimalScores.add(minimal.run());
       }
-      double totalMinimalScore = 0;
-      double totalMinimalSatisfaction = 0;
-      for (Result min : minimalScores) {
-        totalMinimalScore += min.getSusScore();
-        totalMinimalSatisfaction += min.getTotalSatisfactionPerYear();
-      }
-      double avgMinimalScore = Math.round((totalMinimalScore / minimalScores.size())*10000.0)/10000.0;
-      double avgMinimalSatisfaction = Math.round((totalMinimalSatisfaction / minimalScores.size())*10000.0)/10000.0;
-      printResult("Minimal", avgMinimalScore, avgMinimalSatisfaction);
+      printAggregatedResults("Minimal", minimalScores);
     });
 
     Thread bioThread = new Thread(() -> {
@@ -68,15 +42,7 @@ public class Test {
         Scenario bio = new Scenario(ScenarioType.BIO);
         bioScores.add(bio.run());
       }
-      double totalBioScore = 0;
-      double totalBioSatisfaction = 0;
-      for (Result bioScore : bioScores) {
-        totalBioScore += bioScore.getSusScore();
-        totalBioSatisfaction += bioScore.getTotalSatisfactionPerYear();
-      }
-      double avgBioScore = Math.round((totalBioScore / bioScores.size())*10000.0)/10000.0;
-      double avgBioSatisfaction = Math.round((totalBioSatisfaction / bioScores.size())*10000.0)/10000.0;
-      printResult("Bio", avgBioScore, avgBioSatisfaction);
+      printAggregatedResults("Bio", bioScores);
     });
 
     Thread premiumThread = new Thread(() -> {
@@ -84,18 +50,9 @@ public class Test {
         Scenario premium = new Scenario(ScenarioType.PREMIUM);
         premiumScores.add(premium.run());
       }
-      double totalPremiumScore = 0;
-      for (Result premiumScore : premiumScores) {
-        totalPremiumScore += premiumScore.getSusScore();
-      }
-      double totalPremiumSatisfaction = 0;
-        for (Result premiumScore : premiumScores) {
-            totalPremiumSatisfaction += premiumScore.getTotalSatisfactionPerYear();
-        }
-      double avgPremiumScore = Math.round((totalPremiumScore / premiumScores.size())*10000.0)/10000.0;
-      double avgPremiumSatisfaction = Math.round((totalPremiumSatisfaction / premiumScores.size())*10000.0)/10000.0;
-      printResult("Premium", avgPremiumScore, avgPremiumSatisfaction);
+      printAggregatedResults("Premium", premiumScores);
     });
+
     configThread.start();
     minimalThread.start();
     bioThread.start();
@@ -107,21 +64,61 @@ public class Test {
   }
 
   /**
-   * Prints the result of the simulation
+   * Prints the aggregated results of the simulation
    * @param name The name of the scenario
-   * @param avgScore The average sustainability score
-   * @param avgSatisfaction The average satisfaction
+   * @param results The list of results
    */
-  private void printResult(String name, double avgScore, double avgSatisfaction) {
-      String sb = "-------------------------------\n"
-          + name
-          + ":\t"
-          + avgScore
-          + "\n"
-          + "\t - Satisfaction: "
-          + avgSatisfaction
-          + "\n"
-          + "-------------------------------";
+  private void printAggregatedResults(String name, ArrayList<Result> results) {
+    int totalNewHouses = 0;
+    int totalDemolishedHouses = 0;
+    int totalNewResidents = 0;
+    int totalDiedResidents = 0;
+    float totalCostPerResidentPerYear = 0;
+    float totalCostPerResidentPerDecade = 0;
+    float wastePerResidentPerYear = 0;
+    float totalAverageCarbonPerYear = 0;
+    float totalSatisfactionPerYear = 0;
+    double totalSusScore = 0;
+
+    for (Result result : results) {
+      totalNewHouses += result.getTotalNewHouses();
+      totalDemolishedHouses += result.getTotalDemolishedHouses();
+      totalNewResidents += result.getTotalNewResidents();
+      totalDiedResidents += result.getTotalDiedResidents();
+      totalCostPerResidentPerYear += result.getTotalCostPerResidentPerYear();
+      totalCostPerResidentPerDecade += result.getTotalCostPerResidentPerDecade();
+      wastePerResidentPerYear += result.getWastePerResidentPerYear();
+      totalAverageCarbonPerYear += result.getTotalAverageCarbonPerYear();
+      totalSatisfactionPerYear += result.getTotalSatisfactionPerYear();
+      totalSusScore += result.getSusScore();
+    }
+
+    int resultCount = results.size();
+    double avgNewHouses = Math.round(((double) totalNewHouses / resultCount) * 10000.0) / 10000.0;
+    double avgDemolishedHouses = Math.round(((double) totalDemolishedHouses / resultCount) * 10000.0) / 10000.0;
+    double avgNewResidents = Math.round(((double) totalNewResidents / resultCount) * 10000.0) / 10000.0;
+    double avgDiedResidents = Math.round(((double) totalDiedResidents / resultCount) * 10000.0) / 10000.0;
+    double avgCostPerResidentPerYear = Math.round((totalCostPerResidentPerYear / resultCount) * 10000.0) / 10000.0;
+    double avgCostPerResidentPerDecade = Math.round((totalCostPerResidentPerDecade / resultCount) * 10000.0) / 10000.0;
+    double avgWastePerResidentPerYear = Math.round((wastePerResidentPerYear / resultCount) * 10000.0) / 10000.0;
+    double avgAverageCarbonPerYear = Math.round((totalAverageCarbonPerYear / resultCount) * 10000.0) / 10000.0;
+    double avgSatisfactionPerYear = Math.round((totalSatisfactionPerYear / resultCount) * 10000.0) / 10000.0;
+    double avgSusScore = Math.round((totalSusScore / resultCount) * 10000.0) / 10000.0;
+
+    String sb = "-------------------------------\n"
+        + name
+        + ":\n"
+        + "Average New Houses: " + avgNewHouses + "\n"
+        + "Average Demolished Houses: " + avgDemolishedHouses + "\n"
+        + "Average New Residents: " + avgNewResidents + "\n"
+        + "Average Died Residents: " + avgDiedResidents + "\n"
+        + "Average Cost Per Resident Per Year: " + avgCostPerResidentPerYear + "\n"
+        + "Average Cost Per Resident Per Decade: " + avgCostPerResidentPerDecade + "\n"
+        + "Average Waste Per Resident Per Year: " + avgWastePerResidentPerYear + "\n"
+        + "Average Carbon Per Year: " + avgAverageCarbonPerYear + "\n"
+        + "Average Satisfaction Per Year: " + avgSatisfactionPerYear + "\n"
+        + "Average Sustainability Score: " + avgSusScore + "\n"
+        + "-------------------------------";
     System.out.println(sb);
   }
 }
