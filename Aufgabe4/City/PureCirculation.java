@@ -2,7 +2,7 @@ package City;
 
 import java.util.Set;
 
-public class PureCirculation extends Circulation {
+public class PureCirculation implements Space {
     @Override
     public Entity entity() {
         return null;
@@ -17,5 +17,4 @@ public class PureCirculation extends Circulation {
     public Set<Space> remove() {
         return Set.of();
     }
-    // PureCirculation-specific implementation
 }

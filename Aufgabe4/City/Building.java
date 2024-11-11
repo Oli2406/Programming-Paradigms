@@ -2,13 +2,23 @@ package City;
 
 import java.util.Set;
 
-public abstract class Building implements Entity {
+public class Building implements Entity {
     private Set<Space> spaces;
+
+    private Set<Room> rooms;
+    private boolean isOnGround;
 
     public Set<Space> spaces() {
         return spaces;
     }
 
-    public abstract void add(Entity entity);
-    public abstract void remove(Entity entity);
+    @Override
+    public void add(Entity entity) {
+
+    }
+
+    @Override
+    public void remove(Entity entity) {
+
+    }
 }

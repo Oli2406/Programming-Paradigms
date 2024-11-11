@@ -18,5 +18,8 @@ public class Interior implements Space {
         return Set.of();
     }
     // Implementation für Innenbereiche
+    public boolean isLift() {
+        return this instanceof Lift;
+    }
 }
 
