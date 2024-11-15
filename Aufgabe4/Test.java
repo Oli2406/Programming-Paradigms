@@ -43,6 +43,14 @@ public class Test {
         Set<Space> buildingSpaces = building.spaces();
         assert buildingSpaces.contains(room1) && buildingSpaces.contains(room2) : "Building substitution test failed";
         assert room1.escape().getPath().size() == 3 : "Escape path construction test failed";
+        assert circulation instanceof Space : "Circulation substitutability as Space failed";
+        assert building instanceof Entity : "Building substitutability as Entity failed";
+        
+        Ensemble e = new Ensemble(publicRoad);
+        e.add(building);
+        e.add(library);
+        assert e.entities().size() == 2 : "Ensemble size test failed";
+        assert e instanceof Entity : "Ensemble substitutability as Entity failed";
         
         // Test 6: Complex containing Building as Entity
         Complex complex = new Complex() {
@@ -75,6 +83,7 @@ public class Test {
         };
         assert complex.buildings().size() == 1 : "Complex buildings() test failed under substitution";
         assert complex.spaces().size() == 2 : "Complex spaces() test failed under substitution";
+        assert complex instanceof Entity : "Complex substitutability as Entity failed";
         
         System.out.println("All substitutability tests passed!");
     }
