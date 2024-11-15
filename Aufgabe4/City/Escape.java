@@ -5,19 +5,26 @@ import java.util.Iterator;
 import java.util.List;
 
 public class Escape {
-    private Space space;
-    private List<Space> path;
+    
+    private final List<Space> path;
 
-    public Escape(Space space, List<Space> path) {
-        this.space = space;
+    public Escape(List<Space> path) {
         this.path = path;
+    }
+    
+    public void add(Space space) {
+        path.add(space);
+    }
+    
+    public List<Space> getPath() {
+        return path;
     }
 
     public Space space() {
-        return space;
+        return path.getFirst();
     }
 
-    /*public Iterator<Space> iterator(boolean lift, boolean enter) {
+    public Iterator<Space> iterator(boolean lift, boolean enter) {
         List<Space> filteredPath = new ArrayList<>();
         for (Space s : path) {
             if (!lift && s.isLift()) {
@@ -29,5 +36,10 @@ public class Escape {
             throw new IllegalStateException("Path is too long, not sufficiently accessible.");
         }
         return filteredPath.iterator();
-    }*/
+    }
+    
+    @Override
+    public String toString() {
+        return path.toString();
+    }
 }

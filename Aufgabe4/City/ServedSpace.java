@@ -1,27 +1,10 @@
 package City;
 
-import java.util.Set;
-
-public class ServedSpace extends Room {
-    private double alternativeEscapeArea;
-
-    public double alternativeEscape() {
-        return alternativeEscapeArea;
+public abstract class ServedSpace extends Interior {
+    public ServedSpace(Entity entity, Escape escape) {
+        super(entity, escape);
     }
-
-    @Override
-    public Entity entity() {
-        return null;
-    }
-
-    @Override
-    public Escape escape() {
-        return null;
-    }
-
-    @Override
-    public Set<Space> remove() {
-        return Set.of();
-    }
+    
+    //Zusicherung: Summe der lichten Flächen >= 1.1m²
+    public abstract double alternativeEscape();
 }
-

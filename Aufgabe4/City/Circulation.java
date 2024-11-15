@@ -3,43 +3,39 @@ package City;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Circulation implements Space {
-    private Set<Space> connectedSpaces;
-    private String type; // e.g., "hallway", "staircase", "access path"
-
-    public Circulation(String type) {
-        this.type = type;
+public class Circulation extends Space {
+    private final Set<Space> connectedSpaces;
+    private Entity entity;
+    
+    public Circulation(Entity entity, Escape escapePath) {
+        super(entity, escapePath);
         this.connectedSpaces = new HashSet<>();
+        this.entity = entity;
     }
-
-    public String getType() {
-        return type;
+    
+    public boolean isAccessible() {
+        return !connectedSpaces.isEmpty();
     }
-
-    public void addConnectedSpace(Space space) {
-        connectedSpaces.add(space);
-    }
-
+    
     public Set<Space> getConnectedSpaces() {
         return connectedSpaces;
     }
-
-    public boolean isCirculationArea() {
-        return !connectedSpaces.isEmpty();
+    
+    public void addConnection(Space space) {
+        connectedSpaces.add(space);
     }
-
-    @Override
-    public Entity entity() {
-        return null;
-    }
-
-    @Override
-    public Escape escape() {
-        return null;
-    }
-
+    
     @Override
     public Set<Space> remove() {
-        return Set.of();
+        Set<Space> removedSpaces = new HashSet<>(connectedSpaces);
+        connectedSpaces.clear();
+        this.entity = null;
+        removedSpaces.add(this);
+        return removedSpaces;
+    }
+    
+    @Override
+    public Entity entity() {
+        return this.entity;
     }
 }

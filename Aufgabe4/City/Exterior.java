@@ -1,22 +1,9 @@
 package City;
 
-import java.util.Set;
 
-public class Exterior implements Space {
-    @Override
-    public Entity entity() {
-        return null;
+public class Exterior extends Space {
+    public Exterior(Entity entity, Escape escape) {
+        super(entity, escape);
     }
-
-    @Override
-    public Escape escape() {
-        return null;
-    }
-
-    @Override
-    public Set<Space> remove() {
-        return Set.of();
-    }
-    // Implementation für Außenbereiche
+    //Zusicherung: muss in ein Gebäude eingebunden sein.
 }
-

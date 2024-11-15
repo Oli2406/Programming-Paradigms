@@ -1,25 +1,9 @@
 package City;
 
-import java.util.Set;
 
-public class Interior implements Space {
-    @Override
-    public Entity entity() {
-        return null;
+public class Interior extends Room {
+    public Interior(Entity entity, Escape escape) {
+        super(entity, escape);
     }
-
-    @Override
-    public Escape escape() {
-        return null;
-    }
-
-    @Override
-    public Set<Space> remove() {
-        return Set.of();
-    }
-    // Implementation für Innenbereiche
-    public boolean isLift() {
-        return this instanceof Lift;
-    }
+    //Zusicherung: Muss rundum durch eine Hülle abgeschlossen sein.
 }
-

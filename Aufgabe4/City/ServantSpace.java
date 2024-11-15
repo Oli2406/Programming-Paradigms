@@ -1,21 +1,11 @@
 package City;
 
-import java.util.Set;
 
-public class ServantSpace extends Room {
-    @Override
-    public Entity entity() {
-        return null;
+public abstract class ServantSpace extends Interior {
+    public ServantSpace(Entity entity, Escape escape) {
+        super(entity, escape);
     }
-
-    @Override
-    public Escape escape() {
-        return null;
-    }
-
-    @Override
-    public Set<Space> remove() {
-        return Set.of();
-    }
-    // Implementierung spezifischer Methoden für dienende Räume
+    // Zusicherung:  ausreichende natürliche und künstliche
+    // Belichtung und Belüftung, Heizung, Mindesthöhen,
+    // Bewegungsflächen, zweite Fluchtwege über öffenbare Fenster ins Freie
 }

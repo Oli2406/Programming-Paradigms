@@ -1,40 +1,39 @@
 package City;
 
+
 import java.util.HashSet;
 import java.util.Set;
 
-public class Complex implements Entity {
-    private Set<Building> buildings;
-    private Set<Space> outdoorSpaces;
-
+public abstract class Complex implements Entity {
+    private final Set<Building> buildings;
+    private final Set<Space> externalSpaces;
+    
     public Complex() {
         this.buildings = new HashSet<>();
-        this.outdoorSpaces = new HashSet<>();
+        this.externalSpaces = new HashSet<>();
     }
-
+    
     public Set<Building> buildings() {
         return buildings;
     }
-
-    public Set<Space> spaces() {
-        return outdoorSpaces;
-    }
-
+    
     public void addBuilding(Building building) {
         buildings.add(building);
     }
-
-    public void addOutdoorSpace(Space space) {
-        outdoorSpaces.add(space);
+    
+    public void removeBuilding(Building building) {
+        buildings.remove(building);
     }
-
-    @Override
-    public void add(Entity entity) {
-
+    
+    public Set<Space> spaces() {
+        return externalSpaces;
     }
-
-    @Override
-    public void remove(Entity entity) {
-
+    
+    public void addExternalSpace(Space space) {
+        externalSpaces.add(space);
+    }
+    
+    public void removeExternalSpace(Space space) {
+        externalSpaces.remove(space);
     }
 }

@@ -10,4 +10,9 @@ public class City implements Entity {
     public void remove(Entity entity) {
 
     }
+    
+    @Override
+    public Entity getEntity() {
+        return this;
+    }
 }

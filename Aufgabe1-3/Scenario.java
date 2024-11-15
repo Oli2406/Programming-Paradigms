@@ -14,15 +14,15 @@ public class Scenario {
   // Nominale Abstraktion (Wahrscheinlichkeiten von Risiken)
   // BAD: Die Verwendung von statischen Methoden und Konstanten in der Klasse Scenario reduziert die Flexibilität und erschwert das Testen und die Wartung.
   //      Dynamisches Binden würde flexibleren und wartbareren Code ermöglichen.
-
+  
   // BAD: Die Klasse Scenario hat zu viele Verantwortlichkeiten, einschließlich der Generierung von Häusern, der Berechnung von Risiken und dem Ausführen der Simulation.
   // Global Risks
   private static final float RISK_EARTHQUAKE = 0.008f;
   private static final float RISK_FLOOD = 0.01f;
   private static final float RISK_TORNADO = 0.005f;
   private static final float RISK_WILDFIRE = 0.001f;
-
-
+  
+  
   // Local Risks
   private static final float RISK_INFESTATION = 0.005f;
   private static final float RISK_FIRE = 0.01f;
@@ -30,37 +30,39 @@ public class Scenario {
   private static final float RISK_POWER_OUTAGE = 0.025f;
   private static final float RISK_MAINTENANCE = 0.02f;
   private static final float RISK_PLUMBING = 0.015f;
-
-
+  
+  
   // Runtime
   private static final int RUNTIME = 101;
-
+  
   private static final int HOUSES = 10;
+  private final Config c;
   ArrayList<House> houses = new ArrayList<>();
   private int initialCost = 0;
-
-  private final Config c;
-
+  
   // GOOD: Die Klasse Scenario hat einen hohen Klassenzusammenhalt.
   //       Sie ist für die Simulation eines Szenarios zuständig. Die Klasse könnte auch in kleinere Klassen aufgeteilt werden.
+  
   /**
    * Create a new scenario with the given type.
+   *
    * @param type The type of the scenario
    */
   public Scenario(ScenarioType type) {
     this.c = new Config(type);
     this.generateHouses();
   }
-
+  
   /**
    * Create a new scenario with the given configuration.
+   *
    * @param c The configuration for the scenario
    */
   public Scenario(Config c) {
     this.c = c;
     this.generateHouses();
   }
-
+  
   /**
    * Generate the houses for the scenario.
    */
@@ -72,49 +74,50 @@ public class Scenario {
       houses.add(h);
     });
   }
-
+  
   // STYLE: Prozedurales Paradigma
   // GOOD: Durch dynamisches Binden, kann die CalculateScore Methode in einer Subklasse überschrieben werden.
   // BAD: Die Methode `calculateScore` verwendet viele magische Zahlen, was die Lesbarkeit und Wartbarkeit reduziert. Diese Werte sollten als Konstanten definiert werden.
+  
   /**
    * Calculate the sustainability score based on the given input parameters.
    *
-   * @param avgCostPerYear      The average cost per resident per year
-   * @param avgCostPerDecade    The average cost per resident per decade
-   * @param avgWastePerYear     The average waste per resident per year
-   * @param avgCarbonPerYear    The average carbon per resident per year
+   * @param avgCostPerYear           The average cost per resident per year
+   * @param avgCostPerDecade         The average cost per resident per decade
+   * @param avgWastePerYear          The average waste per resident per year
+   * @param avgCarbonPerYear         The average carbon per resident per year
    * @param avgSatisfactionPerDecade The average satisfaction per decade
-   * @param significanceFactor  The significance factor of the buildings
+   * @param significanceFactor       The significance factor of the buildings
    * @return The calculated sustainability score
-   *
+   * <p>
    * Zusicherung: Alle Eingabeparameter müssen gültige Werte sein (z.B. keine negativen Zahlen).
    */
   public double calculateScore(double avgCostPerYear, double avgCostPerDecade,
                                double avgWastePerYear, double avgCarbonPerYear,
                                double avgSatisfactionPerDecade, double significanceFactor) {
-
+    
     double maxCostPerYear = 10000;
     double maxCostPerDecade = 100000;
     double maxWastePerYear = 10;
     double maxCarbonPerYear = 10;
     double maxSatisfactionPoints = 20;
-
+    
     double normCostPerYear = avgCostPerYear / maxCostPerYear;
     double normCostPerDecade = avgCostPerDecade / maxCostPerDecade;
     double normWastePerYear = avgWastePerYear / maxWastePerYear;
     double normCarbonPerYear = avgCarbonPerYear / maxCarbonPerYear;
     double satisfaction = maxSatisfactionPoints * avgSatisfactionPerDecade;
-
+    
     return ((1.0 / (normCostPerYear + normCostPerDecade)) +
         (1.0 / normWastePerYear) +
         (1.5 / normCarbonPerYear) +
         (satisfaction) * significanceFactor);
   }
-
+  
   // STYLE: Prozedurales Paradigma
   // BAD: Die Methode `run` ist zu lang und komplex, was den Kontrollfluss schwer nachvollziehbar macht.
   // Sie sollte in kleinere Methoden aufgeteilt werden, um die Lesbarkeit und Wartbarkeit zu verbessern.
-
+  
   /**
    * Run the simulation for the given scenario.
    *
@@ -244,9 +247,10 @@ public class Scenario {
         totalCostPerResidentPerYear, totalCostPerResidentPerDecade, wastePerResidentPerYear,
         totalAverageCarbonPerYear, totalSatisfactionPerYear, susScore);
   }
-
+  
   // GOOD: Die Methode `calculateGlobalRisks` hat einen klaren und nachvollziehbaren Kontrollfluss.
   // Jede Risikoart wird separat behandelt, was die Lesbarkeit und Wartbarkeit verbessert.
+  
   /**
    * Calculate the global risks for the houses.
    */
@@ -307,8 +311,10 @@ public class Scenario {
   
   // BAD: Die Methode `calculateLocalRisks` verwendet globale Konstanten, was die Flexibilität und Testbarkeit reduziert.
   // Besser wäre es, diese Werte als Parameter zu übergeben.
+  
   /**
    * Calculate the local risks for the given house.
+   *
    * @param house The house to calculate the risks for
    */
   private void calculateLocalRisks(House house) {
@@ -361,13 +367,13 @@ public class Scenario {
   /**
    * Calculate the statistics for the given input parameters.
    *
-   * @param significanceFactor The significance factor of the buildings
-   * @param toDivide The number to divide the significance factor by
-   * @param totalCostPerResidentPerYear The total cost per resident per year
+   * @param significanceFactor            The significance factor of the buildings
+   * @param toDivide                      The number to divide the significance factor by
+   * @param totalCostPerResidentPerYear   The total cost per resident per year
    * @param totalCostPerResidentPerDecade The total cost per resident per decade
-   * @param wastePerResidentPerYear The waste per resident per year
-   * @param totalAverageCarbonPerYear The total average carbon per year
-   * @param totalSatisfactionPerYear The total satisfaction per year
+   * @param wastePerResidentPerYear       The waste per resident per year
+   * @param totalAverageCarbonPerYear     The total average carbon per year
+   * @param totalSatisfactionPerYear      The total satisfaction per year
    * @return The calculated sustainability score
    */
   private double calculateStatistics(double significanceFactor, int toDivide, float totalCostPerResidentPerYear, float totalCostPerResidentPerDecade, float wastePerResidentPerYear, float totalAverageCarbonPerYear, float totalSatisfactionPerYear) {
@@ -378,16 +384,17 @@ public class Scenario {
     totalAverageCarbonPerYear /= RUNTIME;
     totalSatisfactionPerYear /= ((float) RUNTIME / 10);
     return calculateScore(totalCostPerResidentPerYear, totalCostPerResidentPerDecade,
-            wastePerResidentPerYear, totalAverageCarbonPerYear,
-            totalSatisfactionPerYear, significanceFactor);
+        wastePerResidentPerYear, totalAverageCarbonPerYear,
+        totalSatisfactionPerYear, significanceFactor);
   }
-
+  
   // GOOD: Die Methode `moveResidents` vermeidet die Verwendung globaler Variablen und hat einen klaren Kontrollfluss. Die Verwendung von Parametern und lokalen Variablen macht die Methode leicht nachvollziehbar.
+  
   /**
    * Move the residents from the given list to the given houses.
    *
-   * @param toMoveOut The list of residents to move out
-   * @param housesToMoveIn The list of houses to move in
+   * @param toMoveOut                The list of residents to move out
+   * @param housesToMoveIn           The list of houses to move in
    * @param removeFromHousesToMoveIn The list of houses to remove from the houses to move in
    * @return The number of new houses created
    */
@@ -411,7 +418,9 @@ public class Scenario {
             return true;
           }).orElse(false);
       if (!placedInExistingHouse) {
-        House newHouse = c.createHouse(new ArrayList<>() {{ add(resident); }});
+        House newHouse = c.createHouse(new ArrayList<>() {{
+          add(resident);
+        }});
         houses.add(newHouse);
         housesToMoveIn.add(newHouse);
         resident.setMovingOut(false);
@@ -426,8 +435,8 @@ public class Scenario {
   /**
    * Move the residents out of the destroyed houses.
    *
-   * @param housesToRemove The list of houses to remove
-   * @param housesToMoveIn The list of houses to move in
+   * @param housesToRemove           The list of houses to remove
+   * @param housesToMoveIn           The list of houses to move in
    * @param removeFromHousesToMoveIn The list of houses to remove from the houses to move in
    * @return The number of new houses created
    */
@@ -485,12 +494,13 @@ public class Scenario {
   
   // GOOD: Die Methode `checkResident` hat einen klaren und nachvollziehbaren Kontrollfluss.
   // Die Verwendung von Parametern und lokalen Variablen macht die Methode leicht verständlich.
+  
   /**
    * Check the residents
    *
-   * @param house The house to check
+   * @param house             The house to check
    * @param residentsToRemove The list of residents to remove
-   * @param toMoveOut The list of residents to move out
+   * @param toMoveOut         The list of residents to move out
    * @return The number of died residents
    */
   private int checkResident(House house, ArrayList<Resident> residentsToRemove, ArrayList<Resident> toMoveOut) {
@@ -519,10 +529,10 @@ public class Scenario {
    * Handles demolition by updating resident satisfaction, demolition waste, and
    * adding the house to the demolition list.
    *
-   * @param house The house to demolish
-   * @param housesToRemove List to add house if it's demolished
+   * @param house                   The house to demolish
+   * @param housesToRemove          List to add house if it's demolished
    * @param residentDemolitionWaste Total demolition waste per resident
-   * @param toMoveOut List of residents who need to move out
+   * @param toMoveOut               List of residents who need to move out
    */
   private void handleDemolition(House house, ArrayList<House> housesToRemove, float residentDemolitionWaste, ArrayList<Resident> toMoveOut) {
     if (!house.getResidents().isEmpty()) {
