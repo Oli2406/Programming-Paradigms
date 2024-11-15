@@ -4,6 +4,17 @@ import house.Resistance;
 
 import java.util.ArrayList;
 
+/**
+ * NOTE:
+ * Wer hat an was gearbeitet:
+ * Ryan Foster (12222173): Basic setup, Enums, basic run method for Scenario, Events, Basic House, Config, Resistance, Events,
+ *        added comments programming paradigms as well as good and bad code practice, implemented feedback
+ * Oliver Kastner (51908223): Calculation method for sustainability score, average score calculation, satisfaction and carbon statistics,
+ *        revitalisation instead of demolition, High significance buildings, shaping of houses, added lambdas and comments, implemented feedback
+ * Noah Oguamalam (12225111): Premium House, Bio House, Research for house values, Residents, new Houses during simulation,
+ *        added lambdas and comments, implemented feedback
+ */
+
 public class Test {
 
   public Test() {
