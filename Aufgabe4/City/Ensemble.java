@@ -3,13 +3,13 @@ package City;
 import java.util.HashSet;
 import java.util.Set;
 
-public abstract class Ensemble implements Entity {
+public class Ensemble implements Entity {
     private final Set<Entity> entities;
-    private Space enclosedSpace;
+    private final Space enclosedSpace;
     
-    public Ensemble() {
+    public Ensemble(Space space) {
         this.entities = new HashSet<>();
-        this.enclosedSpace = null;
+        this.enclosedSpace = space;
     }
     
     public Set<Entity> entities() {
@@ -24,11 +24,23 @@ public abstract class Ensemble implements Entity {
         entities.remove(entity);
     }
     
-    public void setSpace(Space space) {
-        this.enclosedSpace = space;
-    }
     
     public Space space() {
         return this.enclosedSpace;
+    }
+    
+    @Override
+    public void add(Entity entity) {
+        entities.add(entity);
+    }
+    
+    @Override
+    public void remove(Entity entity) {
+        entities.remove(entity);
+    }
+    
+    @Override
+    public Entity getEntity() {
+        return this;
     }
 }

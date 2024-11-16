@@ -7,7 +7,7 @@ public class Building implements Entity {
     private final String name;
     private Entity parent;
     
-    // Constructor
+    // Zusicherung: Gebäude muss mit dem Untergrund verbunden sein.
     public Building(String name) {
         this.name = name;
         this.spaces = new HashSet<>();
