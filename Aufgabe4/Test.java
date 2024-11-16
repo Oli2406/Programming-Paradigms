@@ -1,6 +1,7 @@
 import City.*;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -43,6 +44,11 @@ public class Test {
         Set<Space> buildingSpaces = building.spaces();
         assert buildingSpaces.contains(room1) && buildingSpaces.contains(room2) : "Building substitution test failed";
         assert room1.escape().getPath().size() == 3 : "Escape path construction test failed";
+        Iterator iterator = room1.escape().iterator(false, true);
+        while (iterator.hasNext()) {
+            Space space = (Space) iterator.next();
+            assert space.entity() == building : "Escape path construction test failed";
+        }
         
         // Test 6: Complex containing Building as Entity
         Complex complex = new Complex() {
@@ -69,8 +75,8 @@ public class Test {
             }
             
             @Override
-            public Set<Space> spaces() {
-                return Set.of(room1, room2);
+            public Set<Exterior> spaces() {
+                return null;
             }
         };
         assert complex.buildings().size() == 1 : "Complex buildings() test failed under substitution";

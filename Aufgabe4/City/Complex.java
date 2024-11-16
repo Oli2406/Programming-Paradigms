@@ -6,11 +6,11 @@ import java.util.Set;
 
 public abstract class Complex implements Entity {
     private final Set<Building> buildings;
-    private final Set<Space> externalSpaces;
+    private final Set<Exterior> exteriors;
     
     public Complex() {
         this.buildings = new HashSet<>();
-        this.externalSpaces = new HashSet<>();
+        this.exteriors = new HashSet<>();
     }
     
     public Set<Building> buildings() {
@@ -25,15 +25,15 @@ public abstract class Complex implements Entity {
         buildings.remove(building);
     }
     
-    public Set<Space> spaces() {
-        return externalSpaces;
+    public Set<Exterior> spaces() {
+        return exteriors;
     }
     
-    public void addExternalSpace(Space space) {
-        externalSpaces.add(space);
+    public void addExterior(Exterior exterior) {
+        exteriors.add(exterior);
     }
     
-    public void removeExternalSpace(Space space) {
-        externalSpaces.remove(space);
+    public void removeExterior(Exterior exterior) {
+        exteriors.remove(exterior);
     }
 }

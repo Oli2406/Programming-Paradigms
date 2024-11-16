@@ -28,14 +28,14 @@ public class Escape {
         List<Space> filteredPath = new ArrayList<>();
         for (Space s : path) {
             if (!lift && s.isLift()) {
-                continue;
+                continue; //TODO: Rewrite or check this method for plausibility
             }
             filteredPath.add(s);
         }
         if (filteredPath.size() > 10) {
             throw new IllegalStateException("Path is too long, not sufficiently accessible.");
         }
-        return filteredPath.iterator();
+        return !enter ? filteredPath.reversed().iterator() : filteredPath.iterator();
     }
     
     @Override

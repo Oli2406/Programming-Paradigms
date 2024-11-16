@@ -2,7 +2,7 @@ package City;
 
 import java.util.Set;
 
-public class PureCirculation extends Space {
+public class PureCirculation extends ServantSpace {
     
     public PureCirculation(Entity entity, Escape escape) {
         super(entity, escape);

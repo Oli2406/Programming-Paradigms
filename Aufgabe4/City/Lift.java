@@ -2,8 +2,7 @@ package City;
 
 import java.util.Set;
 
-// File: Lift.java
-public class Lift extends Interior {
+public class Lift extends PureCirculation {
     
     public Lift(Entity entity) {
         super(entity, null);
