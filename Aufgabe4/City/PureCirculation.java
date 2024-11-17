@@ -3,7 +3,8 @@ package City;
 import java.util.HashSet;
 import java.util.Set;
 //Untertypenbeziehungsbegründung: PureCirculation ist eine Erschließungsfläche, die ausschließlich für die Fortbewegung genutzt wird, und in der sich Personen nur für kurze Zeit aufhalten, weswegen es ein Untertyp von ServantSpace
-public class PureCirculation extends ServantSpace {
+//Typbegründung: Ein PureCirculation ist eine Art von Erschließungsfläche, die vorgibt, dass sie nicht anders genutzt werden kann, deswegen ist sie abstrakt.
+public abstract class PureCirculation extends ServantSpace {
     private final Set<Space> connectedSpaces;
 
     public PureCirculation(Entity entity, Escape escape) {

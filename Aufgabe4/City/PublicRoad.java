@@ -2,12 +2,12 @@ package City;
 
 import java.util.HashSet;
 import java.util.Set;
-//Ein Bereich, der den Aufenthalt von Menschen ermöglicht
-public class PublicRoad extends Space {
+//Untertypenbeziehungsbegründung: Ein Bereich, der den Aufenthalt von Menschen ermöglicht
+//Typbegründung: Ein PublicRoad ist ein Bereich, der instanziiert werden soll
+public class PublicRoad implements Space {
     private final String name;
     
     public PublicRoad(String name) {
-        super(null, null);
         this.name = name;
     }
     
@@ -30,5 +30,10 @@ public class PublicRoad extends Space {
         Set<Space> removedSpaces = new HashSet<>();
         removedSpaces.add(this);
         return removedSpaces;
+    }
+
+    @Override
+    public boolean isLift() {
+        return false;
     }
 }

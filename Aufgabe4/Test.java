@@ -19,25 +19,19 @@ public class Test {
         assert mainRoad.escape() == null : "PublicRoad escape() test failed under substitution";
         assert mainRoad instanceof Space : "PublicRoad substitutability as Space failed";
         
-        // Test 3: PureCirculation as Space and Circulation
-        Space pureCorridor = new PureCirculation(null, null); // No associated entity
-        assert pureCorridor instanceof Space : "PureCirculation substitutability as Space failed";
-        assert pureCorridor instanceof Circulation : "PureCirculation substitutability as Circulation failed";
-        assert ((Circulation) pureCorridor).isAccessible() : "PureCirculation accessibility test failed";
-        
-        // Test 4: Lift as Interior and Space
+        // Test 3: Lift as Interior and Space
         Interior elevator = new Lift(null);
         assert elevator instanceof Space : "Lift substitutability as Space failed";
         assert elevator instanceof Interior : "Lift substitutability as Interior failed";
         assert elevator.escape() == null : "Lift escape() test failed under substitution";
         
-        // Test 5: Substituting Spaces in Building
+        // Test 4: Substituting Spaces in Building
         Building building = new Building("Test Building");
         vienna.add(building);
         PublicRoad publicRoad = new PublicRoad("TU");
         vienna.addPublicRoad(publicRoad);
         Circulation circulation = new Circulation(building, new Escape(publicRoad));
-        Space room1 = new Room(building, circulation.escape());
+        Space room1 = new ServedSpace(building, circulation.escape());
         Space room2 = new Lift(building);
         circulation.addConnection(room1);
         building.addSpace(room1);
@@ -59,7 +53,7 @@ public class Test {
         assert e.entities().size() == 2 : "Ensemble size test failed";
         assert e instanceof Entity : "Ensemble substitutability as Entity failed";
 
-        // Test 6: Complex containing Building as Entity
+        // Test 5: Complex containing Building as Entity
         Complex complex = new Complex();
         complex.addBuilding(building);
         Exterior exterior = new Exterior(building, circulation.escape());
@@ -70,17 +64,17 @@ public class Test {
         assert complex.spaces().size() == 2 : "Complex spaces() test failed under substitution";
         assert complex instanceof Entity : "Complex substitutability as Entity failed";
 
-        // Test 7: Escape path with optional elevator
+        // Test 6: Escape path with optional elevator
         Building building2 = new Building("Test Building 2");
         Escape escape = new Escape(publicRoad);
         Circulation stairs = new Circulation(building2, escape);
-        Space room3 = new Room(building2, stairs.escape());
-        Space room4 = new Room(building2, room3.escape());
+        Space room3 = new ServedSpace(building2, stairs.escape());
+        Space room4 = new ServedSpace(building2, room3.escape());
         stairs.addConnection(room3);
         stairs.addConnection(room4);
         building2.addSpace(stairs);
         Lift elevator2 = new Lift(building2);
-        Space room5 = new Room(building2, elevator2.escape());
+        Space room5 = new ServedSpace(building2, elevator2.escape());
         assert room5.escape() == null : "Lift escape path test failed";
         assert room4.escape().getPath().size() == 3 : "Optional escape path construction test failed";
 

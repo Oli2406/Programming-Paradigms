@@ -4,8 +4,7 @@ package City;
 import java.util.HashSet;
 import java.util.Set;
 //Untertypenbeziehungsbegründung: Ein Komplex ist ein Entity.
-public abstract class Complex implements Entity {
-
+//Typbegründung: Ein Komplex soll instanziert werden können
 public class Complex implements Entity {
     private final Set<Building> buildings;
     private final Set<Exterior> exteriors;

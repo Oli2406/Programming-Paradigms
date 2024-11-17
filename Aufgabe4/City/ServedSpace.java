@@ -9,7 +9,8 @@ import java.util.Set;
 
 //Zusicherung: Summe der lichten Flächen >= 1.1m²
 //Untertypenbeziehungsbegründung: Ein ServedSpace ist ein bedienter Innenraum
-public abstract class ServedSpace extends Interior {
+//Typbegründung: Ein ServedSpace ist ein spezifischer Raum, der instanziiert werden soll
+public class ServedSpace extends Interior {
     //Ein bedienter Raum kann dienende Räume beinhalten, deswegen speichern wir ein Set von ServantSpaces
     private final Set<ServantSpace> servantSpace;
     public ServedSpace(Entity entity, Escape escape) {
@@ -32,5 +33,16 @@ public abstract class ServedSpace extends Interior {
         servantSpace.remove(space);
     }
 
-    public abstract double alternativeEscape();
+    @Override
+    public Set<Space> remove() {
+        Set<Space> removedSpaces = new HashSet<>(servantSpace);
+        servantSpace.clear();
+        removedSpaces.add(this);
+        this.setEntity(null);
+        return removedSpaces;
+    }
+
+    public Escape alternativeEscape() {
+        return null;
+    }
 }

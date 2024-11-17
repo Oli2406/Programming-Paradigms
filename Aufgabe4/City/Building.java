@@ -2,6 +2,7 @@ package City;
 import java.util.HashSet;
 import java.util.Set;
 //Untertypenbeziehungsbegründung: Ein Gebäude ist ein Entity.
+//Typbegründung: Ein Gebäude soll instanziert werden können
 public class Building implements Entity {
     private final Set<Space> spaces;
     private final String name;

@@ -3,6 +3,7 @@ package City;
 import java.util.HashSet;
 import java.util.Set;
 //Untertypenbeziehungsbegründung: Ein Ensemble ist ein Entity.
+//Typbegründung: Ein Ensemble soll instanziert werden können
 public class Ensemble implements Entity {
     private final Set<Entity> entities;
     private final Space enclosedSpace;

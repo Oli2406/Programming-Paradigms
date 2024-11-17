@@ -1,49 +1,14 @@
 package City;
-import java.util.HashSet;
 import java.util.Set;
-//Space selbst wird nie instanziiert, deswegen ist es eine abstrakte Klasse.
 //Untertypenbeziehungsbegründung: Ein Space ist ein Bereich, in dem sich Menschen aufhalten können.
-
-public abstract class Space {
-    private Entity entity;
-    private Escape escapePath;
+//Typbegründung: Ein Space muss nicht instanziert werden, da es nur als Oberklasse für spezifischere Bereiche dient.
+public interface Space {
     
-    public Space(Entity entity, Escape escapePath) {
-        this.entity = entity;
-        if(escapePath != null) {
-            if(this instanceof Lift) {
-                throw new IllegalArgumentException("Lifts cannot be part of an escape path.");
-            }
-            escapePath.add(this);
-        }
-        this.escapePath = escapePath;
-    }
+    Entity entity();
     
-    public Entity entity() {
-        return this.entity;
-    }
+    Escape escape();
     
-    public void setEntity(Entity entity) {
-        this.entity = entity;
-    }
+    Set<Space> remove();
     
-    public Escape escape() {
-        return this.escapePath;
-    }
-    
-    public void setEscape(Escape escapePath) {
-        this.escapePath = escapePath;
-    }
-    
-    public Set<Space> remove() {
-        Set<Space> removedSpaces = new HashSet<>();
-        removedSpaces.add(this);
-        this.entity = null;
-        this.escapePath = null;
-        return removedSpaces;
-    }
-    
-    public boolean isLift() {
-        return this instanceof Lift;
-    }
+    boolean isLift();
 }
