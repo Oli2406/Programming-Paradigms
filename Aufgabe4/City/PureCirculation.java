@@ -1,26 +1,30 @@
 package City;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public class PureCirculation extends ServantSpace {
-    
+    private final Set<Space> connectedSpaces;
+
     public PureCirculation(Entity entity, Escape escape) {
         super(entity, escape);
-    }
-    
-    @Override
-    public Entity entity() {
-        return null;
+        this.connectedSpaces = new HashSet<>();
     }
 
-    @Override
-    public Escape escape() {
-        return null;
+    public Set<Space> getConnectedSpaces() {
+        return connectedSpaces;
+    }
+
+    public void addConnection(Space space) {
+        connectedSpaces.add(space);
     }
 
     @Override
     public Set<Space> remove() {
-        super.remove();
-        return null;
+        Set<Space> removedSpaces = new HashSet<>(connectedSpaces);
+        connectedSpaces.clear();
+        this.setEntity(null);
+        removedSpaces.add(this);
+        return removedSpaces;
     }
 }
