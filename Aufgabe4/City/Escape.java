@@ -3,7 +3,8 @@ package City;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-//TODO: Check if this class is a subtype of Entity
+
+// Untertypsbeziehungsbegründung: Escape ist kein Ort wo man sich aufhält und auch kein Gebäude, sondern eine beschreibung, wie man das Gebäude/Raum verlassen kann.
 public class Escape {
     
     private final List<Space> path = new ArrayList<>();
@@ -27,10 +28,15 @@ public class Escape {
     public Iterator<Space> iterator(boolean lift, boolean enter) {
         List<Space> filteredPath = new ArrayList<>();
         for (Space s : path) {
-            if (!lift && s.isLift()) {
-                continue; //TODO: Rewrite or check this method for plausibility
+            if(lift) {
+                filteredPath.add(s);
+            } else {
+                if(s.isLift()) {
+                    throw new IllegalStateException("Path contains a lift, not sufficiently accessible.");
+                } else {
+                    filteredPath.add(s);
+                }
             }
-            filteredPath.add(s);
         }
         if (filteredPath.size() > 10) {
             throw new IllegalStateException("Path is too long, not sufficiently accessible.");

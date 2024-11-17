@@ -11,6 +11,9 @@ public abstract class Space {
     public Space(Entity entity, Escape escapePath) {
         this.entity = entity;
         if(escapePath != null) {
+            if(this instanceof Lift) {
+                throw new IllegalArgumentException("Lifts cannot be part of an escape path.");
+            }
             escapePath.add(this);
         }
         this.escapePath = escapePath;
