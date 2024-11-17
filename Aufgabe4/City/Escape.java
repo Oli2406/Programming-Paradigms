@@ -28,10 +28,13 @@ public class Escape {
     public Iterator<Space> iterator(boolean lift, boolean enter) {
         List<Space> filteredPath = new ArrayList<>();
         for (Space s : path) {
-            if (!lift && s.isLift()) {
-                continue; //TODO: Rewrite or check this method for plausibility
+            if(lift) {
+                filteredPath.add(s);
+            } else {
+                if(s.isLift()) {
+                    throw new IllegalStateException("Path contains a lift, not sufficiently accessible.");
+                }
             }
-            filteredPath.add(s);
         }
         if (filteredPath.size() > 10) {
             throw new IllegalStateException("Path is too long, not sufficiently accessible.");
