@@ -2,6 +2,7 @@ package City;
 import java.util.HashSet;
 import java.util.Set;
 
+
 public class Building implements Entity {
     private final Set<Space> spaces;
     private final String name;

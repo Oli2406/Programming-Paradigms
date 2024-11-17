@@ -9,7 +9,7 @@ public class Test {
         City vienna = new City();
         
         // Test 1: Building as an Entity
-        Entity library = new Building("Library");
+        Building library = new Building("Library");
         vienna.add(library);
         assert library.getEntity() == library : "Entity substitutability test failed";
         
@@ -60,34 +60,12 @@ public class Test {
         assert e instanceof Entity : "Ensemble substitutability as Entity failed";
 
         // Test 6: Complex containing Building as Entity
-        Complex complex = new Complex() {
-            @Override
-            public void remove(Entity entity) {
-            
-            }
-            
-            @Override
-            public Entity getEntity() {
-                return this;
-            }
-            
-            @Override
-            public void add(Entity entity) {
-            
-            }
-            
-            private final Set<Building> buildings = Set.of(building);
-            
-            @Override
-            public Set<Building> buildings() {
-                return buildings;
-            }
-            
-            @Override
-            public Set<Exterior> spaces() {
-                return null;
-            }
-        };
+        Complex complex = new Complex();
+        complex.addBuilding(building);
+        Exterior exterior = new Exterior(building, circulation.escape());
+        complex.addExterior(exterior);
+        Exterior exterior2 = new Exterior(building, new Escape(publicRoad));
+        complex.addExterior(exterior2);
         assert complex.buildings().size() == 1 : "Complex buildings() test failed under substitution";
         assert complex.spaces().size() == 2 : "Complex spaces() test failed under substitution";
         assert complex instanceof Entity : "Complex substitutability as Entity failed";

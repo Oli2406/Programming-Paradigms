@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+// Untertypsbeziehungsbegründung: Escape ist kein Ort wo man sich aufhält und auch kein Gebäude, sondern eine beschreibung, wie man das Gebäude/Raum verlassen kann.
 public class Escape {
     
     private final List<Space> path = new ArrayList<>();

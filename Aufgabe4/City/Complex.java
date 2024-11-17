@@ -4,7 +4,7 @@ package City;
 import java.util.HashSet;
 import java.util.Set;
 
-public abstract class Complex implements Entity {
+public class Complex implements Entity {
     private final Set<Building> buildings;
     private final Set<Exterior> exteriors;
     
@@ -30,10 +30,31 @@ public abstract class Complex implements Entity {
     }
     
     public void addExterior(Exterior exterior) {
-        exteriors.add(exterior);
+        for(Building building : buildings) {
+            if(building.getEntity() == exterior.entity()) {
+                exteriors.add(exterior);
+                return;
+            }
+        }
+        throw new IllegalArgumentException("Exterior must be associated with a building in the complex.");
     }
     
     public void removeExterior(Exterior exterior) {
         exteriors.remove(exterior);
+    }
+
+    @Override
+    public void add(Entity entity) {
+
+    }
+
+    @Override
+    public void remove(Entity entity) {
+
+    }
+
+    @Override
+    public Entity getEntity() {
+        return null;
     }
 }
