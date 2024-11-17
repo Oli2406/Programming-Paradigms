@@ -6,10 +6,10 @@ import java.util.List;
 
 public class Escape {
     
-    private final List<Space> path;
+    private final List<Space> path = new ArrayList<>();
 
-    public Escape(List<Space> path) {
-        this.path = path;
+    public Escape(PublicRoad path) {
+        this.path.add(path);
     }
     
     public void add(Space space) {

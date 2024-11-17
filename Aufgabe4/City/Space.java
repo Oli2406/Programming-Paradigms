@@ -8,7 +8,7 @@ public abstract class Space {
     
     public Space(Entity entity, Escape escapePath) {
         this.entity = entity;
-        if( escapePath != null) {
+        if(escapePath != null) {
             escapePath.add(this);
         }
         this.escapePath = escapePath;

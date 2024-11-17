@@ -8,13 +8,16 @@ import java.util.Set;
 public class Test {
     public static void main(String[] args) {
         System.out.println("Testing substitutability and compatibility...");
+        City vienna = new City();
         
         // Test 1: Building as an Entity
         Entity library = new Building("Library");
+        vienna.add(library);
         assert library.getEntity() == library : "Entity substitutability test failed";
         
         // Test 2: PublicRoad as Space
-        Space mainRoad = new PublicRoad("Main Street");
+        PublicRoad mainRoad = new PublicRoad("Main Street");
+        vienna.addPublicRoad(mainRoad);
         assert mainRoad.escape() == null : "PublicRoad escape() test failed under substitution";
         assert mainRoad instanceof Space : "PublicRoad substitutability as Space failed";
         
@@ -32,10 +35,10 @@ public class Test {
         
         // Test 5: Substituting Spaces in Building
         Building building = new Building("Test Building");
-        Space publicRoad = new PublicRoad("TU");
-        List<Space> list = new ArrayList<>();
-        list.add(publicRoad);
-        Circulation circulation = new Circulation(building, new Escape(list));
+        vienna.add(building);
+        PublicRoad publicRoad = new PublicRoad("TU");
+        vienna.addPublicRoad(publicRoad);
+        Circulation circulation = new Circulation(building, new Escape(publicRoad));
         Space room1 = new Room(building, circulation.escape());
         Space room2 = new Lift(building);
         circulation.addConnection(room1);

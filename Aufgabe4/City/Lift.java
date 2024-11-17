@@ -12,10 +12,4 @@ public class Lift extends PureCirculation {
     public Escape escape() {
         return null;
     }
-    
-    @Override
-    public Set<Space> remove() {
-        super.remove();
-        return null;
-    }
 }
