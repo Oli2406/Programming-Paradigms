@@ -2,7 +2,12 @@ import City.*;
 
 import java.util.Iterator;
 import java.util.Set;
-
+/*
+ * Wer hat was gemacht:
+ * - Ryan Foster: Test.java, Ensemble.java, ServedSpace.java, Lift.java, City.java, Interior.java
+ * - Oliver Kastner: Test.java, Entity.java, Exterior.java, Building.java, Complex.java, Room.java, ServantSpace.java
+ * - Noah Oguamalam: Test.java, PublicRoad.java, Circulation.java, Escape.java, Space.java, PureCirculation.java
+ */
 public class Test {
     public static void main(String[] args) {
         System.out.println("Testing substitutability and compatibility...");

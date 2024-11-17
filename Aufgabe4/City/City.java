@@ -1,5 +1,5 @@
 package City;
-
+// Nicht zum System gehörende Klasse
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
