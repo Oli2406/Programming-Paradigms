@@ -16,6 +16,9 @@ public abstract class ServedSpace extends Interior {
     }
 
     public void addServantSpace(ServantSpace space) {
+        if(space.isLift()) {
+            throw new IllegalArgumentException("Lifts are not allowed in ServedSpaces");
+        }
         servantSpace.add(space);
     }
 
