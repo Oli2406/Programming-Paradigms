@@ -1,7 +1,5 @@
 package City;
 
-import java.util.Set;
-
 public class Lift extends PureCirculation {
     
     public Lift(Entity entity) {
