@@ -2,7 +2,8 @@ package City;
 
 import java.util.HashSet;
 import java.util.Set;
-
+//Untertypenbeziehungsbegründung: Ein Circulation ist eine Erschließungsfläche,
+// die für den kurz- oder langfristigen Aufenthalt von Menschen vorgesehen ist
 public class Circulation extends Space {
     private final Set<Space> connectedSpaces;
     

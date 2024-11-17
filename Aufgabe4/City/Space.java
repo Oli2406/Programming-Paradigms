@@ -1,6 +1,8 @@
 package City;
 import java.util.HashSet;
 import java.util.Set;
+//Space selbst wird nie instanziiert, deswegen ist es eine abstrakte Klasse.
+//Untertypenbeziehungsbegründung: Ein Space ist ein Bereich, in dem sich Menschen aufhalten können.
 
 public abstract class Space {
     private Entity entity;

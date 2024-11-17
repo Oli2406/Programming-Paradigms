@@ -3,7 +3,7 @@ package City;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
+//TODO: Check if this class is a subtype of Entity
 public class Escape {
     
     private final List<Space> path = new ArrayList<>();

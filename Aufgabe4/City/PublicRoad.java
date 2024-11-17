@@ -2,7 +2,7 @@ package City;
 
 import java.util.HashSet;
 import java.util.Set;
-
+//Ein Bereich, der den Aufenthalt von Menschen ermöglicht
 public class PublicRoad extends Space {
     private final String name;
     
