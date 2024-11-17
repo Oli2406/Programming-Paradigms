@@ -33,6 +33,8 @@ public class Escape {
             } else {
                 if(s.isLift()) {
                     throw new IllegalStateException("Path contains a lift, not sufficiently accessible.");
+                } else {
+                    filteredPath.add(s);
                 }
             }
         }

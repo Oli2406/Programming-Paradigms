@@ -70,6 +70,20 @@ public class Test {
         assert complex.spaces().size() == 2 : "Complex spaces() test failed under substitution";
         assert complex instanceof Entity : "Complex substitutability as Entity failed";
 
+        // Test 7: Escape path with optional elevator
+        Building building2 = new Building("Test Building 2");
+        Escape escape = new Escape(publicRoad);
+        Circulation stairs = new Circulation(building2, escape);
+        Space room3 = new Room(building2, stairs.escape());
+        Space room4 = new Room(building2, room3.escape());
+        stairs.addConnection(room3);
+        stairs.addConnection(room4);
+        building2.addSpace(stairs);
+        Lift elevator2 = new Lift(building2);
+        Space room5 = new Room(building2, elevator2.escape());
+        assert room5.escape() == null : "Lift escape path test failed";
+        assert room4.escape().getPath().size() == 3 : "Optional escape path construction test failed";
+
         System.out.println("All substitutability tests passed!");
     }
 }
