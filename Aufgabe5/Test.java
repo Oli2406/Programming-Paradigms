@@ -21,28 +21,55 @@ public class Test {
         ApSet<Exterior<String>, String, Path<Space<String>>> apSet7 = new ApSet<>();
         AdminSet<RCounter, RCounter, Path<RCounter>> adminSet1 = new AdminSet<>();
         AdminSet<Space<String>, String, Path<Space<String>>> adminSet2 = new AdminSet<>();
-        //AdminSet<Interior<String>, String, Path<Space<String>>> adminSet3 = new AdminSet<>();
-        //AdminSet<Exterior<String>, String, Path<Space<String>>> adminSet4 = new AdminSet<>();
-        // Wir haben versucht diese Tests zum laufen zu bekommen, sind aber gescheitert. Wir denken, unsere struktur ist richtig (und können uns keine alternative denken).
-
+        AdminSet<Interior<String>, String, Path<Space<String>>> adminSet3 = new AdminSet<>();
+        AdminSet<Exterior<String>, String, Path<Space<String>>> adminSet4 = new AdminSet<>();
         System.out.println("1. Objekte erfolgreich erstellt.");
-
+        
+        Interior livingRoom = new Interior("Wohnzimmer");
+        livingRoom.setArea(25.0);
+        Interior kitchen = new Interior("Küche");
+        kitchen.setArea(15.0);
+        adminSet3.add(livingRoom);
+        adminSet3.add(kitchen);
+        
+        Exterior park = new Exterior("Park");
+        park.setPublic(true);
+        Exterior privateGarden = new Exterior("Privater Garten");
+        privateGarden.setPublic(false);
+        adminSet4.add(park);
+        adminSet4.add(privateGarden);
+        
+        // Elemente von adminSet3 und adminSet4 zu adminSet2 übertragen
+        System.out.println("Übertrage Elemente von adminSet3 (Interior) zu adminSet2...");
+        transferFromInteriorToSpace(adminSet3, adminSet2);
+        
+        System.out.println("Übertrage Elemente von adminSet4 (Exterior) zu adminSet2...");
+        transferFromExteriorToSpace(adminSet4, adminSet2);
+        
+        // Inhalte von adminSet2 nach der Übertragung ausgeben
+        System.out.println("Inhalte von adminSet2 nach der Übertragung:");
+        Iterator<Space<String>> iterator = adminSet2.iteratorAll();
+        while (iterator.hasNext()) {
+            System.out.println(iterator.next());
+        }
+        
+        
         // Befüllen der Container
         fillContainer(apSet1, Arrays.asList(new Counter<>("A"), new Counter<>("B")));
         fillContainer(apSet2, Arrays.asList(new Counter<>(1), new Counter<>(2)));
         fillContainer(apSet3, Arrays.asList(new Counter<>(new Path<>()), new Counter<>(new Path<>())));
         fillContainer(apSet4, Arrays.asList(new RCounter(), new RCounter()));
         fillContainer(apSet5, Arrays.asList(new Space<>("Space1"), new Space<>("Space2")));
-        fillContainer(apSet6, Arrays.asList(new Interior<>("Interior1"), new Interior<>("Interior2")));
-        fillContainer(apSet7, Arrays.asList(new Exterior<>("Exterior1"), new Exterior<>("Exterior2")));
+        fillContainer(apSet6, Arrays.asList(new Interior<>("Innenraum1"), new Interior<>("Innenraum2")));
+        fillContainer(apSet7, Arrays.asList(new Exterior<>("Außenbereich1"), new Exterior<>("Außenbereich2")));
         fillContainer(adminSet1, Arrays.asList(new RCounter(), new RCounter()));
         fillContainer(adminSet2, Arrays.asList(new Space<>("Space1"), new Space<>("Space2")));
-        //fillContainer(adminSet3, Arrays.asList(new Interior<>("Interior1"), new Interior<>("Interior2")));
-        //fillContainer(adminSet4, Arrays.asList(new Exterior<>("Exterior1"), new Exterior<>("Exterior2")));
-
+        fillContainer(adminSet3, Arrays.asList(new Interior<>("Innenraum1"), new Interior<>("Innenraum2")));
+        fillContainer(adminSet4, Arrays.asList(new Exterior<>("Außenbereich1"), new Exterior<>("Außenbereich2")));
+        
         System.out.println("2. Container erfolgreich befüllt.");
-
-        // Print the containers
+        
+        // Container ausgeben
         System.out.println(apSet1);
         System.out.println(apSet2);
         System.out.println(apSet3);
@@ -52,25 +79,16 @@ public class Test {
         System.out.println(apSet7);
         System.out.println(adminSet1);
         System.out.println(adminSet2);
-        //System.out.println(adminSet3);
-        //System.out.println(adminSet4);
-
-        // Test the subtype relationship
-        // Verify AdminSet extends ApSet
+        System.out.println(adminSet3);
+        System.out.println(adminSet4);
+        
+        // Beziehung der Subtypen testen
+        // Überprüfen, ob AdminSet von ApSet erweitert wird
         AdminSet<RCounter, RCounter, Path<RCounter>> adminSet = new AdminSet<>();
-        ApSet<RCounter, RCounter, Path<RCounter>> apSet = adminSet;
-        System.out.println("AdminSet is a subtype of ApSet.");
-
-        // Counter<T> extends RCounter (no):
-        //  - Counter<T> würde seine generische Flexibilität verlieren.
-        //  - Die Methoden approved und approve sind strukturell inkompatibel.
-        //  - Konzeptueller Zweckkonflikt.
-        // RCounter extends Counter<T> (no):
-        //  - RCounter müsste unnötige generische Komplexität übernehmen.
-        //  - Die Methoden approved und approve können nicht mit generischen Typen übereinstimmen.
-        //  - Konzeptueller Zweckkonflikt.
-
-        // 4. Löschen und erneutes Einfügen von Objekten
+        AdminSet<RCounter, RCounter, Path<RCounter>> apSet = adminSet;
+        System.out.println("AdminSet ist ein Subtyp von ApSet.");
+        
+        // Löschen und erneutes Einfügen von Objekten
         System.out.println("4. Löschen und erneutes Einfügen testen...");
         RCounter rc1 = new RCounter();
         RCounter rc2 = new RCounter();
@@ -78,11 +96,11 @@ public class Test {
         adminSet1.add(rc2);
         adminSet1.remove(rc1);
         adminSet1.add(rc1);
-
+        
         System.out.println("4.1: Objekte erfolgreich gelöscht und erneut eingefügt.");
-
+        
         // Tests für spezifische Methoden
-
+        
         testAdd(apSet1);
         testRemove(apSet1);
         ApSet<RCounter, RCounter, Path<RCounter>> apSetTest = new ApSet<>();
@@ -90,17 +108,33 @@ public class Test {
         testIteratorAll(apSet1);
         testCriterions(apSet3);
         testExtendAndShorten(adminSet);
-
+        
         System.out.println("Alle Tests erfolgreich abgeschlossen.");
-
-
-        System.out.println("Alle Tests abgeschlossen.");
-
     }
-
+    
     private static <T extends Approvable<?, ?>> void fillContainer(ApprovableSet<T, ?, ?> container, Collection<T> entries) {
         for (T entry : entries) {
             container.add(entry);
+        }
+    }
+    
+    private static void transferFromInteriorToSpace(
+        AdminSet<Interior<String>, String, Path<Space<String>>> source,
+        AdminSet<Space<String>, String, Path<Space<String>>> target) {
+        for (Iterator<Interior<String>> it = source.iteratorAll(); it.hasNext(); ) {
+            Interior<String> interior = it.next();
+            System.out.println("Verarbeite Innenraum: " + interior + ", Fläche: " + interior.area());
+            target.add(interior);
+        }
+    }
+    
+    private static void transferFromExteriorToSpace(
+        AdminSet<Exterior<String>, String, Path<Space<String>>> source,
+        AdminSet<Space<String>, String, Path<Space<String>>> target) {
+        for (Iterator<Exterior<String>> it = source.iteratorAll(); it.hasNext(); ) {
+            Exterior<String> exterior = it.next();
+            System.out.println("Verarbeite Außenbereich: " + exterior + ", Öffentlich: " + exterior.isPublic());
+            target.add(exterior);
         }
     }
 
@@ -169,8 +203,8 @@ public class Test {
     // Test für `criterions`
     private static <X extends Approvable<P, ?>, P> void testCriterions(ApSet<X, P, ?> apSet) {
         System.out.println("Teste criterions-Methode...");
-        P criterion1 = (P) createSampleRCounter(1);
-        P criterion2 = (P) createSampleRCounter(2);
+        P criterion1 = (P) createSampleRCounter();
+        P criterion2 = (P) createSampleRCounter();
 
         apSet.addCriterion(criterion1);
         apSet.addCriterion(criterion2);
@@ -203,30 +237,12 @@ public class Test {
         return new Counter<>(value); // "Counter" zählt Methodenaufrufe und hat einen Wert
     }
 
-    private static RCounter createSampleRCounter(int initialValue) {
+    private static RCounter createSampleRCounter() {
         RCounter counter = new RCounter(); // RCounter speichert keine Typparameter
         counter.approve(counter, new Path<>()); // Ein Beispiel-Pfad zuweisen
         return counter;
     }
-
-    private static Space<String> createSampleSpace(String description) {
-        return new Space<>(description); // Z. B. "Wohnzimmer", "Garten"
-    }
-
-    private static Interior<String> createSampleInterior(String description, double area) {
-        Interior<String> interior = new Interior<>(description); // Beschreibung z. B. "Büro"
-        interior.setArea(area); // Fläche des Innenraums
-        return interior;
-    }
-
-    private static Exterior<String> createSampleExterior(String description, boolean isPublic) {
-        Exterior<String> exterior = new Exterior<>(description); // Beschreibung z. B. "Park"
-        exterior.setPublic(isPublic); // Öffentlich oder nicht
-        return exterior;
-    }
-
-
-
+    
     public static void main(String[] args) {
         Test t = new Test();
     }
