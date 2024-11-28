@@ -8,6 +8,7 @@ import java.util.Iterator;
  * - Oliver Kastner: Space.java, Interior.java, Exterior.java, Path.java
  * - Noah Oguamalam: Admin.java, AdminSet.java, Test.java, RCounter.java
  */
+
 public class Test {
 
     public Test() {
@@ -39,14 +40,12 @@ public class Test {
         adminSet4.add(park);
         adminSet4.add(privateGarden);
         
-        // Elemente von adminSet3 und adminSet4 zu adminSet2 übertragen
         System.out.println("Übertrage Elemente von adminSet3 (Interior) zu adminSet2...");
         transferFromInteriorToSpace(adminSet3, adminSet2);
         
         System.out.println("Übertrage Elemente von adminSet4 (Exterior) zu adminSet2...");
         transferFromExteriorToSpace(adminSet4, adminSet2);
         
-        // Inhalte von adminSet2 nach der Übertragung ausgeben
         System.out.println("Inhalte von adminSet2 nach der Übertragung:");
         Iterator<Space<String>> iterator = adminSet2.iteratorAll();
         while (iterator.hasNext()) {
@@ -54,7 +53,6 @@ public class Test {
         }
         
         
-        // Befüllen der Container
         fillContainer(apSet1, Arrays.asList(new Counter<>("A"), new Counter<>("B")));
         fillContainer(apSet2, Arrays.asList(new Counter<>(1), new Counter<>(2)));
         fillContainer(apSet3, Arrays.asList(new Counter<>(new Path<>()), new Counter<>(new Path<>())));
@@ -69,7 +67,6 @@ public class Test {
         
         System.out.println("2. Container erfolgreich befüllt.");
         
-        // Container ausgeben
         System.out.println(apSet1);
         System.out.println(apSet2);
         System.out.println(apSet3);
@@ -83,12 +80,19 @@ public class Test {
         System.out.println(adminSet4);
         
         // Beziehung der Subtypen testen
-        // Überprüfen, ob AdminSet von ApSet erweitert wird
         AdminSet<RCounter, RCounter, Path<RCounter>> adminSet = new AdminSet<>();
         AdminSet<RCounter, RCounter, Path<RCounter>> apSet = adminSet;
         System.out.println("AdminSet ist ein Subtyp von ApSet.");
         
-        // Löschen und erneutes Einfügen von Objekten
+        // Counter<T> extends RCounter (no):
+        //  - Counter<T> würde seine generische Flexibilität verlieren.
+        //  - Die Methoden approved und approve sind strukturell inkompatibel.
+        //  - Konzeptueller Zweckkonflikt.
+        // RCounter extends Counter<T> (no):
+        //  - RCounter müsste unnötige generische Komplexität übernehmen.
+        //  - Die Methoden approved und approve können nicht mit generischen Typen übereinstimmen.
+        //  - Konzeptueller Zweckkonflikt.
+        
         System.out.println("4. Löschen und erneutes Einfügen testen...");
         RCounter rc1 = new RCounter();
         RCounter rc2 = new RCounter();
@@ -98,8 +102,6 @@ public class Test {
         adminSet1.add(rc1);
         
         System.out.println("4.1: Objekte erfolgreich gelöscht und erneut eingefügt.");
-        
-        // Tests für spezifische Methoden
         
         testAdd(apSet1);
         testRemove(apSet1);
@@ -142,8 +144,8 @@ public class Test {
     // Test für `add`-Methode
     private static <X extends Approvable<?, ?>> void testAdd(ApSet<X, ?, ?> apSet) {
         System.out.println("Teste add-Methode...");
-        X element1 = (X) createSampleElement("1"); // Beispielwert
-        X element2 = (X) createSampleElement("2"); // Beispielwert
+        X element1 = (X) createSampleElement("1");
+        X element2 = (X) createSampleElement("2");
 
         apSet.add(element1);
         apSet.add(element2);
@@ -158,7 +160,7 @@ public class Test {
     // Test für `remove`-Methode
     private static <X extends Approvable<?, ?>> void testRemove(ApSet<X, ?, ?> apSet) {
         System.out.println("Teste remove-Methode...");
-        X element1 = (X) createSampleElement("1"); // Beispielwert
+        X element1 = (X) createSampleElement("1");
         apSet.add(element1);
         apSet.remove(element1);
 
@@ -232,14 +234,13 @@ public class Test {
         System.out.println("shorten-Methode erfolgreich getestet.");
     }
 
-    // Helfermethoden zum Erstellen von Beispielobjekten
     private static Counter<String> createSampleElement(String value) {
-        return new Counter<>(value); // "Counter" zählt Methodenaufrufe und hat einen Wert
+        return new Counter<>(value);
     }
 
     private static RCounter createSampleRCounter() {
-        RCounter counter = new RCounter(); // RCounter speichert keine Typparameter
-        counter.approve(counter, new Path<>()); // Ein Beispiel-Pfad zuweisen
+        RCounter counter = new RCounter();
+        counter.approve(counter, new Path<>());
         return counter;
     }
     
