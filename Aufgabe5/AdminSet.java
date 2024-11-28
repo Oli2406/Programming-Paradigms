@@ -2,13 +2,17 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-public class AdminSet<X extends Approvable<P, T>, P, T extends Admin<X, T>> implements ApprovableSet<X, P, T> {
+public class AdminSet<X extends Approvable<P, T>, P, T extends Admin<X, T>> extends ApSet<X, P, T> {
     private Set<X> entries = new HashSet<>();
     private Set<P> criteria = new HashSet<>();
 
     @Override
     public void add(X x) {
         entries.add(x);
+    }
+
+    public void remove(X x) {
+        entries.remove(x);
     }
 
     @Override

@@ -11,6 +11,10 @@ public class ApSet<X extends Approvable<P, T>, P, T> implements ApprovableSet<X,
         entries.add(x);
     }
 
+    public void remove(X x) {
+        entries.remove(x);
+    }
+
     @Override
     public void addCriterion(P p) {
         criteria.add(p);

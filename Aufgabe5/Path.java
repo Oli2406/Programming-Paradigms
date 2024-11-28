@@ -3,12 +3,12 @@ import java.util.Iterator;
 import java.util.List;
 
 public class Path<X> implements Admin<X, Path<X>>, Iterable<X> {
-    private List<X> elements = new ArrayList<>();
+    private final List<X> elements = new ArrayList<>();
 
     @Override
     public Path<X> add(X x) {
         if (!elements.contains(x)) {
-            elements.add(0, x);
+            elements.add(x);
         }
         return this;
     }

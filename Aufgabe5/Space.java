@@ -2,8 +2,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Space<P> implements Approvable<P, Path<Space<P>>> {
-    private Map<P, Path<Space<P>>> approvals = new HashMap<>();
-    private String description;
+    private final Map<P, Path<Space<P>>> approvals = new HashMap<>();
+    private final String description;
 
     public Space(String description) {
         this.description = description;
