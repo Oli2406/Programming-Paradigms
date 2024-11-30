@@ -1,9 +1,7 @@
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 public class Path<X> implements Admin<X, Path<X>>, Iterable<X> {
-    private final List<X> elements = new ArrayList<>();
+    private final CustomList<X> elements = new CustomList<>();
 
     @Override
     public Path<X> add(X x) {

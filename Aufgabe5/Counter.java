@@ -2,7 +2,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Counter<T> implements Approvable<Counter<T>, T> {
-    private Map<Counter<T>, T> approvals = new HashMap<>();
+    private CustomMap<Counter<T>, T> approvals = new CustomMap<>();
     private int count = 0;
     private T value;
 

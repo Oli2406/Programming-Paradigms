@@ -1,10 +1,8 @@
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Set;
 
 public class ApSet<X extends Approvable<P, T>, P, T> implements ApprovableSet<X, P, T> {
-    private Set<X> entries = new HashSet<>();
-    private Set<P> criteria = new HashSet<>();
+    private CustomSet<X> entries = new CustomSet<>();
+    private CustomSet<P> criteria = new CustomSet<>();
 
     @Override
     public void add(X x) {

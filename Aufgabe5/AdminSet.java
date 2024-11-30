@@ -1,10 +1,8 @@
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Set;
 
 public class AdminSet<X extends Approvable<P, T>, P, T extends Admin<? super X, T>> implements ApprovableSet<X, P, T> {
-    private final Set<X> entries = new HashSet<>();
-    private final Set<P> criteria = new HashSet<>();
+    private final CustomSet<X> entries = new CustomSet<>();
+    private final CustomSet<P> criteria = new CustomSet<>();
 
     @Override
     public void add(X x) {
@@ -75,7 +73,7 @@ public class AdminSet<X extends Approvable<P, T>, P, T extends Admin<? super X, 
     public String toString() {
         return "AdminSet with entries: " + entries.toString() + " and criteria: " + criteria.toString();
     }
-    
+
     public void remove(P rc1) {
         criteria.remove(rc1);
     }

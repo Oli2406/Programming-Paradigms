@@ -1,8 +1,5 @@
-import java.util.HashMap;
-import java.util.Map;
-
 public class RCounter implements Approvable<RCounter, Path<RCounter>> {
-    private Map<RCounter, Path<RCounter>> approvals = new HashMap<>();
+    private CustomMap<RCounter, Path<RCounter>> approvals = new CustomMap<>();
     private int count = 0;
 
     @Override
