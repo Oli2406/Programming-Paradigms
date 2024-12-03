@@ -99,7 +99,7 @@ public class OfficeGen<T extends Room> {
     int count = 0;
     for (T room : rooms) {
       if (room.getUsage() instanceof UsageStoreroom) {
-        totalVolume += ((UsageStoreroom) room.getUsage()).getStorageVolume();
+        totalVolume += (room.getUsage()).getStorageVolume();
         count++;
       }
     }
@@ -112,7 +112,7 @@ public class OfficeGen<T extends Room> {
     int count = 0;
     for (T room : rooms) {
       if (room.getUsage() instanceof UsageOffice) {
-        totalWorkplaces += ((UsageOffice) room.getUsage()).getWorkplaces();
+        totalWorkplaces += (room.getUsage()).getWorkplaces();
         count++;
       }
     }
