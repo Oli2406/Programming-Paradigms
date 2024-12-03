@@ -189,5 +189,19 @@ public class OfficeGen<T extends Room> {
         storageRoomCount == 0 ? 0 : storageLux / storageRoomCount
     };
   }
+
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("Office Number: ").append(getOfficeNumber()).append("\n");
+    sb.append("Auxiliary Space Area: ").append(getAuxiliarySpaceArea()).append("\n");
+    sb.append("Total Area: ").append(getTotalArea()).append("\n");
+    sb.append("Average Room Area: ").append(getAverageRoomArea()).append("\n");
+    sb.append("Average Room Windows Area: ").append(getAverageRoomWindowsArea()).append("\n");
+    sb.append("Average Room Windowless Area: ").append(getAverageRoomWindowlessArea()).append("\n");
+    sb.append("Average Storeroom Volume: ").append(getAverageStoreroomVolume()).append("\n");
+    sb.append("Average Workplaces: ").append(getAverageWorkplaces()).append("\n");
+    return sb.toString();
+  }
 }
 

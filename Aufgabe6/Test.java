@@ -8,11 +8,12 @@ import Office.*;
  * - Oliver Kastner: Company, CompanyGen, Office, OfficeGen
  * - Noah Oguamalam: Room, RoomWindows, RoomWindowless, Usage, UsageOffice, UsageStoreroom
  */
+
 public class Test {
     public static void main(String[] args) {
         // Create a Company and a CompanyGen object
         Company company = new Company("TechCorp");
-        CompanyGen<Building> companyGen = new CompanyGen<Building>("TechCorpGen");
+        CompanyGen<BuildingGen<OfficeGen<Room>>> companyGen = new CompanyGen<BuildingGen<OfficeGen<Room>>>("TechCorpGen");
 
         // Create buildings
         Building building1 = new Building("Building 1");
@@ -21,14 +22,16 @@ public class Test {
         // Add buildings to the companies
         company.addBuilding(building1);
         company.addBuilding(building2);
-        companyGen.addBuilding(building1);
-        companyGen.addBuilding(building2);
+
+        // Create BuildingGen objects
+        BuildingGen<OfficeGen<Room>> buildingGen1 = new BuildingGen<OfficeGen<Room>>("BuildingGen 1");
+        BuildingGen<OfficeGen<Room>> buildingGen2 = new BuildingGen<OfficeGen<Room>>("BuildingGen 2");
 
         // Create office units with rooms
         Office office1 = new Office(101, 50);
         Office office2 = new Office(102, 60);
-        Office office3 = new Office(201, 70);
-        Office office4 = new Office(202, 80);
+        OfficeGen<Room> office3 = new OfficeGen<Room>(201, 70);
+        OfficeGen<Room> office4 = new OfficeGen<Room>(202, 80);
 
         // Add rooms to office units
         Room room1 = new RoomWindowless("Toilet", 10, 10, new UsageStoreroom(20), 100);
@@ -45,24 +48,44 @@ public class Test {
 
         // Add office units to buildings
         building1.addOffice(office1);
-        building1.addOffice(office2);
-        building2.addOffice(office3);
-        building2.addOffice(office4);
+        building2.addOffice(office2);
+
+        // Add office units to BuildingGen objects
+        buildingGen1.addUnit(office3);
+        buildingGen2.addUnit(office4);
 
         // Display buildings and their offices
         company.displayBuildings();
         companyGen.displayBuildings();
 
+        // Display BuildingGen units
+        buildingGen1.displayUnits();
+        buildingGen2.displayUnits();
+
         // Remove an office unit
-        building1.removeOffice(office3);
+        building1.removeOffice(office2);
+
+        // Remove a room from an office unit
+        office1.removeRoom(room2);
 
         // Change room information
         Room changedRoom = new RoomWindows("Office Room 1", 22, 22, new UsageOffice(6), 55);
         office1.changeRoom(room2, changedRoom);
 
+        // Remove a building
+        company.removeBuilding(building2);
+        companyGen.removeBuilding(buildingGen1);
+
+        // Remove a unit from BuildingGen
+        buildingGen1.removeUnit(office3);
+
         // Display updated buildings and their offices
         company.displayBuildings();
         companyGen.displayBuildings();
+
+        // Display updated BuildingGen units
+        buildingGen1.displayUnits();
+        buildingGen2.displayUnits();
 
         // Calculate and display statistical values
         System.out.println("Average Room Area: " + office1.getAverageRoomArea());
@@ -80,5 +103,21 @@ public class Test {
         System.out.println("Average Luminous Flux to Area Ratio (Total): " + luminousFluxRatios[0]);
         System.out.println("Average Luminous Flux to Area Ratio (Office): " + luminousFluxRatios[1]);
         System.out.println("Average Luminous Flux to Area Ratio (Storage): " + luminousFluxRatios[2]);
+
+        System.out.println("Average Room Area: " + office3.getAverageRoomArea());
+        System.out.println("Average Room Windows Area: " + office3.getAverageRoomWindowsArea());
+        System.out.println("Average Room Windowless Area: " + office3.getAverageRoomWindowlessArea());
+        System.out.println("Average Storeroom Volume: " + office3.getAverageStoreroomVolume());
+        System.out.println("Average Workplaces: " + office3.getAverageWorkplaces());
+
+        double[] windowAreaRatiosGen = office3.calculateAverageWindowAreaToRoomAreaRatios();
+        System.out.println("Average Window Area to Room Area Ratio (Total): " + windowAreaRatiosGen[0]);
+        System.out.println("Average Window Area to Room Area Ratio (Office): " + windowAreaRatiosGen[1]);
+        System.out.println("Average Window Area to Room Area Ratio (Storage): " + windowAreaRatiosGen[2]);
+
+        double[] luminousFluxRatiosGen = office3.calculateAverageLuminousFluxToAreaRatios();
+        System.out.println("Average Luminous Flux to Area Ratio (Total): " + luminousFluxRatiosGen[0]);
+        System.out.println("Average Luminous Flux to Area Ratio (Office): " + luminousFluxRatiosGen[1]);
+        System.out.println("Average Luminous Flux to Area Ratio (Storage): " + luminousFluxRatiosGen[2]);
     }
 }
