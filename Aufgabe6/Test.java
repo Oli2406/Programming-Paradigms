@@ -19,13 +19,14 @@ public class Test {
         Building building1 = new Building("Building 1");
         Building building2 = new Building("Building 2");
 
-        // Add buildings to the companies
-        company.addBuilding(building1);
-        company.addBuilding(building2);
-
         // Create BuildingGen objects
         BuildingGen<OfficeGen<Room>> buildingGen1 = new BuildingGen<OfficeGen<Room>>("BuildingGen 1");
         BuildingGen<OfficeGen<Room>> buildingGen2 = new BuildingGen<OfficeGen<Room>>("BuildingGen 2");
+
+        // Add buildings to the companies
+        company.addBuilding(building1);
+        company.addBuilding(building2);
+        companyGen.addBuilding(buildingGen1);
 
         // Create office units with rooms
         Office office1 = new Office(101, 50);
@@ -62,15 +63,19 @@ public class Test {
         buildingGen1.displayUnits();
         buildingGen2.displayUnits();
 
+        // Change room information
+        Room changedRoom = new RoomWindows("Office Room 1", 22, 22, new UsageOffice(6), 55);
+        office1.changeRoom(room2, changedRoom);
+
+        // Change room usage
+        office3.changeRoomUsage(room4, new UsageStoreroom(40));
+
         // Remove an office unit
         building1.removeOffice(office2);
 
         // Remove a room from an office unit
         office1.removeRoom(room2);
-
-        // Change room information
-        Room changedRoom = new RoomWindows("Office Room 1", 22, 22, new UsageOffice(6), 55);
-        office1.changeRoom(room2, changedRoom);
+        office3.removeRoom(room4);
 
         // Remove a building
         company.removeBuilding(building2);

@@ -42,19 +42,17 @@ public class OfficeGen<T extends Room> {
   }
 
   // Remove a room by its name
-  public void removeRoom(String roomName) {
-    rooms.removeIf(room -> room.getName().equals(roomName));
+  public void removeRoom(T room) {
+    rooms.remove(room);
   }
 
   // Change the usage of a specific room
-  public void changeRoomUsage(String roomName, Usage newUsage) {
-    for (T room : rooms) {
-      if (room.getName().equals(roomName)) {
-        room.setUsage(newUsage);
-        return;
-      }
+  public void changeRoomUsage(T room, Usage newUsage) {
+    if(rooms.contains(room)) {
+      room.setUsage(newUsage);
+    } else {
+      throw new IllegalArgumentException("Room not found: " + room.getName());
     }
-    throw new IllegalArgumentException("Room not found: " + roomName);
   }
 
   // Statistical methods
