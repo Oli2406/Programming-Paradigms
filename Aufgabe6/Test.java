@@ -78,21 +78,22 @@ public class Test {
 
         // Change room information
         Room changedRoom = new RoomWindows("Office Room 1", 22, 22, new UsageOffice(6), 55);
-        office1.changeRoom(room2, changedRoom);
+        office1.changeRoom(office1.getRoom("Office Room 1"), changedRoom);
 
         // Change room usage
-        office3.changeRoomUsage(room4, new UsageStoreroom(40));
+        Room changedRoomUsage = new RoomWindows("Office Room 2", 22, 22, new UsageStoreroom(6), 55);
+        office3.changeRoom(office3.getRoom("Office Room 2"), changedRoomUsage);
 
         // Remove an office unit
-        building1.removeOffice(office2);
+        building1.removeOffice(building1.getOffice(102));
 
         // Remove a room from an office unit
-        office1.removeRoom(room2);
-        office3.removeRoom(room4);
+        office1.removeRoom(office1.getRoom("Office Room 1"));
+        office3.removeRoom(office3.getRoom("Office Room 2"));
 
         // Remove a building
-        company.removeBuilding(building2);
-        companyGen.removeBuilding(buildingGen1);
+        company.removeBuilding(company.getBuilding("Building 1"));
+        companyGen.removeBuilding(companyGen.getBuilding("BuildingGen 2"));
 
         // Remove a unit from BuildingGen
         buildingGen1.removeUnit(office3);

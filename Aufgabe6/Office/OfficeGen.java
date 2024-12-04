@@ -56,9 +56,12 @@ public class OfficeGen<T extends Room> {
   }
 
   // Change the usage of a specific room
-  public void changeRoomUsage(T room, Usage newUsage) {
+  public void changeRoom(T room, Room newRoom) {
     if(rooms.contains(room)) {
-      room.setUsage(newUsage);
+      room.setUsage(newRoom.getUsage());
+      room.setName(newRoom.getName());
+      room.setLength(newRoom.getLength());
+      room.setWidth(newRoom.getWidth());
     } else {
       throw new IllegalArgumentException("Room not found: " + room.getName());
     }

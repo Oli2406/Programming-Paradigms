@@ -1,5 +1,7 @@
 package Company;
 
+import Building.BuildingGen;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +26,17 @@ public class CompanyGen<T> {
 
     public void removeBuilding(T building) {
         buildings.remove(building);
+    }
+
+    public T getBuilding(String buildingName) {
+        for (T building : buildings) {
+            if(building instanceof Building.BuildingGen) {
+                if (((BuildingGen) building).getName().equals(buildingName)) {
+                    return building;
+                }
+            }
+        }
+        return null;
     }
 
     public void displayBuildings() {

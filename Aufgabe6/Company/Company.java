@@ -23,6 +23,15 @@ public class Company {
         }
     }
 
+    public Building getBuilding(String buildingName) {
+        for (Building building : buildings) {
+            if (building.getName().equals(buildingName)) {
+                return building;
+            }
+        }
+        return null;
+    }
+
     public void removeBuilding(Building building) {
         buildings.remove(building);
     }
