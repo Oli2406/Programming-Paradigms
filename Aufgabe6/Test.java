@@ -39,7 +39,7 @@ public class Test {
         Room room2 = new RoomWindows("Office Room 1", 20, 20, new UsageOffice(5), 50);
         Room room3 = new RoomWindowless("Storage", 15, 15, new UsageStoreroom(30), 200);
         Room room4 = new RoomWindows("Office Room 2", 25, 25, new UsageOffice(10), 75);
-        Room room5 = new RoomWindowless("Meeting Room", 30, 30, new UsageOffice(0), 150);
+        Room room5 = new RoomWindowless("Meeting Room", 30, 30, new UsageOffice(15), 150);
 
         office1.addRoom(room1);
         office1.addRoom(room2);
@@ -106,6 +106,7 @@ public class Test {
         buildingGen2.displayUnits();
 
         // Calculate and display statistical values
+        System.out.println("office1 statistics:");
         System.out.println("Average Room Area: " + office1.getAverageRoomArea());
         System.out.println("Average Room Windows Area: " + office1.getAverageRoomWindowsArea());
         System.out.println("Average Room Windowless Area: " + office1.getAverageRoomWindowlessArea());
@@ -122,18 +123,19 @@ public class Test {
         System.out.println("Average Luminous Flux to Area Ratio (Office): " + luminousFluxRatios[1]);
         System.out.println("Average Luminous Flux to Area Ratio (Storage): " + luminousFluxRatios[2]);
 
-        System.out.println("Average Room Area: " + office3.getAverageRoomArea());
-        System.out.println("Average Room Windows Area: " + office3.getAverageRoomWindowsArea());
-        System.out.println("Average Room Windowless Area: " + office3.getAverageRoomWindowlessArea());
-        System.out.println("Average Storeroom Volume: " + office3.getAverageStoreroomVolume());
-        System.out.println("Average Workplaces: " + office3.getAverageWorkplaces());
+        System.out.println("\noffice4 statistics:");
+        System.out.println("Average Room Area: " + office4.getAverageRoomArea());
+        System.out.println("Average Room Windows Area: " + office4.getAverageRoomWindowsArea());
+        System.out.println("Average Room Windowless Area: " + office4.getAverageRoomWindowlessArea());
+        System.out.println("Average Storeroom Volume: " + office4.getAverageStoreroomVolume());
+        System.out.println("Average Workplaces: " + office4.getAverageWorkplaces());
 
-        double[] windowAreaRatiosGen = office3.calculateAverageWindowAreaToRoomAreaRatios();
+        double[] windowAreaRatiosGen = office4.calculateAverageWindowAreaToRoomAreaRatios();
         System.out.println("Average Window Area to Room Area Ratio (Total): " + windowAreaRatiosGen[0]);
         System.out.println("Average Window Area to Room Area Ratio (Office): " + windowAreaRatiosGen[1]);
         System.out.println("Average Window Area to Room Area Ratio (Storage): " + windowAreaRatiosGen[2]);
 
-        double[] luminousFluxRatiosGen = office3.calculateAverageLuminousFluxToAreaRatios();
+        double[] luminousFluxRatiosGen = office4.calculateAverageLuminousFluxToAreaRatios();
         System.out.println("Average Luminous Flux to Area Ratio (Total): " + luminousFluxRatiosGen[0]);
         System.out.println("Average Luminous Flux to Area Ratio (Office): " + luminousFluxRatiosGen[1]);
         System.out.println("Average Luminous Flux to Area Ratio (Storage): " + luminousFluxRatiosGen[2]);

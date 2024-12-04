@@ -94,7 +94,7 @@ public class Office {
     for (Room room : rooms) {
       totalArea += room.getArea();
     }
-    return totalArea / rooms.size();
+    return rooms.isEmpty()?0:totalArea / rooms.size();
   }
   public double getAverageRoomWindowsArea() {
     if (rooms.isEmpty()) {
@@ -108,7 +108,7 @@ public class Office {
         count++;
       }
     }
-    return totalArea / count;
+    return count==0?0:totalArea / count;
   }
 
   public double getAverageRoomWindowlessArea() {
@@ -123,7 +123,7 @@ public class Office {
         count++;
       }
     }
-    return totalArea / count;
+    return count==0?0:totalArea / count;
   }
 
   public double getAverageStoreroomVolume() {
@@ -138,7 +138,7 @@ public class Office {
         count++;
       }
     }
-    return totalVolume / count;
+    return count==0?0:totalVolume / count;
   }
 
   public double getAverageWorkplaces() {
@@ -153,7 +153,7 @@ public class Office {
         count++;
       }
     }
-    return totalWorkplaces / count;
+    return count==0?0:totalWorkplaces / count;
   }
 
   //TODO: is this legit?

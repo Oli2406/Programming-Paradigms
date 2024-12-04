@@ -71,7 +71,7 @@ public class OfficeGen<T extends Room> {
     for (T room : rooms) {
       totalArea += room.getLength() * room.getWidth();
     }
-    return totalArea / rooms.size();
+    return rooms.isEmpty()?0:totalArea / rooms.size();
   }
 
   public double getAverageRoomWindowsArea() {
