@@ -1,5 +1,7 @@
 package Building;
 
+import Office.OfficeGen;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +22,17 @@ public class BuildingGen<T> {
         if (unit != null) {
             units.add(unit);
         }
+    }
+
+    public T getUnit(int unitNumber) {
+        for (T unit : units) {
+            if(unit instanceof OfficeGen) {
+                if (((OfficeGen) unit).getOfficeNumber() == unitNumber) {
+                    return unit;
+                }
+            }
+        }
+        return null;
     }
 
     public void removeUnit(T unit) {

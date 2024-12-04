@@ -17,4 +17,15 @@ public class RoomWindows extends Room {
   public void setWindowArea(double windowArea) {
     this.windowArea = windowArea;
   }
+
+  @Override
+    public String toString() {
+        return "RoomWindows{" +
+                "name='" + this.getName() + '\'' +
+                ", length=" + this.getLength() +
+                ", width=" + this.getWidth() +
+                ", usage=" + this.getUsage() +
+                ", windowArea=" + this.getWindowArea() +
+                '}';
+    }
 }

@@ -26,6 +26,15 @@ public class Office {
     return auxiliarySpaceArea;
   }
 
+  public Room getRoom(String roomName) {
+    for (Room room : rooms) {
+      if (room.getName().equals(roomName)) {
+        return room;
+      }
+    }
+    return null;
+  }
+
   // Setters
   public void setAuxiliarySpaceArea(double auxiliarySpaceArea) {
     if (auxiliarySpaceArea < 0) {
@@ -47,6 +56,11 @@ public class Office {
   // Add a room to the office unit
   public void addRoom(Room room) {
     if (room != null) {
+      for (Room existingRoom : rooms) {
+        if (existingRoom.getName().equals(room.getName())) {
+          return;
+        }
+      }
       rooms.add(room);
     }
   }
@@ -213,6 +227,18 @@ public class Office {
         officeRoomCount == 0 ? 0 : officeLux / officeRoomCount,
         storageRoomCount == 0 ? 0 : storageLux / storageRoomCount
     };
+  }
+
+  @Override
+  public String toString() {
+    return "Office Number: " + officeNumber + "\n" +
+        "Auxiliary Space Area: " + auxiliarySpaceArea + "\n" +
+        "Total Area: " + getTotalArea() + "\n" +
+        "Average Room Area: " + getAverageRoomArea() + "\n" +
+        "Average Room Windows Area: " + getAverageRoomWindowsArea() + "\n" +
+        "Average Room Windowless Area: " + getAverageRoomWindowlessArea() + "\n" +
+        "Average Storeroom Volume: " + getAverageStoreroomVolume() + "\n" +
+        "Average Workplaces: " + getAverageWorkplaces() + "\n";
   }
 }
 

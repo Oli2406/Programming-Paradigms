@@ -29,7 +29,11 @@ public class CompanyGen<T> {
     public void displayBuildings() {
         System.out.println("Company: " + name);
         for (T building : buildings) {
-            System.out.println(building.toString());
+            if(building instanceof Building.BuildingGen) {
+                ((Building.BuildingGen) building).displayUnits();
+            } else {
+                System.out.println(building.toString());
+            }
         }
     }
 }

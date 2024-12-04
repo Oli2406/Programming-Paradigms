@@ -55,6 +55,19 @@ public class Test {
         buildingGen1.addUnit(office3);
         buildingGen2.addUnit(office4);
 
+        // Get Offices from Building
+        System.out.println(building1.getOffice(101));
+        System.out.println(building2.getOffice(102));
+        System.out.println(buildingGen1.getUnit(201));
+        System.out.println(buildingGen2.getUnit(202));
+
+        // Get Room from Office
+        System.out.println(office1.getRoom("Toilet"));
+        System.out.println(office1.getRoom("Office Room 1"));
+        System.out.println(office2.getRoom("Storage"));
+        System.out.println(office3.getRoom("Office Room 1"));
+        System.out.println(office4.getRoom("Meeting Room"));
+
         // Display buildings and their offices
         company.displayBuildings();
         companyGen.displayBuildings();

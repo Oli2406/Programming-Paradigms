@@ -22,6 +22,15 @@ public class OfficeGen<T extends Room> {
     return officeNumber;
   }
 
+  public T getRoom(String roomName) {
+    for (T room : rooms) {
+      if (room.getName().equals(roomName)) {
+        return room;
+      }
+    }
+    return null;
+  }
+
   public double getAuxiliarySpaceArea() {
     return auxiliarySpaceArea;
   }

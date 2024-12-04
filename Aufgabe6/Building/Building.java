@@ -19,12 +19,26 @@ public class Building {
 
     public void addOffice(Office office) {
         if (office != null) {
+            for (Office existingOffice : offices) {
+                if (existingOffice.getOfficeNumber() == office.getOfficeNumber()) {
+                    return;
+                }
+            }
             offices.add(office);
         }
     }
 
     public void removeOffice(Office office) {
         offices.remove(office);
+    }
+
+    public Office getOffice(int officeNumber) {
+        for (Office office : offices) {
+            if (office.getOfficeNumber() == officeNumber) {
+                return office;
+            }
+        }
+        return null;
     }
 
     public void displayOffices() {

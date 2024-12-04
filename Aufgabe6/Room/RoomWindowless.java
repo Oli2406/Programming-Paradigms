@@ -15,4 +15,15 @@ public class RoomWindowless extends Room{
     public void setLuminousFlux(double luminousFlux) {
         this.luminousFlux = luminousFlux;
     }
+
+    @Override
+    public String toString() {
+        return "RoomWindowless{" +
+                "name='" + this.getName() + '\'' +
+                ", length=" + this.getLength() +
+                ", width=" + this.getWidth() +
+                ", usage=" + this.getUsage() +
+                ", luminousFlux=" + this.getLuminousFlux() +
+                '}';
+    }
 }
