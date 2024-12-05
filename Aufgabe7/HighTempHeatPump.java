@@ -1,11 +1,15 @@
 public class HighTempHeatPump extends HeatPump {
-  public HighTempHeatPump(String powerLevel, double price) {
-    super("HighTemp", powerLevel, price);
+  public HighTempHeatPump(HeatpumpPowerLevel powerLevel, double price) {
+    super(HeatpumpType.HIGH_TEMP, powerLevel, price);
   }
-  
+
   @Override
-  public boolean isCompatible(String heatingType, String size) {
-    return heatingType.equals("Radiator") &&
-        (size.equals(getPowerLevel()) || (size.equals("medium") && getPowerLevel().equals("large")));
+  public boolean isCompatible(HeatingType heatingType, OfficeSize size) {
+    return heatingType == HeatingType.RADIATOR && getPowerLevel().isCompatible(size);
+  }
+
+  @Override
+  public boolean isCompatibleExact(HeatingType heatingType, OfficeSize size) {
+    return heatingType == HeatingType.RADIATOR && getPowerLevel().isCompatibleExact(size);
   }
 }

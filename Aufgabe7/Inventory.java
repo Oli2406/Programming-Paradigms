@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Inventory {
-  private List<HeatPump> heatPumps = new ArrayList<>();
+  private final List<HeatPump> heatPumps = new ArrayList<>();
   
   public void addHeatPump(HeatPump pump) {
     heatPumps.add(pump);
@@ -12,7 +12,13 @@ public class Inventory {
     heatPumps.remove(pump);
   }
   
-  public HeatPump findAndAssign(String heatingType, String size) {
+  public HeatPump findAndAssign(HeatingType heatingType, OfficeSize size) {
+    for (HeatPump pump : heatPumps) {
+      if (pump.isCompatibleExact(heatingType, size)) {
+        heatPumps.remove(pump);
+        return pump;
+      }
+    }
     for (HeatPump pump : heatPumps) {
       if (pump.isCompatible(heatingType, size)) {
         heatPumps.remove(pump);

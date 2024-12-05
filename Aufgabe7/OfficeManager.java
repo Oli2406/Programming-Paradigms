@@ -2,8 +2,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OfficeManager {
-  private List<OfficeUnit> officeUnits = new ArrayList<>();
+  private final List<OfficeUnit> officeUnits = new ArrayList<>();
   private Inventory inventory = new Inventory();
+
+  public OfficeManager(Inventory inventory) {
+    this.inventory = inventory;
+  }
   
   public void addOffice(OfficeUnit unit) {
     officeUnits.add(unit);

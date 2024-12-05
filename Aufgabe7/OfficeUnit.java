@@ -1,15 +1,15 @@
 public class OfficeUnit {
-  private String heatingType;
-  private String size;
+  private final HeatingType heatingType;
+  private final OfficeSize size;
   private HeatPump installedPump;
-  
-  public OfficeUnit(String heatingType, String size) {
+
+  public OfficeUnit(HeatingType heatingType, OfficeSize size) {
     this.heatingType = heatingType;
     this.size = size;
   }
   
-  public String getHeatingType() { return heatingType; }
-  public String getSize() { return size; }
+  public HeatingType getHeatingType() { return heatingType; }
+  public OfficeSize getSize() { return size; }
   public HeatPump getInstalledPump() { return installedPump; }
   
   public void installPump(HeatPump pump) {

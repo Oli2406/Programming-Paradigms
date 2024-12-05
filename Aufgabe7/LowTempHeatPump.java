@@ -1,11 +1,15 @@
 public class LowTempHeatPump extends HeatPump {
-  public LowTempHeatPump(String powerLevel, double price) {
-    super("LowTemp", powerLevel, price);
+  public LowTempHeatPump(HeatpumpPowerLevel powerLevel, double price) {
+    super(HeatpumpType.LOW_TEMP, powerLevel, price);
   }
   
   @Override
-  public boolean isCompatible(String heatingType, String size) {
-    return heatingType.equals("Floor") &&
-        (size.equals(getPowerLevel()) || (size.equals("small") && getPowerLevel().equals("medium")));
+  public boolean isCompatible(HeatingType heatingType, OfficeSize size) {
+    return heatingType == HeatingType.FLOOR && getPowerLevel().isCompatible(size);
+  }
+
+  @Override
+  public boolean isCompatibleExact(HeatingType heatingType, OfficeSize size) {
+    return heatingType == HeatingType.FLOOR && getPowerLevel().isCompatibleExact(size);
   }
 }

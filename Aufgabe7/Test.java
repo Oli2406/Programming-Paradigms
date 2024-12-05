@@ -8,24 +8,24 @@ public class Test {
     
     // Initialize Inventory and OfficeManager
     Inventory inventory = new Inventory();
-    OfficeManager officeManager = new OfficeManager();
+    OfficeManager officeManager = new OfficeManager(inventory);
     
     Test testInstance = new Test();
     
     // 1. Add Heat Pumps to Inventory
     System.out.println("1. Adding Heat Pumps...");
-    testInstance.testAddHeatPump(inventory, new LowTempHeatPump("small", 1000.0));
-    testInstance.testAddHeatPump(inventory, new LowTempHeatPump("medium", 1500.0));
-    testInstance.testAddHeatPump(inventory, new HighTempHeatPump("large", 2500.0));
-    testInstance.testAddHeatPump(inventory, new HighTempHeatPump("medium", 2000.0));
+    testInstance.testAddHeatPump(inventory, new LowTempHeatPump(HeatpumpPowerLevel.LOW, 1000.0));
+    testInstance.testAddHeatPump(inventory, new LowTempHeatPump(HeatpumpPowerLevel.MEDIUM, 1500.0));
+    testInstance.testAddHeatPump(inventory, new HighTempHeatPump(HeatpumpPowerLevel.HIGH, 2500.0));
+    testInstance.testAddHeatPump(inventory, new HighTempHeatPump(HeatpumpPowerLevel.MEDIUM, 2000.0));
     inventory.showHeatPumps();
     
     // 2. Add Office Units
     System.out.println("\n2. Adding Office Units...");
-    OfficeUnit office1 = new OfficeUnit("Floor", "small");
-    OfficeUnit office2 = new OfficeUnit("Radiator", "medium");
-    OfficeUnit office3 = new OfficeUnit("Floor", "medium");
-    OfficeUnit office4 = new OfficeUnit("Radiator", "large");
+    OfficeUnit office1 = new OfficeUnit(HeatingType.FLOOR, OfficeSize.SMALL);
+    OfficeUnit office2 = new OfficeUnit(HeatingType.RADIATOR, OfficeSize.MEDIUM);
+    OfficeUnit office3 = new OfficeUnit(HeatingType.FLOOR, OfficeSize.MEDIUM);
+    OfficeUnit office4 = new OfficeUnit(HeatingType.RADIATOR, OfficeSize.LARGE);
     
     officeManager.addOffice(office1);
     officeManager.addOffice(office2);
