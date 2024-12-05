@@ -65,19 +65,21 @@ public class Test {
         Test.class
     );
   }
-  
+  @Responsible(developer = "Oliver Kastner")
   @Precondition("HeatPump must not be null and must match constraints.")
   @Postcondition("HeatPump must be added to inventory.")
   public void testAddHeatPump(Inventory inventory, HeatPump pump) {
     inventory.addHeatPump(pump);
   }
-  
+
+  @Responsible(developer = "Oliver Kastner")
   @Precondition("Office unit must exist, and a suitable heat pump must be available.")
   @Postcondition("Office unit must be assigned a compatible heat pump.")
   public void testAssignPumpToOffice(OfficeManager manager, OfficeUnit unit) {
     manager.assignPumpToOffice(unit);
   }
-  
+
+  @Responsible(developer = "Oliver Kastner")
   @Precondition("Office unit must have an installed heat pump.")
   @Postcondition("Heat pump must be removed and returned to inventory.")
   public void testReturnHeatPump(OfficeManager manager, OfficeUnit unit) {

@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 @Responsible(developer = "Ryan Foster")
 public class ReflectionUtility {
-  
+  @Responsible(developer = "Ryan Foster")
   public static void analyzeClasses(Class<?>... classes) {
     Map<String, Integer> developerResponsibilityClassCounts = new HashMap<>();
     Map<String, Integer> developerResponsibilityConstructorCounts = new HashMap<>();
