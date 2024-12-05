@@ -3,7 +3,7 @@ import java.util.List;
 
 public class OfficeManager {
   private final List<OfficeUnit> officeUnits = new ArrayList<>();
-  private Inventory inventory = new Inventory();
+  private final Inventory inventory;
 
   public OfficeManager(Inventory inventory) {
     this.inventory = inventory;
