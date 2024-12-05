@@ -1,4 +1,4 @@
-public enum HeatpumpPowerLevel {
+public enum HeatPumpPowerLevel {
     LOW,
     MEDIUM,
     HIGH;

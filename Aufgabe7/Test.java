@@ -14,10 +14,10 @@ public class Test {
     
     // 1. Add Heat Pumps to Inventory
     System.out.println("1. Adding Heat Pumps...");
-    testInstance.testAddHeatPump(inventory, new LowTempHeatPump(HeatpumpPowerLevel.LOW, 1000.0));
-    testInstance.testAddHeatPump(inventory, new LowTempHeatPump(HeatpumpPowerLevel.MEDIUM, 1500.0));
-    testInstance.testAddHeatPump(inventory, new HighTempHeatPump(HeatpumpPowerLevel.HIGH, 2500.0));
-    testInstance.testAddHeatPump(inventory, new HighTempHeatPump(HeatpumpPowerLevel.MEDIUM, 2000.0));
+    testInstance.testAddHeatPump(inventory, new LowTempHeatPump(HeatPumpPowerLevel.LOW, 1000.0));
+    testInstance.testAddHeatPump(inventory, new LowTempHeatPump(HeatPumpPowerLevel.MEDIUM, 1500.0));
+    testInstance.testAddHeatPump(inventory, new HighTempHeatPump(HeatPumpPowerLevel.HIGH, 2500.0));
+    testInstance.testAddHeatPump(inventory, new HighTempHeatPump(HeatPumpPowerLevel.MEDIUM, 2000.0));
     inventory.showHeatPumps();
     
     // 2. Add Office Units

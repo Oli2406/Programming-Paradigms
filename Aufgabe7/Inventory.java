@@ -38,6 +38,6 @@ public class Inventory {
   }
   
   public void showHeatPumps() {
-    heatPumps.forEach(pump -> System.out.println(pump.getType() + " - " + pump.getPowerLevel() + " - " + pump.getPrice()));
+    heatPumps.forEach(pump -> System.out.println(pump));
   }
 }
