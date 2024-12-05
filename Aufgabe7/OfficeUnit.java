@@ -1,3 +1,4 @@
+@Responsible(developer = "Noah Oguamalam")
 public class OfficeUnit {
   private final HeatingType heatingType;
   private final OfficeSize size;

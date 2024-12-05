@@ -1,3 +1,4 @@
+@Responsible(developer = "Oliver Kastner")
 public class LowTempHeatPump extends HeatPump {
     public LowTempHeatPump(HeatPumpPowerLevel powerLevel, double price) {
         super(powerLevel, price);

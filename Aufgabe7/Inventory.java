@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
-
+@Responsible(developer = "Ryan Foster")
 public class Inventory {
   private final List<HeatPump> heatPumps = new ArrayList<>();
   
@@ -38,6 +38,6 @@ public class Inventory {
   }
   
   public void showHeatPumps() {
-    heatPumps.forEach(pump -> System.out.println(pump));
+    heatPumps.forEach(System.out::println);
   }
 }

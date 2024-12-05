@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
-
+@Responsible(developer = "Noah Oguamalam")
 public class OfficeManager {
   private final List<OfficeUnit> officeUnits = new ArrayList<>();
   private final Inventory inventory;

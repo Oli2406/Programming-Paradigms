@@ -2,11 +2,13 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
-
+@Responsible(developer = "Ryan Foster")
 public class ReflectionUtility {
   
   public static void analyzeClasses(Class<?>... classes) {
-    Map<String, Integer> developerResponsibilityCounts = new HashMap<>();
+    Map<String, Integer> developerResponsibilityClassCounts = new HashMap<>();
+    Map<String, Integer> developerResponsibilityConstructorCounts = new HashMap<>();
+    Map<String, Integer> developerResponsibilityMethodCounts = new HashMap<>();
     
     for (Class<?> clazz : classes) {
       System.out.println("Class: " + clazz.getName());
@@ -15,7 +17,7 @@ public class ReflectionUtility {
       if (clazz.isAnnotationPresent(Responsible.class)) {
         Responsible responsible = clazz.getAnnotation(Responsible.class);
         String developer = responsible.developer();
-        developerResponsibilityCounts.put(developer, developerResponsibilityCounts.getOrDefault(developer, 0) + 1);
+        developerResponsibilityClassCounts.put(developer, developerResponsibilityClassCounts.getOrDefault(developer, 0) + 1);
         System.out.println("  Responsible: " + developer);
       }
       
@@ -29,6 +31,12 @@ public class ReflectionUtility {
       System.out.println("  Constructors:");
       for (Constructor<?> constructor : clazz.getDeclaredConstructors()) {
         System.out.println("    " + constructor);
+        // Analyze @Responsible annotation
+        if (constructor.isAnnotationPresent(Responsible.class)) {
+          Responsible responsible = constructor.getAnnotation(Responsible.class);
+          String developer = responsible.developer();
+          developerResponsibilityConstructorCounts.put(developer, developerResponsibilityConstructorCounts.getOrDefault(developer, 0) + 1);
+        }
         if (constructor.isAnnotationPresent(Precondition.class)) {
           Precondition pre = constructor.getAnnotation(Precondition.class);
           System.out.println("      Precondition: " + pre.value());
@@ -42,6 +50,12 @@ public class ReflectionUtility {
       System.out.println("  Methods:");
       for (Method method : clazz.getDeclaredMethods()) {
         System.out.println("    " + method);
+        // Analyze @Responsible annotation
+        if (method.isAnnotationPresent(Responsible.class)) {
+          Responsible responsible = method.getAnnotation(Responsible.class);
+          String developer = responsible.developer();
+          developerResponsibilityMethodCounts.put(developer, developerResponsibilityMethodCounts.getOrDefault(developer, 0) + 1);
+        }
         if (method.isAnnotationPresent(Precondition.class)) {
           Precondition pre = method.getAnnotation(Precondition.class);
           System.out.println("      Precondition: " + pre.value());
@@ -55,8 +69,16 @@ public class ReflectionUtility {
     
     // Display responsibility summary
     System.out.println("\nDeveloper Responsibility Summary:");
-    developerResponsibilityCounts.forEach((developer, count) -> {
+    developerResponsibilityClassCounts.forEach((developer, count) -> {
       System.out.println("  " + developer + ": " + count + " class(es)");
+    });
+    System.out.println();
+    developerResponsibilityConstructorCounts.forEach((developer, count) -> {
+      System.out.println("  " + developer + ": " + count + " constructor(s)");
+    });
+    System.out.println();
+    developerResponsibilityMethodCounts.forEach((developer, count) -> {
+      System.out.println("  " + developer + ": " + count + " method(s)");
     });
   }
 }

@@ -1,5 +1,5 @@
 // Test.java
-@Responsible(developer = "Alice")
+@Responsible(developer = "Oliver Kastner")
 @Invariant("Heat pumps and office units must remain consistent with defined constraints.")
 public class Test {
   
