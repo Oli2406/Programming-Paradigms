@@ -41,7 +41,7 @@ public class Test {
     testInstance.testAssignPumpToOffice(officeManager, office4);
     officeManager.showOffices();
     
-    // Display Prices
+    // 4. Display Prices
     System.out.println("\n4. Displaying Prices...");
     System.out.println("Available Heat Pump Price: " + inventory.totalAvailablePrice());
     System.out.println("Installed Heat Pump Price: " + officeManager.totalInstalledPrice());
