@@ -2,40 +2,35 @@ package Office;
 
 import Room.*;
 
-import java.util.HashSet;
-
 public class Office {
-  private final int officeNumber; // Unique office number
-  private double auxiliarySpaceArea; // Area of auxiliary rooms
-  //TODO: might have to create our own list implementation
-  private final HashSet<Room> rooms; // List of rooms
-
-  // Constructor
+  private final int officeNumber;
+  private double auxiliarySpaceArea;
+  private final CustomRoomList rooms;
+  
   public Office(int officeNumber, double auxiliarySpaceArea) {
     this.officeNumber = officeNumber;
     this.setAuxiliarySpaceArea(auxiliarySpaceArea);
-    this.rooms = new HashSet<>();
+    this.rooms = new CustomRoomList();
   }
-
-  // Getters
+  
   public int getOfficeNumber() {
     return officeNumber;
   }
-
+  
   public double getAuxiliarySpaceArea() {
     return auxiliarySpaceArea;
   }
-
+  
   public Room getRoom(String roomName) {
-    for (Room room : rooms) {
+    for (Object obj : rooms) {
+      Room room = (Room) obj;
       if (room.getName().equals(roomName)) {
         return room;
       }
     }
     return null;
   }
-
-  // Setters
+  
   public void setAuxiliarySpaceArea(double auxiliarySpaceArea) {
     if (auxiliarySpaceArea < 0) {
       this.auxiliarySpaceArea = 0;
@@ -43,20 +38,20 @@ public class Office {
       this.auxiliarySpaceArea = auxiliarySpaceArea;
     }
   }
-
-  // Calculate total area of the office unit (rooms + auxiliary spaces)
+  
   public double getTotalArea() {
     double roomArea = 0;
-    for (Room room : rooms) {
+    for (Object obj : rooms) {
+      Room room = (Room) obj;
       roomArea += room.getLength() * room.getWidth();
     }
     return roomArea + auxiliarySpaceArea;
   }
-
-  // Add a room to the office unit
+  
   public void addRoom(Room room) {
     if (room != null) {
-      for (Room existingRoom : rooms) {
+      for (Object obj : rooms) {
+        Room existingRoom = (Room) obj;
         if (existingRoom.getName().equals(room.getName())) {
           return;
         }
@@ -64,13 +59,11 @@ public class Office {
       rooms.add(room);
     }
   }
-
-  // Remove a room by its name
+  
   public void removeRoom(Room roomToRemove) {
     rooms.remove(roomToRemove);
   }
-
-  // Change the room
+  
   public void changeRoom(Room roomToChange, Room changedRoom) {
     if (rooms.contains(roomToChange)) {
       roomToChange.setName(changedRoom.getName());
@@ -84,151 +77,147 @@ public class Office {
       }
     }
   }
-
-  // Statistical methods
+  
   public double getAverageRoomArea() {
     if (rooms.isEmpty()) {
       return 0;
     }
     double totalArea = 0;
-    for (Room room : rooms) {
+    for (Object obj : rooms) {
+      Room room = (Room) obj;
       totalArea += room.getArea();
     }
-    return rooms.isEmpty()?0:totalArea / rooms.size();
+    return totalArea / rooms.size();
   }
+  
   public double getAverageRoomWindowsArea() {
     if (rooms.isEmpty()) {
       return 0;
     }
     double totalArea = 0;
     int count = 0;
-    for (Room room : rooms) {
+    for (Object obj : rooms) {
+      Room room = (Room) obj;
       if (room instanceof RoomWindows) {
         totalArea += room.getArea();
         count++;
       }
     }
-    return count==0?0:totalArea / count;
+    return count == 0 ? 0 : totalArea / count;
   }
-
+  
   public double getAverageRoomWindowlessArea() {
     if (rooms.isEmpty()) {
       return 0;
     }
     double totalArea = 0;
     int count = 0;
-    for (Room room : rooms) {
+    for (Object obj : rooms) {
+      Room room = (Room) obj;
       if (room instanceof RoomWindowless) {
         totalArea += room.getArea();
         count++;
       }
     }
-    return count==0?0:totalArea / count;
+    return count == 0 ? 0 : totalArea / count;
   }
-
+  
   public double getAverageStoreroomVolume() {
     if (rooms.isEmpty()) {
       return 0;
     }
     double totalVolume = 0;
     int count = 0;
-    for (Room room : rooms) {
+    for (Object obj : rooms) {
+      Room room = (Room) obj;
       if (room.getUsage() instanceof UsageStoreroom) {
         totalVolume += room.getUsage().getStorageVolume();
         count++;
       }
     }
-    return count==0?0:totalVolume / count;
+    return count == 0 ? 0 : totalVolume / count;
   }
-
+  
   public double getAverageWorkplaces() {
     if (rooms.isEmpty()) {
       return 0;
     }
     double totalWorkplaces = 0;
     int count = 0;
-    for (Room room : rooms) {
+    for (Object obj : rooms) {
+      Room room = (Room) obj;
       if (room.getUsage() instanceof UsageOffice) {
         totalWorkplaces += room.getUsage().getWorkplaces();
         count++;
       }
     }
-    return count==0?0:totalWorkplaces / count;
+    return count == 0 ? 0 : totalWorkplaces / count;
   }
-
-  //TODO: is this legit?
+  
   public double[] calculateAverageWindowAreaToRoomAreaRatios() {
-    double totalRatio = 0;
-    int totalRoomsWithWindows = 0;
-
-    double officeRatio = 0;
-    int officeRoomCount = 0;
-
-    double storageRatio = 0;
-    int storageRoomCount = 0;
-
-    for (Room room : rooms) {
+    double[] ratios = new double[3];
+    int[] counts = new int[3];
+    
+    for (Object obj : rooms) {
+      Room room = (Room) obj;
       if (room instanceof RoomWindows roomWithWindow) {
         double roomArea = room.getArea();
-        double windowArea = roomWithWindow.getWindowArea();
-        double ratio = windowArea / roomArea;
-
-        totalRatio += ratio;
-        totalRoomsWithWindows++;
-
+        if (roomArea == 0) continue;
+        
+        double ratio = roomWithWindow.getWindowArea() / roomArea;
+        
+        ratios[0] += ratio;
+        counts[0]++;
+        
         if (room.getUsage() instanceof UsageOffice) {
-          officeRatio += ratio;
-          officeRoomCount++;
+          ratios[1] += ratio;
+          counts[1]++;
         } else if (room.getUsage() instanceof UsageStoreroom) {
-          storageRatio += ratio;
-          storageRoomCount++;
+          ratios[2] += ratio;
+          counts[2]++;
         }
       }
     }
-
-    return new double[]{
-        totalRoomsWithWindows == 0 ? 0 : totalRatio / totalRoomsWithWindows,
-        officeRoomCount == 0 ? 0 : officeRatio / officeRoomCount,
-        storageRoomCount == 0 ? 0 : storageRatio / storageRoomCount
-    };
+    
+    for (int i = 0; i < ratios.length; i++) {
+      ratios[i] = counts[i] == 0 ? 0 : ratios[i] / counts[i];
+    }
+    
+    return ratios;
   }
-  //TODO: is this legit?
+  
   public double[] calculateAverageLuminousFluxToAreaRatios() {
-    double totalLux = 0;
-    int totalRoomsWithoutWindows = 0;
-
-    double officeLux = 0;
-    int officeRoomCount = 0;
-
-    double storageLux = 0;
-    int storageRoomCount = 0;
-
-    for (Room room : rooms) {
-      if (room instanceof RoomWindowless) {
-        RoomWindowless roomWithoutWindow = (RoomWindowless) room;
+    double[] luxRatios = new double[3];
+    int[] counts = new int[3];
+    
+    for (Object obj : rooms) {
+      Room room = (Room) obj;
+      if (room instanceof RoomWindowless roomWithoutWindow) {
         double roomArea = room.getArea();
+        if (roomArea == 0) continue;
+        
         double lux = roomWithoutWindow.getLuminousFlux() / roomArea;
-
-        totalLux += lux;
-        totalRoomsWithoutWindows++;
-
+        
+        luxRatios[0] += lux;
+        counts[0]++;
+        
         if (room.getUsage() instanceof UsageOffice) {
-          officeLux += lux;
-          officeRoomCount++;
+          luxRatios[1] += lux;
+          counts[1]++;
         } else if (room.getUsage() instanceof UsageStoreroom) {
-          storageLux += lux;
-          storageRoomCount++;
+          luxRatios[2] += lux;
+          counts[2]++;
         }
       }
     }
-
-    return new double[]{
-        totalRoomsWithoutWindows == 0 ? 0 : totalLux / totalRoomsWithoutWindows,
-        officeRoomCount == 0 ? 0 : officeLux / officeRoomCount,
-        storageRoomCount == 0 ? 0 : storageLux / storageRoomCount
-    };
+    
+    for (int i = 0; i < luxRatios.length; i++) {
+      luxRatios[i] = counts[i] == 0 ? 0 : luxRatios[i] / counts[i];
+    }
+    
+    return luxRatios;
   }
-
+  
   @Override
   public String toString() {
     return "Office Number: " + officeNumber + "\n" +
@@ -241,4 +230,3 @@ public class Office {
         "Average Workplaces: " + getAverageWorkplaces() + "\n";
   }
 }
-

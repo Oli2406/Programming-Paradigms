@@ -39,5 +39,6 @@ public abstract class Room {
   public void setWidth(double width) {
     this.width = width;
   }
+
 }
 

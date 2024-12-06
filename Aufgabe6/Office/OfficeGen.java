@@ -2,28 +2,24 @@ package Office;
 
 import Room.*;
 
-import java.util.ArrayList;
-
 public class OfficeGen<T extends Room> {
-  private final int officeNumber; // Unique office number
-  private final double auxiliarySpaceArea; // Area of auxiliary rooms
-  private final ArrayList<T> rooms; // List of rooms
-
-  // Constructor
+  private final int officeNumber;
+  private final double auxiliarySpaceArea;
+  private final CustomGenRoomList rooms;
+  
   public OfficeGen(int officeNumber, double auxiliarySpaceArea) {
     if (auxiliarySpaceArea < 0) throw new IllegalArgumentException("Auxiliary space area cannot be negative.");
     this.officeNumber = officeNumber;
     this.auxiliarySpaceArea = auxiliarySpaceArea;
-    this.rooms = new ArrayList<>();
+    this.rooms = new CustomGenRoomList();
   }
-
-  // Getters
+  
   public int getOfficeNumber() {
     return officeNumber;
   }
 
-  public T getRoom(String roomName) {
-    for (T room : rooms) {
+  public Room getRoom(String roomName) {
+    for (Room room : rooms) {
       if (room.getName().equals(roomName)) {
         return room;
       }
@@ -34,28 +30,24 @@ public class OfficeGen<T extends Room> {
   public double getAuxiliarySpaceArea() {
     return auxiliarySpaceArea;
   }
-
-  // Calculate total area of the office unit (rooms + auxiliary spaces)
+  
   public double getTotalArea() {
     double roomArea = 0;
-    for (T room : rooms) {
+    for (Room room : rooms) {
       roomArea += room.getLength() * room.getWidth();
     }
     return roomArea + auxiliarySpaceArea;
   }
-
-  // Add a room to the office unit
+  
   public void addRoom(T room) {
     if (room == null) throw new IllegalArgumentException("Room cannot be null.");
     rooms.add(room);
   }
-
-  // Remove a room by its name
+  
   public void removeRoom(T room) {
     rooms.remove(room);
   }
-
-  // Change the usage of a specific room
+  
   public void changeRoom(T room, Room newRoom) {
     if(rooms.contains(room)) {
       room.setUsage(newRoom.getUsage());
@@ -66,12 +58,11 @@ public class OfficeGen<T extends Room> {
       throw new IllegalArgumentException("Room not found: " + room.getName());
     }
   }
-
-  // Statistical methods
+  
   public double getAverageRoomArea() {
     if (rooms.isEmpty()) return 0;
     double totalArea = 0;
-    for (T room : rooms) {
+    for (Room room : rooms) {
       totalArea += room.getLength() * room.getWidth();
     }
     return rooms.isEmpty()?0:totalArea / rooms.size();
@@ -81,7 +72,7 @@ public class OfficeGen<T extends Room> {
     if (rooms.isEmpty()) return 0;
     double totalArea = 0;
     int count = 0;
-    for (T room : rooms) {
+    for (Room room : rooms) {
       if (room instanceof RoomWindows) {
         totalArea += room.getLength() * room.getWidth();
         count++;
@@ -94,7 +85,7 @@ public class OfficeGen<T extends Room> {
     if (rooms.isEmpty()) return 0;
     double totalArea = 0;
     int count = 0;
-    for (T room : rooms) {
+    for (Room room : rooms) {
       if (room instanceof RoomWindowless) {
         totalArea += room.getLength() * room.getWidth();
         count++;
@@ -107,7 +98,7 @@ public class OfficeGen<T extends Room> {
     if (rooms.isEmpty()) return 0;
     double totalVolume = 0;
     int count = 0;
-    for (T room : rooms) {
+    for (Room room : rooms) {
       if (room.getUsage() instanceof UsageStoreroom) {
         totalVolume += (room.getUsage()).getStorageVolume();
         count++;
@@ -120,7 +111,7 @@ public class OfficeGen<T extends Room> {
     if (rooms.isEmpty()) return 0;
     double totalWorkplaces = 0;
     int count = 0;
-    for (T room : rooms) {
+    for (Room room : rooms) {
       if (room.getUsage() instanceof UsageOffice) {
         totalWorkplaces += (room.getUsage()).getWorkplaces();
         count++;
@@ -139,7 +130,7 @@ public class OfficeGen<T extends Room> {
     double storageRatio = 0;
     int storageRoomCount = 0;
 
-    for (T room : rooms) {
+    for (Room room : rooms) {
       if (room instanceof RoomWindows roomWithWindow) {
         double roomArea = room.getLength() * room.getWidth();
         double windowArea = roomWithWindow.getWindowArea();
@@ -175,7 +166,7 @@ public class OfficeGen<T extends Room> {
     double storageLux = 0;
     int storageRoomCount = 0;
 
-    for (T room : rooms) {
+    for (Room room : rooms) {
       if (room instanceof RoomWindowless roomWithoutWindow) {
         double roomArea = room.getLength() * room.getWidth();
         double lux = roomWithoutWindow.getLuminousFlux() / roomArea;
