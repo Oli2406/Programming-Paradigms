@@ -1,8 +1,10 @@
 @Responsible(developer = "Noah Oguamalam")
 @Invariant("heatingType != null && size != null")
+@HistoryConstraint("The installed heat pump must be null if no heat pump is installed")
 public class OfficeUnit {
   private final HeatingType heatingType;
   private final OfficeSize size;
+
   private HeatPump installedPump;
 
   @Responsible(developer = "Noah Oguamalam")
