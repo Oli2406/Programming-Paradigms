@@ -1,7 +1,6 @@
 import java.util.*;
 
 //TODO: evaluierung + custom evaluierung
-//TODO: add cube überprüfen (an nachbarn anfügen)
 class Structure {
   private final Set<Cube> cubes = new HashSet<>();
 
@@ -24,7 +23,7 @@ class Structure {
         int newX = cube.x + delta[0];
         int newY = cube.y + delta[1];
         int newZ = cube.z + delta[2];
-        if (newZ <= maxHeight && isValidPosition(newX, newY, newZ)) {
+        if (newZ < maxHeight && isValidPosition(newX, newY, newZ)) {
           positions.add(new int[]{newX, newY, newZ});
         }
       }
@@ -39,9 +38,12 @@ class Structure {
 
     int[][] sideDeltas = {{1, 0, 0}, {0, 1, 0}, {-1, 0, 0}, {0, -1, 0}, {0,0,-1}};
     int numberOfNeighbours;
-
-    int remainingFreeSides = 5;
-
+    int remainingFreeSides;
+    if(z <= 0) {
+      remainingFreeSides = 4;
+    } else {
+      remainingFreeSides = 5;
+    }
     for (int[] delta : sideDeltas) {
       Cube neighbor = new Cube(x + delta[0], y + delta[1], z+delta[2]);
       if (cubes.contains(neighbor)) {
@@ -57,7 +59,6 @@ class Structure {
         remainingFreeSides--;
       }
     }
-
     if(remainingFreeSides == 5) return false;
     if(remainingFreeSides == 0) return false;
 
@@ -122,7 +123,7 @@ class Structure {
     Map<String, Integer> positions = new HashMap<>();
     for (Cube cube : cubes) {
       String key = cube.x + "," + cube.y;
-      positions.put(key, Math.max(positions.getOrDefault(key, 0), cube.z));
+      positions.put(key, Math.max(positions.getOrDefault(key, 0), cube.z+1));
     }
     int minX = cubes.stream().mapToInt(c -> c.x).min().orElse(0);
     int minY = cubes.stream().mapToInt(c -> c.y).min().orElse(0);
