@@ -38,7 +38,7 @@ class Structure {
     if (z > 0 && !cubes.contains(new Cube(x, y, z - 1))) return false;  //Würfel kann nicht schweben
 
     int[][] sideDeltas = {{1, 0, 0}, {0, 1, 0}, {-1, 0, 0}, {0, -1, 0}, {0,0,-1}};
-    int numberOfNeighbours = 0;
+    int numberOfNeighbours;
 
     int remainingFreeSides = 5;
 
