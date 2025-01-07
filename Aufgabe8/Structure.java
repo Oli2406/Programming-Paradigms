@@ -38,21 +38,44 @@ class Structure {
     if (z > 0 && !cubes.contains(new Cube(x, y, z - 1))) return false;  //Würfel kann nicht schweben
 
     int[][] sideDeltas = {{1, 0, 0}, {0, 1, 0}, {-1, 0, 0}, {0, -1, 0}, {0,0,-1}};
-    boolean hasAdjacent = false;
-    int remainingFreeSides = 4;
+    int numberOfNeighbours = 0;
+
+    int remainingFreeSides = 5;
 
     for (int[] delta : sideDeltas) {
       Cube neighbor = new Cube(x + delta[0], y + delta[1], z+delta[2]);
       if (cubes.contains(neighbor)) {
-        hasAdjacent = true;
-        if (delta[2] == 0) {
+        numberOfNeighbours = countNeighbors(neighbor);
+        if(z == neighbor.z) {
+            numberOfNeighbours++;
+        }
+        if(neighbor.z <= 0) {
+          numberOfNeighbours++;
+        }
+
+        if(numberOfNeighbours >= 5) return false;
         remainingFreeSides--;
       }
-        }
     }
-    if (remainingFreeSides == 0) return false;
-    if (!hasAdjacent) return false;
+
+    if(remainingFreeSides == 5) return false;
+    if(remainingFreeSides == 0) return false;
+
     return true;
+  }
+
+  public int countNeighbors(Cube cube) {
+    int[][] directions = {{1, 0, 0}, {0, 1, 0}, {-1, 0, 0}, {0, -1, 0}, {0,0,-1}};
+    int count = 0;
+
+    for (int[] dir : directions) {
+      Cube neighbor = new Cube(cube.x + dir[0], cube.y + dir[1], cube.z + dir[2]);
+      if (cubes.contains(neighbor)) {
+        count++;
+      }
+    }
+
+    return count;
   }
 
   public double evaluateThermalQuality() {
