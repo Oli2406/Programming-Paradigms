@@ -85,7 +85,7 @@ class Structure {
 
   private double evaluateCubeThermal(Cube cube) {
     double score = 0.0;
-    int[][] directions = {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}, {0, 0, -1}};
+    int[][] directions = {{1, 0, 0}, {0, 1, 0}, {-1, 0, 0}, {0, -1, 0},  {0, 0, 1}, {0, 0, -1}};
 
     for (int[] dir : directions) {
       Cube neighbor = new Cube(cube.x + dir[0], cube.y + dir[1], cube.z + dir[2]);
@@ -104,14 +104,48 @@ class Structure {
 
 
   private double evaluateCubeView(Cube cube) {
-    double score = 1.0;
-    for (int i = 1; i <= 25; i++) {
-      Cube front = new Cube(cube.x + i, cube.y, cube.z);
-      if (cubes.contains(front)) {
-        score *= 0.9;
-        break;
+    double score = 0;
+    int[][] directions = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
+    for(int[] direction: directions) {
+      int distance = 0;
+      double sideScore = 0;
+      for (;distance < 25; distance++) {
+        Cube front = new Cube(cube.x + direction[0]*(distance+1), cube.y + direction[1]*(distance+1), cube.z);
+        if (cubes.contains(front)) {
+          break;
+        }
       }
+      sideScore += Math.min(distance/25,1);
+      int cubeCount = 0;
+      Cube bottom = new Cube(cube.x + direction[0], cube.y + direction[1], cube.z-1);
+      if(cubes.contains(bottom)) {
+        cubeCount++;
+      }
+      Cube left;
+      Cube right;
+      if(direction[0] != 0) {
+        left = new Cube(cube.x + direction[0], cube.y + direction[1] + 1, cube.z);
+        if(cubes.contains(left)) {
+          cubeCount++;
+        }
+        right = new Cube(cube.x + direction[0], cube.y + direction[1] - 1, cube.z);
+        if(cubes.contains(right)) {
+          cubeCount++;
+        }
+      } else {
+        left = new Cube(cube.x + direction[0] + 1, cube.y + direction[1], cube.z);
+        if(cubes.contains(left)) {
+          cubeCount++;
+        }
+        right = new Cube(cube.x + direction[0] - 1, cube.y + direction[1], cube.z);
+        if(cubes.contains(right)) {
+          cubeCount++;
+        }
+      }
+      sideScore *= (1/Math.pow(2,cubeCount));
+      score += sideScore;
     }
+
     return score;
   }
 
