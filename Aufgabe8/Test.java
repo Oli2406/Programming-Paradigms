@@ -4,12 +4,12 @@ import java.util.stream.Collectors;
 public class Test {
 
   public static void main(String[] args) {
-    int n1 = 100, m1 = 10, k1 = 5;
-    int n2 = 150, m2 = 15, k2 = 5;
-    int n3 = 20, m3 = 10, k3 = 7;
+    int n1 = 69, m1 = 7, k1 = 5;
+    int n2 = 42, m2 = 5, k2 = 10;
+    int n3 = 20, m3 = 3, k3 = 10;
 
     System.out.println("Optimierungslauf 1 (Standard-Bewertung):");
-    runOptimization(n1, m1, k1, structure -> structure.evaluateThermalQuality() + structure.evaluateViewQuality());
+    runOptimization(n1, m1, k1, structure -> /*structure.evaluateThermalQuality()*/ + structure.evaluateViewQuality());
 
     System.out.println("\nOptimierungslauf 2 (Standard-Bewertung):");
     runOptimization(n2, m2, k2, structure -> structure.evaluateThermalQuality() + structure.evaluateViewQuality());

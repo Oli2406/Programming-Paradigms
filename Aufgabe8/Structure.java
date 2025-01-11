@@ -1,6 +1,5 @@
 import java.util.*;
 
-//TODO: evaluierung + custom evaluierung
 class Structure {
   private final Set<Cube> cubes = new HashSet<>();
 
@@ -82,22 +81,53 @@ class Structure {
   public double evaluateThermalQuality() {
     return cubes.stream().mapToDouble(this::evaluateCubeThermal).sum();
   }
-
+  
   private double evaluateCubeThermal(Cube cube) {
     double score = 0.0;
-    int[][] directions = {{1, 0, 0}, {0, 1, 0}, {-1, 0, 0}, {0, -1, 0},  {0, 0, 1}, {0, 0, -1}};
-
+    
+    int[][] directions = {
+        {1, 0, 0}, {-1, 0, 0},
+        {0, 1, 0}, {0, -1, 0},
+        {0, 0, 1}, {0, 0, -1}
+    };
+    
     for (int[] dir : directions) {
       Cube neighbor = new Cube(cube.x + dir[0], cube.y + dir[1], cube.z + dir[2]);
       if (cubes.contains(neighbor)) {
         score += 1.0;
       } else if (dir[2] == 0) {
-        score += 0.5;
+        if (isSunlit(cube, dir)) {
+          if (dir[0] == 1) {
+            score += 0.2;
+          } else if (dir[0] == -1) {
+            score += 0.1;
+          } else if (dir[1] == -1) {
+            score += 0.5;
+          }
+        }
       }
     }
     return score;
   }
-
+  
+  private boolean isSunlit(Cube cube, int[] direction) {
+    int xDir = direction[0];
+    int yDir = direction[1];
+    
+    for (int distance = 1; distance <= 25; distance++) {
+      int newX = cube.x + xDir * distance;
+      int newY = cube.y + yDir * distance;
+      Cube blocker = new Cube(newX, newY, cube.z);
+      if (cubes.contains(blocker)) {
+        return false;
+      }
+    }
+    return true;
+  }
+  
+  
+  
+  
   public double evaluateViewQuality() {
     return cubes.stream().mapToDouble(this::evaluateCubeView).sum();
   }
