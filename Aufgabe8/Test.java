@@ -1,10 +1,16 @@
 import java.util.*;
 import java.util.stream.Collectors;
 
+/*
+ * Wer hat was gemacht:
+ * - Ryan Foster: View Quality, Test, Structure
+ * - Oliver Kastner: Thermal Quality, print, Structure
+ * - Noah Oguamalam: Test, customEvaluation, Structure
+ */
 public class Test {
 
   public static void main(String[] args) {
-    int n1 = 69, m1 = 12, k1 = 5;
+    int n1 = 20, m1 = 12, k1 = 5;
     int n2 = 42, m2 = 15, k2 = 10;
     int n3 = 24, m3 = 8, k3 = 25;
 
@@ -39,7 +45,7 @@ public class Test {
 
   private static List<Structure> findOptimalStructures(int n, int m, int k, Evaluator evaluator) {
     if (n == 1) {
-      return Collections.singletonList(new Structure().addCube(new Cube(0, 0, 0)));
+      return Collections.singletonList(new Structure(new HashSet<>()).addCube(new Cube(0, 0, 0)));
     }
 
     List<Structure> previousSolutions = findOptimalStructures(n - 1, m, k, evaluator);
