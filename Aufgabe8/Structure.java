@@ -4,7 +4,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 class Structure {
-  private Set<Cube> cubes;
+  private final Set<Cube> cubes;
 
   /**
    * Adds a new cube to the structure in a functional manner, ensuring immutability of the original structure.
