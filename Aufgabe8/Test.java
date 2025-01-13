@@ -6,24 +6,22 @@ import java.util.stream.Collectors;
  * - Ryan Foster: View Quality, Test, Structure
  * - Oliver Kastner: Thermal Quality, print, Structure
  * - Noah Oguamalam: Test, customEvaluation, Structure
+ * - The program took approximately 55 seconds when running.
  */
 public class Test {
 
   public static void main(String[] args) {
-    int n1 = 20, m1 = 12, k1 = 5;
+    int n1 = 30, m1 = 12, k1 = 10;
     int n2 = 42, m2 = 15, k2 = 10;
-    int n3 = 24, m3 = 8, k3 = 25;
-
+    int n3 = 30, m3 = 5, k3 = 10;
     System.out.println("Optimierungslauf 1 (Standard-Bewertung):");
     runOptimization(n1, m1, k1, structure -> structure.evaluateThermalQuality() + structure.evaluateViewQuality());
 
     System.out.println("\nOptimierungslauf 2 (Standard-Bewertung):");
     runOptimization(n2, m2, k2, structure -> structure.evaluateThermalQuality() + structure.evaluateViewQuality());
 
-    /*
     System.out.println("\nOptimierungslauf 3 (Eigene Bewertungsfunktion):");
     runOptimization(n3, m3, k3, Structure::customEvaluation);
-     */
   }
 
   private static void runOptimization(int n, int m, int k, Evaluator evaluator) {

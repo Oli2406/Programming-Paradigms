@@ -1,4 +1,10 @@
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Queue;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -8,6 +14,7 @@ class Structure {
 
   /**
    * Adds a new cube to the structure in a functional manner, ensuring immutability of the original structure.
+   *
    * @param cube The cube to be added.
    * @return A new Structure instance containing the added cube.
    */
@@ -18,6 +25,7 @@ class Structure {
 
   /**
    * Creates a copy of the current structure with the same cubes.
+   *
    * @return A new Structure instance identical to the current one.
    */
   public Structure copy() {
@@ -28,6 +36,7 @@ class Structure {
 
   /**
    * Calculates valid positions for placing new cubes based on constraints like height and adjacency.
+   *
    * @param maxHeight The maximum height allowed for the structure.
    * @return A set of valid positions represented as integer arrays [x, y, z].
    */
@@ -40,7 +49,7 @@ class Structure {
         int newY = cube.y + delta[1];
         int newZ = cube.z + delta[2];
         if (newZ < maxHeight && isValidPosition(newX, newY, newZ)) {
-          positions.add(new int[]{newX, newY, newZ});
+          positions.add(new int[] {newX, newY, newZ});
         }
       }
     }
@@ -49,16 +58,21 @@ class Structure {
 
   /**
    * Validates whether a cube can be placed at the given coordinates based on structural rules.
+   *
    * @param x The x-coordinate.
    * @param y The y-coordinate.
    * @param z The z-coordinate.
    * @return True if the position is valid, false otherwise.
    */
   private boolean isValidPosition(int x, int y, int z) {
-    if (cubes.contains(new Cube(x, y, z))) return false;
+    if (cubes.contains(new Cube(x, y, z))) {
+      return false;
+    }
 
     // Ensure the cube is supported and not floating.
-    if (z > 0 && !cubes.contains(new Cube(x, y, z - 1))) return false;
+    if (z > 0 && !cubes.contains(new Cube(x, y, z - 1))) {
+      return false;
+    }
 
     int[][] sideDeltas = {{1, 0, 0}, {0, 1, 0}, {-1, 0, 0}, {0, -1, 0}, {0, 0, -1}};
     int numberOfNeighbours;
@@ -74,7 +88,9 @@ class Structure {
         if (neighbor.z <= 0) {
           numberOfNeighbours++;
         }
-        if (numberOfNeighbours >= 5) return false;
+        if (numberOfNeighbours >= 5) {
+          return false;
+        }
         remainingFreeSides--;
       }
     }
@@ -84,6 +100,7 @@ class Structure {
 
   /**
    * Counts the neighboring cubes for a given cube.
+   *
    * @param cube The cube whose neighbors are to be counted.
    * @return The number of neighboring cubes.
    */
@@ -97,6 +114,7 @@ class Structure {
 
   /**
    * Evaluates the thermal quality of the structure based on cube exposure.
+   *
    * @return A score representing the thermal quality.
    */
   public double evaluateThermalQuality() {
@@ -105,6 +123,7 @@ class Structure {
 
   /**
    * Calculates the thermal contribution of an individual cube based on its surroundings.
+   *
    * @param cube The cube to evaluate.
    * @return A score representing the cube's thermal contribution.
    */
@@ -122,9 +141,15 @@ class Structure {
             return 1.0; // Fully blocked direction contributes maximally to thermal quality.
           } else if (dir[2] == 0 && isSunlit(cube, dir)) {
             // Adjust scores based on sunlit exposure.
-            if (dir[0] == 1) return 0.2;
-            if (dir[0] == -1) return 0.1;
-            if (dir[1] == -1) return 0.5;
+            if (dir[0] == 1) {
+              return 0.2;
+            }
+            if (dir[0] == -1) {
+              return 0.1;
+            }
+            if (dir[1] == -1) {
+              return 0.5;
+            }
           }
           return 0.0;
         })
@@ -133,7 +158,8 @@ class Structure {
 
   /**
    * Checks if a cube face is sunlit in a given direction.
-   * @param cube The cube to check.
+   *
+   * @param cube      The cube to check.
    * @param direction The direction to check.
    * @return True if the face is sunlit, false otherwise.
    */
@@ -148,6 +174,7 @@ class Structure {
 
   /**
    * Evaluates the view quality of the structure based on the visibility of cubes.
+   *
    * @return A score representing the view quality.
    */
   public double evaluateViewQuality() {
@@ -156,6 +183,7 @@ class Structure {
 
   /**
    * Evaluates the view quality of an individual cube based on its visibility.
+   *
    * @param cube The cube to evaluate.
    * @return A score representing the cube's view quality.
    */
@@ -282,16 +310,102 @@ class Structure {
     });
   }
 
+  /**
+   * Evaluates the custom quality of the structure based on the reachability of cubes.
+   *
+   * @return A score representing the custom evaluation of the structure.
+   */
   public double customEvaluation() {
-    return Math.random();
+    if (cubes.isEmpty()) {
+      return 0.0;
+    }
+    if (cubes.size() == 1) {
+      return 1000.0;
+    }
+
+    int minX = Integer.MAX_VALUE;
+    int minY = Integer.MAX_VALUE;
+    int maxX = Integer.MIN_VALUE;
+    int maxY = Integer.MIN_VALUE;
+
+    for (Cube cube : cubes) {
+      if (cube.x < minX) {
+        minX = cube.x;
+      }
+      if (cube.y < minY) {
+        minY = cube.y;
+      }
+      if (cube.x > maxX) {
+        maxX = cube.x;
+      }
+      if (cube.y > maxY) {
+        maxY = cube.y;
+      }
+    }
+    int[] borders = {minX, maxX, minY, maxY};
+    Set<Cube> cubesToSearch = cubes.stream()
+        .filter(cube -> cube.z == 0)
+        .collect(Collectors.toSet());
+
+    int unreachableCubes = cubesToSearch.stream()
+        .mapToInt(start -> (int) cubesToSearch.stream()
+            .filter(end -> !start.equals(end) && isPathClear(start, end, cubes, borders))
+            .count())
+        .map(visited -> cubesToSearch.size() - visited)
+        .sum();
+    return 1000.0 - unreachableCubes;
   }
 
+  /**
+   * Checks if there is a clear path between two cubes using BFS.
+   *
+   * @param start The starting cube.
+   * @param end The ending cube.
+   * @param cubes The set of all cubes in the structure.
+   * @param borders The boundaries of the structure.
+   * @return True if a clear path exists, false otherwise.
+   */
+  private boolean isPathClear(Cube start, Cube end, Set<Cube> cubes, int[] borders) {
+    Set<Cube> obstacles = new HashSet<>(cubes);
+    obstacles.remove(end);
+    Queue<Cube> queue = new LinkedList<>();
+    Set<Cube> visited = new HashSet<>();
+    queue.add(start);
+    // All possible directions to move in the grid
+    int[][] directions = {
+        {1, 0, 0}, {-1, 0, 0},
+        {0, 1, 0}, {0, -1, 0}
+    };
 
+    // If we reached the destination
+    while (!queue.isEmpty()) {
+      Cube current = queue.poll();
+      if (current.equals(end)) {
+        return true;
+      }
+      // Mark current as visited
+      visited.add(current);
+
+      // Explore all possible moves
+      Arrays.stream(directions)
+          .map(dir -> new Cube(current.x + dir[0], current.y + dir[1], current.z))
+          .filter(neighbor -> current.x + neighbor.x >= borders[0] && current.x + neighbor.x <= borders[1] &&
+              current.y + neighbor.y >= borders[2] && current.y + neighbor.y <= borders[3] &&
+              !visited.contains(neighbor) && !obstacles.contains(neighbor))
+          .forEach(queue::add);
+    }
+    // No path found
+    return false;
+  }
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (!(o instanceof Structure structure)) return false;
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof Structure structure)) {
+      return false;
+    }
     return Objects.equals(cubes, structure.cubes);
   }
 
