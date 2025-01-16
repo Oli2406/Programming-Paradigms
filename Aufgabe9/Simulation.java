@@ -22,11 +22,33 @@ public class Simulation {
       "                                >>>>>>>>^^          ",
       "                                >>>>>>>>^^          "
   };
+
+  public static String[] grid2 = {
+      ">>>>>>vvv<<<<<<            vvvv          vvvv",
+          ">>>>>>vvv<<<<<<            vvvv          vvvv",
+          "      vvv                  vvvv          vvvv",
+          "      vvv                  vvvv          vvvv",
+          "      vvv                  vvvv          vvvv",
+          "      vvv                  >>vv          vv<<",
+          "      vvv                  >>vv          vv<<",
+          "      vvv                    >>>>>>vv<<<<<<",
+          "      vvv                    >>>>>>vv<<<<<<",
+          "      v>>>>>>>>>>>vvvv             vv",
+          "      >>>>>>>>>>>>vvvv             vv",
+          "                  vvvv<<<<<<<<<<<<<<<",
+          "                  vvvv<<<<<<<<<<<<<<<",
+          "                  vvvv",
+          "                  vvvv",
+          "                  vvvv",
+          "                  >vv<",
+          "                  >vv<",
+          "                   SS"
+  };
   
   public static void main(String[] args) {
     int numPeople = 20;
     List<Thread> threads = new ArrayList<>();
-    Grid grid = new Grid(grid1);
+    Grid grid = new Grid(grid2);
     
     PipedOutputStream simulationOutput = new PipedOutputStream();
     PipedInputStream gatheringInput = new PipedInputStream();

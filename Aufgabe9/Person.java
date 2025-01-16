@@ -36,35 +36,37 @@ public class Person implements Runnable {
       if(grid.getGrid()[randX][randY] != ' ' && grid.getGrid()[randX][randY] != 'S' && canPlace) {
         rightX = randX;
         rightY = randY;
-        break;
-      }
-    }
-    int[][] positions = new int[][]{{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
-    
-    int randomPlacement = random.nextInt(4);
-    
-    boolean noOtherFeet = true;
-    
-    for(int i = 0; i < positions.length; i++) {
-      int[] position = positions[(i + randomPlacement) % positions.length];
-      if(rightX + position[0] < 0 || rightX + position[0] >= grid.getGrid().length || rightY + position[1] < 0 || rightY + position[1] >= grid.getGrid()[rightX].length) {
-      
-      } else {
-        if(grid.getGrid()[rightX + position[0]][rightY + position[1]] != 'S' && grid.getGrid()[rightX + position[0]][rightY + position[1]] != ' ') {
-          for(PersonPositionData data : gridList) {
-            if(data.getLeftPositions()[0] == rightX + position[0] && data.getLeftPositions()[1] == rightY + position[1] || data.getRightPositions()[0] == rightX + position[0] && data.getRightPositions()[1] == rightY + position[1]) {
-              noOtherFeet = false;
+        int[][] positions = new int[][]{{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+
+        int randomPlacement = random.nextInt(4);
+
+        boolean noOtherFeet = true;
+
+        for(int i = 0; i < positions.length; i++) {
+          int[] position = positions[(i + randomPlacement) % positions.length];
+          if(rightX + position[0] < 0 || rightX + position[0] >= grid.getGrid().length || rightY + position[1] < 0 || rightY + position[1] >= grid.getGrid()[rightX].length) {
+
+          } else {
+            if(grid.getGrid()[rightX + position[0]][rightY + position[1]] != 'S' && grid.getGrid()[rightX + position[0]][rightY + position[1]] != ' ') {
+              for(PersonPositionData data : gridList) {
+                if(data.getLeftPositions()[0] == rightX + position[0] && data.getLeftPositions()[1] == rightY + position[1] || data.getRightPositions()[0] == rightX + position[0] && data.getRightPositions()[1] == rightY + position[1]) {
+                  noOtherFeet = false;
+                }
+              }
+              if(noOtherFeet) {
+                leftX = rightX + position[0];
+                leftY = rightY + position[1];
+                break;
+              }
             }
           }
-          if(noOtherFeet) {
-            leftX = rightX + position[0];
-            leftY = rightY + position[1];
-            break;
-          }
+        }
+        if(noOtherFeet) {
+          grid.placeFeet(new PersonPositionData(id, new int[]{leftX, leftY}, new int[]{rightX, rightY}));
+          break;
         }
       }
     }
-    grid.placeFeet(new PersonPositionData(id, new int[]{leftX, leftY}, new int[]{rightX, rightY}));
   }
   
   @Override
