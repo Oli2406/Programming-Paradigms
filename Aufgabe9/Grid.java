@@ -36,16 +36,30 @@ public class Grid {
                 for (int j = 0; j < grid[i].length; j++) {
                     char toPrint = grid[i][j];
                     for (PersonPositionData data : gridList.values()) {
-                        if (data.getLeftPositions()[0] == i && data.getLeftPositions()[1] == j) {
-                            toPrint = 'L';
-                            break;
-                        } else if (data.getRightPositions()[0] == i && data.getRightPositions()[1] == j) {
-                            toPrint = 'R';
-                            break;
-                        } else if (data.getOldRightPosition()[0] == i && data.getOldRightPosition()[1] == j) {
-                            toPrint = 'r';
-                        } else if (data.getOldLeftPosition()[0] == i && data.getOldLeftPosition()[1] == j) {
-                            toPrint = 'l';
+                        if(!data.isOnGatheringPoint()) {
+                            if (data.getLeftPositions()[0] == i && data.getLeftPositions()[1] == j) {
+                                if(toPrint == 'S') {
+                                    System.out.println("Something went wrong");
+                                }
+                                toPrint = 'L';
+                                break;
+                            } else if (data.getRightPositions()[0] == i && data.getRightPositions()[1] == j) {
+                                if(toPrint == 'S') {
+                                    System.out.println("Something went wrong");
+                                }
+                                toPrint = 'R';
+                                break;
+                            } else if (data.getOldRightPosition()[0] == i && data.getOldRightPosition()[1] == j) {
+                                if(toPrint == 'S') {
+                                    System.out.println("Something went wrong");
+                                }
+                                toPrint = 'r';
+                            } else if (data.getOldLeftPosition()[0] == i && data.getOldLeftPosition()[1] == j) {
+                                if(toPrint == 'S') {
+                                    System.out.println("Something went wrong");
+                                }
+                                toPrint = 'l';
+                            }
                         }
                     }
                     writer.append(toPrint);

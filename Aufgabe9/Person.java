@@ -88,7 +88,6 @@ public class Person implements Runnable {
             }
             try {
                 if (!move()) {
-                    Thread.sleep(random.nextInt(46) + 5); // Random wait
                     waits++;
                     if(waits >= 64) {
                         grid.setTerminateAll(true);
@@ -100,8 +99,10 @@ public class Person implements Runnable {
                             throw new RuntimeException(e);
                         }
                     }
+                    Thread.sleep(random.nextInt(46) + 5); // Random wait
                 } else {
                     steps++;
+                    Thread.sleep(random.nextInt(46) + 5); // Random wait
                 }
                 gridList.get(id).setSteps(steps);
                 gridList.get(id).setWaits(waits);
@@ -121,7 +122,6 @@ public class Person implements Runnable {
         //TODO Split up the movement from both feet to make more moves possible
 
         //TODO research how it should be possible to go around a corner
-        //TODO Person may be able to spawn on Sammelpunkt or move away from Sammelpunkt (dunno if that's intended :shrug:)
         int[][] directions = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}, {-1, -1}, {1, 1}, {-1, 1}, {1, -1}};
         for (int[] direction : directions) {
             int newRightX = rightX + direction[0];

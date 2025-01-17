@@ -74,7 +74,7 @@ public class Sammelpunkt implements Runnable {
 
     private boolean checkPersonOnSammelpunkt(PersonPositionData data) {
         for (int[] sammelpunkt : sammlungspunkte) {
-            if (data.getLeftPositions()[0] == sammelpunkt[0] && data.getLeftPositions()[1] == sammelpunkt[1] || data.getRightPositions()[0] == sammelpunkt[0] && data.getRightPositions()[1] == sammelpunkt[1] && data.isOnGatheringPoint()) {
+            if ((data.getLeftPositions()[0] == sammelpunkt[0] && data.getLeftPositions()[1] == sammelpunkt[1] || data.getRightPositions()[0] == sammelpunkt[0] && data.getRightPositions()[1] == sammelpunkt[1]) && !data.isOnGatheringPoint()) {
                 return true;
             }
         }
