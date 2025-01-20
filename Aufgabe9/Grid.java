@@ -114,7 +114,7 @@ public class Grid {
         this.terminateAll = terminateAll;
     }
 
-    public char[][] getGrid() {
+    public char[][] getGridWithPositions() {
         char[][] output = new char[rows][cols];
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[i].length; j++) {
@@ -138,6 +138,10 @@ public class Grid {
             }
         }
         return output;
+    }
+
+    public char[][] getGrid() {
+        return grid;
     }
 
     public boolean isPositionGatheringPoint(int x, int y) {

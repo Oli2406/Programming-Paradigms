@@ -26,8 +26,8 @@ public class Person implements Runnable {
         this.isLeader = isLeader;
         while (true) {
             Random random = new Random();
-            int randX = random.nextInt(grid.getGrid().length);
-            int randY = random.nextInt(grid.getGrid()[randX].length);
+            int randX = random.nextInt(grid.getGridWithPositions().length);
+            int randY = random.nextInt(grid.getGridWithPositions()[randX].length);
 
             boolean canPlace = true;
 
@@ -37,7 +37,7 @@ public class Person implements Runnable {
                     canPlace = false;
                 }
             }
-            char[][] gridCopy = grid.getGrid();
+            char[][] gridCopy = grid.getGridWithPositions();
             if (gridCopy[randX][randY] != ' ' && gridCopy[randX][randY] != 'S' && canPlace) {
                 rightX = randX;
                 rightY = randY;
@@ -49,10 +49,10 @@ public class Person implements Runnable {
 
                 for (int i = 0; i < positions.length; i++) {
                     int[] position = positions[(i + randomPlacement) % positions.length];
-                    if (rightX + position[0] < 0 || rightX + position[0] >= grid.getGrid().length || rightY + position[1] < 0 ||
-                        rightY + position[1] >= grid.getGrid()[rightX].length) {
+                    if (rightX + position[0] < 0 || rightX + position[0] >= grid.getGridWithPositions().length || rightY + position[1] < 0 ||
+                        rightY + position[1] >= grid.getGridWithPositions()[rightX].length) {
                     } else {
-                        if (grid.getGrid()[rightX + position[0]][rightY + position[1]] != 'S' && grid.getGrid()[rightX + position[0]][rightY + position[1]] != ' ') {
+                        if (grid.getGridWithPositions()[rightX + position[0]][rightY + position[1]] != 'S' && grid.getGridWithPositions()[rightX + position[0]][rightY + position[1]] != ' ') {
                             for (PersonPositionData data : gridList.values()) {
                                 if (data.getLeftPositions()[0] == rightX + position[0] && data.getLeftPositions()[1] == rightY + position[1]
                                     || data.getRightPositions()[0] == rightX + position[0] && data.getRightPositions()[1] == rightY + position[1]) {
@@ -124,9 +124,10 @@ public class Person implements Runnable {
 
     private boolean isValidPosition(int newX, int newY, int oldX, int oldY) {
         //TODO: do we need to use gridCopy?
-        return grid.isWithinBounds(newX, newY) && grid.getGrid()[newX][newY] != ' ' && grid.getGrid()[newX][newY] != 'R' &&
-            grid.getGrid()[newX][newY] != 'L' && grid.getGrid()[newX][newY] != 'r' && grid.getGrid()[newX][newY] != 'l' &&
-            grid.getGrid()[newX][newY] != grid.getGrid()[oldX][oldY];
+        char[][] gridCopy = grid.getGridWithPositions();
+        return grid.isWithinBounds(newX, newY) && gridCopy[newX][newY] != ' ' && gridCopy[newX][newY] != 'R' &&
+            gridCopy[newX][newY] != 'L' && gridCopy[newX][newY] != 'r' && gridCopy[newX][newY] != 'l' &&
+            gridCopy[newX][newY] != gridCopy[oldX][oldY];
     }
 
     private int[][] checkCurrentPositionForPotentialDirections(int x, int y) {
