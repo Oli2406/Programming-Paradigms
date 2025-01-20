@@ -28,7 +28,6 @@ public class Simulation implements Runnable{
         }
         List<Thread> threads = new ArrayList<>();
         String[] gridArray = Map.getGrid(name);
-        int[][] sammelpunkte = Map.getSammelpunkte(name);
         assert gridArray != null;
         Grid grid = new Grid(gridArray);
         PipedOutputStream simulationOutput = new PipedOutputStream();
@@ -69,6 +68,8 @@ public class Simulation implements Runnable{
 
             // Print persons to file after simulation ends
             try (BufferedWriter writer = new BufferedWriter(new FileWriter("test.out", true))) {
+                writer.append("Simulation "+name+" ended\n");
+                writer.append("Persons:\n");
                 for (Person person : persons) {
                     writer.append(person.toString());
                     writer.newLine();
