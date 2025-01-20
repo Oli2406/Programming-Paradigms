@@ -276,11 +276,14 @@ public class Person implements Runnable {
                         }
                     }
                 }
-                if (!foundValidPosition) {
-                    return false;
+                if (foundValidPosition) {
+                    break;
                 }
-                rightFootsTurn = true;
             }
+            if (!foundValidPosition) {
+                return false;
+            }
+            rightFootsTurn = true;
       /*
       for (int[] direction : directions) {
         int newRightX = rightX + direction[0];
