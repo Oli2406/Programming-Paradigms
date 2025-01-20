@@ -45,6 +45,11 @@ public class Map {
         "                   SS                        ",
     };
 
+    public static int[][] sammelpunkte2 = {
+        {18, 19},
+        {18, 20}
+    };
+
     public static String[] grid3 =  {
         ">>>>>>vv              >>>>>>vv          ",
         "^^^^  >>vv            ^^^^  >>vv        ",
@@ -59,10 +64,6 @@ public class Map {
         "^^^^                  ^^^^              ",
         "^^^^                  ^^^^              ",
         "^^^^                  ^^^^              "
-    };
-    public static int[][] sammelpunkte2 = {
-        {18, 19},
-        {18, 20}
     };
 
     public static int[][] sammelpunkte3 = {

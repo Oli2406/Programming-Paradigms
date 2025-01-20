@@ -139,4 +139,8 @@ public class Grid {
         }
         return output;
     }
+
+    public boolean isPositionGatheringPoint(int x, int y) {
+        return grid[x][y] == 'S';
+    }
 }

@@ -4,21 +4,20 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
+import java.io.PipedOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class Sammelpunkt implements Runnable {
-    int[][] sammlungspunkte;
-    Map<Integer, PersonPositionData> gridList;
-
-    public Sammelpunkt(int[][] sammelpunkte, Map<Integer, PersonPositionData> gridList) {
-        this.sammlungspunkte = sammelpunkte;
-        this.gridList = gridList;
-    }
-
+    private final InputStream inputStream;
     private final List<PersonData> personDataList = new ArrayList<>();
+    private boolean running = true;
+
+    public Sammelpunkt(InputStream inputStream) {
+        this.inputStream = inputStream;
+    }
 
     public void addPersonData(PersonData data) {
         System.out.println("Person made it to sammelpunkt");
@@ -37,9 +36,9 @@ public class Sammelpunkt implements Runnable {
         }
     }
 
-    public void listenForData(InputStream inputStream) {
+    public void listenForData() {
         try (ObjectInputStream ois = new ObjectInputStream(inputStream)) {
-            while (true) {
+            while (running) {
                 PersonData data = (PersonData) ois.readObject();
                 addPersonData(data);
             }
@@ -52,33 +51,17 @@ public class Sammelpunkt implements Runnable {
 
     @Override
     public void run() {
-        while (isGridListActive()) {
-            for (PersonPositionData data : gridList.values()) {
-                if (checkPersonOnSammelpunkt(data)) {
-                    addPersonData(new PersonData(data.getId(), data.getSteps(), data.getWaits()));
-                    data.setOnGatheringPoint(true);
-                    data.setActive(false);
-                }
-            }
+        listenForData();
+        try {
+            saveToFile("test.out");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        System.out.println("Sammelpunkt finished");
     }
 
-    private boolean isGridListActive() {
-        for (PersonPositionData data : gridList.values()) {
-            if (data.isActive()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean checkPersonOnSammelpunkt(PersonPositionData data) {
-        for (int[] sammelpunkt : sammlungspunkte) {
-            if ((data.getLeftPositions()[0] == sammelpunkt[0] && data.getLeftPositions()[1] == sammelpunkt[1] || data.getRightPositions()[0] == sammelpunkt[0] && data.getRightPositions()[1] == sammelpunkt[1]) && !data.isOnGatheringPoint()) {
-                return true;
-            }
-        }
-        return false;
+    public void shutdown() {
+        running = false;
     }
 
     public static class PersonData implements Serializable {

@@ -41,7 +41,9 @@ public class Simulation implements Runnable{
             return;
         }
 
-        Sammelpunkt gatheringPoint = new Sammelpunkt(sammelpunkte, grid.getGridList());
+        Sammelpunkt gatheringPoint = new Sammelpunkt(gatheringInput);
+        Thread gatheringThread = new Thread(gatheringPoint);
+        gatheringThread.start();
 
         ArrayList<Person> persons = new ArrayList<>();
         try (ObjectOutputStream outputStream = new ObjectOutputStream(simulationOutput)) {
@@ -54,7 +56,7 @@ public class Simulation implements Runnable{
                 threads.add(thread);
                 thread.start();
             }
-            gatheringPoint.run();
+
             for (Thread thread : threads) {
                 try {
                     thread.join();
@@ -62,6 +64,8 @@ public class Simulation implements Runnable{
                     System.err.println("Thread interrupted: " + e.getMessage());
                 }
             }
+
+            gatheringPoint.shutdown();
 
             // Print persons to file after simulation ends
             try (BufferedWriter writer = new BufferedWriter(new FileWriter("test.out", true))) {
@@ -77,8 +81,6 @@ public class Simulation implements Runnable{
             simulationOutput.close();
 
             grid.saveGridToFile();
-
-            gatheringPoint.saveToFile("test.out");
         } catch (IOException e) {
             e.printStackTrace();
         }

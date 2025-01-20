@@ -8,7 +8,7 @@ public class Test {
   public static void main(String[] args) {
     //Simulation sim1 = new Simulation("grid1", 10);
     //sim1.run();
-    Simulation sim2 = new Simulation("grid2", 15);
+    Simulation sim2 = new Simulation("grid2", 5);
     sim2.run();
     //Simulation sim3 = new Simulation("grid3", 20);
     //sim3.run();
