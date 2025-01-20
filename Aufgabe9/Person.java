@@ -159,26 +159,42 @@ public class Person implements Runnable {
         // tl;dr: character will now always move in (general) direction of arrow
 
         //this is the grid for all possible positions of both feet (look at assignment pic / example)
-        int[][] postionsGrid = new int[][] {{0, 0}, {0, 1}, {0, 2}, {0, 3}, {1, 0}, {1, 1}, {1, 2}, {1, 3}, {2, 0}, {2, 1}, {2, 2}, {2, 3}};
+        int[][] verticalPositionsGrid = new int[][]{{0,0}, {0,1}, {0,2}, {1,0}, {1,1}, {1,2}, {2,0}, {2,1}, {2,2}, {3,0}, {3,1}, {3,2}};
+        int[][] horizontalPostionsGrid = new int[][] {{0, 0}, {0, 1}, {0, 2}, {0, 3}, {1, 0}, {1, 1}, {1, 2}, {1, 3}, {2, 0}, {2, 1}, {2, 2}, {2, 3}};
         int rightXInPostionsGrid = 0;
         int rightYInPostionsGrid = 0;
         int leftXInPostionsGrid = 0;
         int leftYInPostionsGrid = 0;
+        int[][] positionsGrid;
+        if (rightX == leftX) {
+            positionsGrid = horizontalPostionsGrid;
+            rightXInPostionsGrid = 1;
+            leftXInPostionsGrid = 1;
+            if (rightY > leftY) {
+                rightYInPostionsGrid = 2;
+                leftYInPostionsGrid = 1;
+            } else {
+                rightYInPostionsGrid = 1;
+                leftYInPostionsGrid = 2;
+            }
+        }
+        else {
+            positionsGrid = verticalPositionsGrid;
+            rightYInPostionsGrid = 1;
+            leftYInPostionsGrid = 1;
+            if (rightX > leftX) {
+                rightXInPostionsGrid = 2;
+                leftXInPostionsGrid = 1;
+            } else {
+                rightXInPostionsGrid = 1;
+                leftXInPostionsGrid = 2;
+            }
+        }
         int newRightX = rightX;
         int newRightY = rightY;
         int newLeftX = leftX;
         int newLeftY = leftY;
         boolean foundValidPosition = false;
-        //there's two possible combinations - right foot is right to left foot or vice versa
-        if (rightX > leftX || rightY > leftY) {
-            rightXInPostionsGrid = 2;
-            leftXInPostionsGrid = 1;
-        } else {
-            rightXInPostionsGrid = 1;
-            leftXInPostionsGrid = 2;
-        }
-        rightYInPostionsGrid = 1;
-        leftYInPostionsGrid = 1;
         //self-explanatory
         if (rightFootsTurn) {
             //get all potential directions the foot will move (general direction of arrow (won't move backwards))
@@ -210,7 +226,7 @@ public class Person implements Runnable {
                 newLeftX = newRightX + direction[0];
                 newLeftY = newRightY + direction[1];
                 //however some directions are too far, so we take the postionsGrid to check which of the four directions are actually still valid
-                for (int[] position : postionsGrid) {
+                for (int[] position : positionsGrid) {
                     if (rightXInPostionsGrid + direction[0] == position[0] && rightYInPostionsGrid + direction[1] == position[1]) {
                         if (isValidPosition(newLeftX, newLeftY, rightX, rightY)) {
                             foundValidPosition = true;
@@ -245,14 +261,14 @@ public class Person implements Runnable {
             if (!foundValidPosition) {
                 return false;
             }
-            potentialDirections = checkCurrentPositionForPotentialDirections(rightX, rightY);
+            potentialDirections = new int[][] {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
             newRightX = newLeftX;
             newRightY = newLeftY;
             foundValidPosition = false;
             for (int[] direction : potentialDirections) {
                 newRightX = newLeftX + direction[0];
                 newRightY = newLeftY + direction[1];
-                for (int[] position : postionsGrid) {
+                for (int[] position : positionsGrid) {
                     if (leftXInPostionsGrid + direction[0] == position[0] && leftYInPostionsGrid + direction[1] == position[1]) {
                         if (isValidPosition(newRightX, newRightY, leftX, leftY)) {
                             foundValidPosition = true;
