@@ -6,12 +6,11 @@ public class Test {
    * - Noah Oguamalam: Person Movement, Grid, Person position data, Person
    */
   public static void main(String[] args) {
-    //Simulation sim1 = new Simulation("grid1", 10);
-    //sim1.run();
+    Simulation sim1 = new Simulation("grid1", 10);
+    sim1.run();
     Simulation sim2 = new Simulation("grid2", 5);
     sim2.run();
-    //Simulation sim3 = new Simulation("grid3", 20);
-    //sim3.run();
-
+    Simulation sim3 = new Simulation("grid3", 20);
+    sim3.run();
   }
 }
