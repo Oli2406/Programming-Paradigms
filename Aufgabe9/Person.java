@@ -90,12 +90,6 @@ public class Person implements Runnable {
             }
             try {
                 boolean moved = move();
-                if (reachedGatheringPoint) {
-                    gridList.get(id).setOnGatheringPoint(true);
-                    gridList.get(id).setActive(false);
-                    sendPersonData();
-                    return;
-                }
                 if (!moved) {
                     waits++;
                     if (isLeader) {
@@ -115,6 +109,12 @@ public class Person implements Runnable {
                 }
                 gridList.get(id).setSteps(steps);
                 gridList.get(id).setWaits(waits);
+                if (reachedGatheringPoint) {
+                    gridList.get(id).setOnGatheringPoint(true);
+                    gridList.get(id).setActive(false);
+                    sendPersonData();
+                    return;
+                }
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 break;
