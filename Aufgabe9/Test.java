@@ -1,7 +1,7 @@
 public class Test {
   /*
    * Wer hat was gemacht:
-   * - Ryan Foster: grid1, Person Movement, Simulation, Test, Map
+   * - Ryan Foster: grid1, Simulation, Test, Map, Pipelines
    * - Oliver Kastner: grid2, Person placement, Sammelpunkt
    * - Noah Oguamalam: Person Movement, Grid, Person position data, Person
    */
