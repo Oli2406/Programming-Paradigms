@@ -138,18 +138,22 @@ public class Person implements Runnable {
         return new int[][] {{-1, 0}, {-1, -1}, {-1, 1}, {0, -1}, {0, 1}};
       case '>':
         return new int[][] {{1, 0}, {1, -1}, {1, 1}, {0, -1}, {0, 1}};
+        //this should never happen since we always move in direction of an arrow, which means we'll also always end up on an arrow (idk how spawning works, but i hope y'all already did that)
       default:
         return new int[][] {{0, 0}};
     }
   }
 
   private boolean move() {
-    //TODO: currently "preferation" system - first move in straight direction of arrow, then diagonal and last side to side
+    //TODO: currently "preferation" system - 5 possible directions to choose from --> most preferred is straight, then diagonal and last either side from current position.
+    // after one foot has moved, the other gets "dragged along". if you check assignment example, the second foot can only move to two potential positions relative to the other foot
+    // if you look at the first example, if the right foot were to move up, the left foot (since he has to stay connected) could only move to the right or left of the right foot (all other positions are invalid)
+    // (i'm basing this on the fact that there's no example where two feet are not directly connected (i.e. they aren't placed diagonally or something))
 
     //TODO: currently switch foot from right to left and vice versa - problem: if one foot is blocked, the other won't be taken into consideration
     // (e.g. if right foot is blocked, but left foot could move somewhere and take right foot with him, this won't happen)
 
-    //TODO: is normally possible, character will now always move in (general) direction of arrow
+    // tl;dr: character will now always move in (general) direction of arrow
 
     //this is the grid for all possible positions of both feet (look at assignment pic / example)
     int[][] postionsGrid = new int[][] {{0, 0}, {1, 0}, {2, 0}, {3, 0}, {1, 1}, {2, 1}, {2, 2}, {2, 3}, {3, 0}, {3, 1}, {3, 2}, {3, 3}};
