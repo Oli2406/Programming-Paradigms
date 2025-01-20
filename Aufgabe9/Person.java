@@ -90,7 +90,7 @@ public class Person implements Runnable {
             }
             try {
                 boolean moved = move();
-                if(reachedGatheringPoint) {
+                if (reachedGatheringPoint) {
                     gridList.get(id).setOnGatheringPoint(true);
                     gridList.get(id).setActive(false);
                     sendPersonData();
@@ -134,13 +134,13 @@ public class Person implements Runnable {
         char[][] gridCopy = grid.getGrid();
         switch (gridCopy[x][y]) {
             case '^':
-                return new int[][] {{0, -1}, {-1, -1}, {1, -1}, {-1, 0}, {1, 0}};
-            case 'v':
-                return new int[][] {{0, 1}, {-1, 1}, {1, 1}, {-1, 0}, {1, 0}};
-            case '<':
                 return new int[][] {{-1, 0}, {-1, -1}, {-1, 1}, {0, -1}, {0, 1}};
+            case 'v':
+                return new int[][] {{1, 0}, {1, -1}, {1, 1}, {0, 1}, {0, 1}};
+            case '<':
+                return new int[][] {{0, -1}, {-1, -1}, {1, -1}, {-1, 0}, {1, 0}};
             case '>':
-                return new int[][] {{1, 0}, {1, -1}, {1, 1}, {0, -1}, {0, 1}};
+                return new int[][] {{0, 1}, {-1, 1}, {1, 1}, {-1, 0}, {1, 0}};
             //this should never happen since we always move in direction of an arrow, which means we'll also always end up on an arrow (idk how spawning works, but i hope y'all already did that)
             default:
                 return new int[][] {{0, 0}};
@@ -159,7 +159,7 @@ public class Person implements Runnable {
         // tl;dr: character will now always move in (general) direction of arrow
 
         //this is the grid for all possible positions of both feet (look at assignment pic / example)
-        int[][] postionsGrid = new int[][] {{0, 0}, {1, 0}, {2, 0}, {3, 0}, {1, 1}, {2, 1}, {2, 2}, {2, 3}, {3, 0}, {3, 1}, {3, 2}, {3, 3}};
+        int[][] postionsGrid = new int[][] {{0, 0}, {0, 1}, {0, 2}, {0, 3}, {1, 0}, {1, 1}, {1, 2}, {1, 3}, {2, 0}, {2, 1}, {2, 2}, {2, 3}};
         int rightXInPostionsGrid = 0;
         int rightYInPostionsGrid = 0;
         int leftXInPostionsGrid = 0;
@@ -168,8 +168,9 @@ public class Person implements Runnable {
         int newRightY = rightY;
         int newLeftX = leftX;
         int newLeftY = leftY;
+        boolean foundValidPosition = false;
         //there's two possible combinations - right foot is right to left foot or vice versa
-        if (rightX > leftY || rightY > leftY) {
+        if (rightX > leftX || rightY > leftY) {
             rightXInPostionsGrid = 2;
             leftXInPostionsGrid = 1;
         } else {
@@ -184,6 +185,7 @@ public class Person implements Runnable {
             int[][] potentialDirections = checkCurrentPositionForPotentialDirections(rightX, rightY);
             newRightX = rightX;
             newRightY = rightY;
+            foundValidPosition = false;
             for (int[] direction : potentialDirections) {
                 newRightX = rightX + direction[0];
                 newRightY = rightY + direction[1];
@@ -191,30 +193,36 @@ public class Person implements Runnable {
                 if (isValidPosition(newRightX, newRightY, leftX, leftY)) {
                     rightXInPostionsGrid = rightXInPostionsGrid + direction[0];
                     rightYInPostionsGrid = rightYInPostionsGrid + direction[1];
+                    foundValidPosition = true;
                     break;
                 }
             }
             //if hasn't changed (no position was valid), return false
-            if (newRightX == rightX && newRightY == rightY) {
+            if (!foundValidPosition) {
                 return false;
             }
             //once a foot has moved, the other can only be positioned around the foot (everything except diagonal) - so we only need to check for straight directions
             potentialDirections = new int[][] {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
-            newLeftX = leftX;
-            newLeftY = leftY;
+            newLeftX = newRightX;
+            newLeftY = newRightY;
+            foundValidPosition = false;
             for (int[] direction : potentialDirections) {
-                newLeftX = leftX + direction[0];
-                newLeftY = leftY + direction[1];
+                newLeftX = newRightX + direction[0];
+                newLeftY = newRightY + direction[1];
                 //however some directions are too far, so we take the postionsGrid to check which of the four directions are actually still valid
                 for (int[] position : postionsGrid) {
                     if (rightXInPostionsGrid + direction[0] == position[0] && rightYInPostionsGrid + direction[1] == position[1]) {
                         if (isValidPosition(newLeftX, newLeftY, rightX, rightY)) {
+                            foundValidPosition = true;
                             break;
                         }
                     }
                 }
+                if (foundValidPosition) {
+                    break;
+                }
             }
-            if (newLeftX == leftX && newLeftY == leftY) {
+            if (!foundValidPosition) {
                 return false;
             }
             rightFootsTurn = false;
@@ -223,32 +231,36 @@ public class Person implements Runnable {
             int[][] potentialDirections = checkCurrentPositionForPotentialDirections(leftX, leftY);
             newLeftX = leftX;
             newLeftY = leftY;
+            foundValidPosition = false;
             for (int[] direction : potentialDirections) {
                 newLeftX = leftX + direction[0];
                 newLeftY = leftY + direction[1];
                 if (isValidPosition(newLeftX, newLeftY, rightX, rightY)) {
                     leftXInPostionsGrid = leftXInPostionsGrid + direction[0];
                     leftYInPostionsGrid = leftYInPostionsGrid + direction[1];
+                    foundValidPosition = true;
                     break;
                 }
             }
-            if (newLeftX == leftX && newLeftY == leftY) {
+            if (!foundValidPosition) {
                 return false;
             }
             potentialDirections = checkCurrentPositionForPotentialDirections(rightX, rightY);
-            newRightX = rightX;
-            newRightY = rightY;
+            newRightX = newLeftX;
+            newRightY = newLeftY;
+            foundValidPosition = false;
             for (int[] direction : potentialDirections) {
-                newRightX = rightX + direction[0];
-                newRightY = rightY + direction[1];
+                newRightX = newLeftX + direction[0];
+                newRightY = newLeftY + direction[1];
                 for (int[] position : postionsGrid) {
                     if (leftXInPostionsGrid + direction[0] == position[0] && leftYInPostionsGrid + direction[1] == position[1]) {
                         if (isValidPosition(newRightX, newRightY, leftX, leftY)) {
+                            foundValidPosition = true;
                             break;
                         }
                     }
                 }
-                if (newRightX == rightX && newRightY == rightY) {
+                if (!foundValidPosition) {
                     return false;
                 }
                 rightFootsTurn = true;
@@ -275,7 +287,7 @@ public class Person implements Runnable {
             leftY = newLeftY;
             gridList.get(id).setRightPositions(new int[] {rightX, rightY});
             gridList.get(id).setLeftPositions(new int[] {leftX, leftY});
-            if(grid.isPositionGatheringPoint(rightX, rightY) || grid.isPositionGatheringPoint(leftX, leftY)) {
+            if (grid.isPositionGatheringPoint(rightX, rightY) || grid.isPositionGatheringPoint(leftX, leftY)) {
                 reachedGatheringPoint = true;
             }
             return true;

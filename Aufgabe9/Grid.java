@@ -38,27 +38,15 @@ public class Grid {
                     for (PersonPositionData data : gridList.values()) {
                         if(!data.isOnGatheringPoint()) {
                             if (data.getLeftPositions()[0] == i && data.getLeftPositions()[1] == j) {
-                                if(toPrint == 'S') {
-                                    System.out.println("Something went wrong");
-                                }
-                                toPrint = 'L';
+                                toPrint = 'l';
                                 break;
                             } else if (data.getRightPositions()[0] == i && data.getRightPositions()[1] == j) {
-                                if(toPrint == 'S') {
-                                    System.out.println("Something went wrong");
-                                }
-                                toPrint = 'R';
+                                toPrint = 'r';
                                 break;
                             } else if (data.getOldRightPosition()[0] == i && data.getOldRightPosition()[1] == j) {
-                                if(toPrint == 'S') {
-                                    System.out.println("Something went wrong");
-                                }
-                                toPrint = 'r';
+                                toPrint = 'R';
                             } else if (data.getOldLeftPosition()[0] == i && data.getOldLeftPosition()[1] == j) {
-                                if(toPrint == 'S') {
-                                    System.out.println("Something went wrong");
-                                }
-                                toPrint = 'l';
+                                toPrint = 'L';
                             }
                         }
                     }
@@ -77,15 +65,15 @@ public class Grid {
                 char toPrint = ' ';
                 for (PersonPositionData data : gridList.values()) {
                     if (data.getLeftPositions()[0] == i && data.getLeftPositions()[1] == j) {
-                        toPrint = 'L';
+                        toPrint = 'l';
                         break;
                     } else if (data.getRightPositions()[0] == i && data.getRightPositions()[1] == j) {
-                        toPrint = 'R';
+                        toPrint = 'r';
                         break;
                     } else if (data.getOldRightPosition()[0] == i && data.getOldRightPosition()[1] == j) {
-                        toPrint = 'r';
+                        toPrint = 'R';
                     } else if (data.getOldLeftPosition()[0] == i && data.getOldLeftPosition()[1] == j) {
-                        toPrint = 'l';
+                        toPrint = 'L';
                     } else {
                         toPrint = grid[i][j];
 
@@ -122,15 +110,15 @@ public class Grid {
                 for (PersonPositionData data : gridList.values()) {
                     if(!data.isOnGatheringPoint()) {
                         if (data.getLeftPositions()[0] == i && data.getLeftPositions()[1] == j) {
-                            toPrint = 'L';
+                            toPrint = 'l';
                             break;
                         } else if (data.getRightPositions()[0] == i && data.getRightPositions()[1] == j) {
-                            toPrint = 'R';
+                            toPrint = 'r';
                             break;
                         } else if (data.getOldRightPosition()[0] == i && data.getOldRightPosition()[1] == j) {
-                            toPrint = 'r';
+                            toPrint = 'R';
                         } else if (data.getOldLeftPosition()[0] == i && data.getOldLeftPosition()[1] == j) {
-                            toPrint = 'l';
+                            toPrint = 'L';
                         }
                     }
                 }
