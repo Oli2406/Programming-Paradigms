@@ -44,9 +44,30 @@ public class Map {
         "                  >vv<                       ",
         "                   SS                        ",
     };
+
+    public static String[] grid3 =  {
+        ">>>>>>vv              >>>>>>vv          ",
+        "^^^^  >>vv            ^^^^  >>vv        ",
+        "^^^^    >>vv          ^^^^    >>vv      ",
+        "^^^^      >>>>>>>>>>>>^^^^      >>>>vv  ",
+        "vvvv      >>>>>>>>>>>>vvvv      >>>>vv  ",
+        "vvvv     >>^^         vvvv    >>^^  vv  ",
+        "vvvv  >>^^            vvvv  >>^^    vv  ",
+        ">>>>>>^^              >>>>>>^^      vv  ",
+        "^^^^                  ^^^^          >>>S",
+        "^^^^                  ^^^^          >>>S",
+        "^^^^                  ^^^^              ",
+        "^^^^                  ^^^^              ",
+        "^^^^                  ^^^^              "
+    };
     public static int[][] sammelpunkte2 = {
         {18, 19},
         {18, 20}
+    };
+
+    public static int[][] sammelpunkte3 = {
+        {8, 39},
+        {9, 39}
     };
 
     public static String[] getGrid(String name) {
@@ -54,6 +75,8 @@ public class Map {
             return grid1;
         } else if(name.equals("grid2")) {
             return grid2;
+        } else if(name.equals("grid3")) {
+            return grid3;
         } else {
             return null;
         }
@@ -64,10 +87,10 @@ public class Map {
             return sammelpunkte1;
         } else if(name.equals("grid2")) {
             return sammelpunkte2;
+        } else if(name.equals("grid3")) {
+                return sammelpunkte3;
         } else {
             return null;
         }
     }
-
-    //TODO 3tes Grid einfügen
 }
